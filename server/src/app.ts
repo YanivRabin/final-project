@@ -22,7 +22,7 @@ const initApp = (): Promise<Express> => {
       // static files
       app.use(express.static("public"));
       // paths
-      app.use("/api/auth", require("./routes/auth"));
+      app.use("/api/auth", require("./routes/auth_route"));
       // start server
       resolve(app);
     });
