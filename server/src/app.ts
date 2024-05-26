@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { Express } from "express";
+import geminiRoutes from './routes/gemini_query';
+
 
 const app: Express = express();
 dotenv.config();
@@ -23,6 +25,7 @@ const initApp = (): Promise<Express> => {
       app.use(express.static("public"));
       // paths
       app.use("/api/auth", require("./routes/auth_route"));
+      app.use("/api/gemini", geminiRoutes);
       // start server
       resolve(app);
     });
