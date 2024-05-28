@@ -28,27 +28,43 @@ export interface WorkoutPlan extends Document{
     nutritionalInformation: {
         breakfast: {
             name: string;
-            carbohydrates: number;
-            fats: number;
-            proteins: number;
+            ingredients: {
+                name: string;
+                carbohydrates: number;
+                fats: number;
+                proteins: number;
+                amount: string;
+            }[];
         }[];
         lunch: {
             name: string;
-            carbohydrates: number;
-            fats: number;
-            proteins: number;
+            ingredients: {
+                name: string;
+                carbohydrates: number;
+                fats: number;
+                proteins: number;
+                amount: string;
+            }[];
         }[];
         dinner: {
             name: string;
-            carbohydrates: number;
-            fats: number;
-            proteins: number;
+            ingredients: {
+                name: string;
+                carbohydrates: number;
+                fats: number;
+                proteins: number;
+                amount: string;
+            }[];
         }[];
         snacks: {
             name: string;
-            carbohydrates: number;
-            fats: number;
-            proteins: number;
+            ingredients: {
+                name: string;
+                carbohydrates: number;
+                fats: number;
+                proteins: number;
+                amount: string;
+            }[];
         }[];
     };
 }
