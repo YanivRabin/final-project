@@ -4,7 +4,7 @@ import { WorkoutPlan } from '../model/workout_model';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
+const genAI = new GoogleGenerativeAI(process.env.GENERATIVE_API_KEY);
 
 // ...
 
