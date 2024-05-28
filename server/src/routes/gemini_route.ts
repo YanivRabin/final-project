@@ -1,6 +1,9 @@
 import express from 'express';
-import { createWorkoutPlan } from '../controller/gemini_api_controller';
+import { createWorkoutPlan, tryGemini } from '../controller/gemini_api_controller';
 const router = express.Router();
+
+console.log("Registering routes");
+
 
 // #region route configuration
 /**
@@ -19,44 +22,79 @@ const router = express.Router();
  *     UserProfile:
  *       type: object
  *       required:
- *         - username
  *         - age
- *         - gender
+ *         - height
+ *         - weight
+ *         - workoutGoal
+ *         - allergies
+ *         - trainingFrequency
+ *         - biologicalSex
+ *         - workoutLocation
+ *         - daysPerWeek
+ *         - minutesPerWorkout
+ *         - includeWarmup
+ *         - includeStretching
  *       properties:
- *         username:
- *           type: string
- *           example: johndoe123
  *         age:
  *           type: integer
  *           example: 30
- *         gender:
- *           type: string
- *           enum: [male, female, other]
- *           example: male
- *         weight:
- *           type: number
- *           example: 75.5
  *         height:
  *           type: number
  *           example: 180
- *         fitnessLevel:
+ *         weight:
+ *           type: number
+ *           example: 75.5
+ *         workoutGoal:
  *           type: string
- *           enum: [beginner, intermediate, advanced]
- *           example: intermediate
+ *           example: muscle gain
+ *         allergies:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["none"]
+ *         trainingFrequency:
+ *           type: string
+ *           example: "3-4 times a week"
+ *         biologicalSex:
+ *           type: string
+ *           enum: [male, female, other]
+ *           example: male
+ *         workoutLocation:
+ *           type: string
+ *           enum: [gym, home]
+ *           example: gym
+ *         daysPerWeek:
+ *           type: integer
+ *           example: 4
+ *         minutesPerWorkout:
+ *           type: integer
+ *           example: 60
+ *         includeWarmup:
+ *           type: boolean
+ *           example: true
+ *         includeStretching:
+ *           type: boolean
+ *           example: true
  *       example:
- *         username: johndoe123
  *         age: 30
- *         gender: male
- *         weight: 75.5
  *         height: 180
- *         fitnessLevel: intermediate
+ *         weight: 75.5
+ *         workoutGoal: muscle gain
+ *         allergies: ["none"]
+ *         trainingFrequency: "3-4 times a week"
+ *         biologicalSex: male
+ *         workoutLocation: gym
+ *         daysPerWeek: 4
+ *         minutesPerWorkout: 60
+ *         includeWarmup: true
+ *         includeStretching: true
  */
 // #endregion
 
 // #region CreateWorkoutPlan POST request 
 /**
  * @swagger
- * /api/create-workout:
+ * /api/gemini/create-workout:
  *   post:
  *     summary: Creates a workout plan for a user
  *     tags: [Workout API]
@@ -76,6 +114,24 @@ const router = express.Router();
 router.post('/create-workout', createWorkoutPlan);
 // #endregion
 
+
+// #region TryGemini GET request
+/**
+ * @swagger
+ * /api/gemini/try-gemini:
+ *  get:
+ *   summary: Try the Gemini API
+ *   tags: [Workout API]
+ *   description: Try the Gemini API
+ *   responses:
+ *      200:
+ *        description: Successful response
+ *      500:
+ *        description: Internal server error
+ */
+
+router.get('/try-gemini', tryGemini);
+// #endregion
+
+
 export default router;
-
-
