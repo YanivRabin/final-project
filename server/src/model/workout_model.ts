@@ -1,9 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
-const workoutSchema = new mongoose.Schema({
+export interface WorkoutPlan extends Document {
+    dailyMenu: string;
+    weeklyWorkout: string;
+    specificCalories: number;
+}
+
+const workoutSchema: Schema = new Schema({
     dailyMenu: { type: String, required: true },
     weeklyWorkout: { type: String, required: true },
-    specificCalories: { type: Number, required: true }
+    specificCalories: { type: Number, required: true },
 });
 
-export default mongoose.model('Workout', workoutSchema);
+export default mongoose.model<WorkoutPlan>('Workout', workoutSchema);

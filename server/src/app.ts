@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { Express } from "express";
-import geminiRoutes from './routes/gemini_query';
+import geminiRoutes from './routes/gemini_route';
 
 
 const app: Express = express();

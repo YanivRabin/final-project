@@ -1,12 +1,11 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { UserProfile } from '../model/user_model';
+import { WorkoutPlan } from '../model/workout_model';
 
-// Import the GoogleGenerativeAI class from the package
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-// Access your API key as an environment variable (see "Set up your API key" above)
-export const genAI = new GoogleGenerativeAI(process.env.API_KEY);
-
-
-export const generateWorkoutPlan = async (profile: any) => {
+export const generateWorkoutPlan = async (profile: UserProfile) => {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
     const prompt = `
         Create a workout plan for a user with the following profile:
         Age: ${profile.age}
@@ -22,6 +21,8 @@ export const generateWorkoutPlan = async (profile: any) => {
         Include Warmup: ${profile.includeWarmup}
         Include Stretching: ${profile.includeStretching}
     `;
-    const response = await genAI.generateText(prompt);
-    return response.data;
+    const result = await model.generateContent(prompt);
+    // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }
+    // const workoutPlan: WorkoutPlan = new WorkoutPlan(result);
+    return result;
 };
