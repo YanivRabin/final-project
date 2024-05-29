@@ -22,7 +22,7 @@ export default function ColumnsGrid() {
         sm={false}
         md={8}
         sx={{
-          backgroundImage: "url(/singInBg.png)",
+          backgroundImage: "url(/signInBg.png)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -57,6 +57,7 @@ export default function ColumnsGrid() {
             Sign in
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
+
             <TextField
               margin="normal"
               required
@@ -64,8 +65,6 @@ export default function ColumnsGrid() {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
               InputProps={{
                 style: textFieldStyle.input,
                 sx: textFieldStyle,
@@ -74,6 +73,7 @@ export default function ColumnsGrid() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
+            
             <TextField
               margin="normal"
               required
@@ -91,6 +91,7 @@ export default function ColumnsGrid() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
+
             <Button
               type="submit"
               fullWidth
@@ -103,13 +104,15 @@ export default function ColumnsGrid() {
             >
               Sign In
             </Button>
+
             <Grid container justifyContent="center">
               <Grid item>
-                <Link href="/singUp" variant="body2" sx={{ color: "white" }}>
+                <Link href="/signUp" variant="body2" sx={{ color: "white" }}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
+            
           </Box>
         </Box>
       </Grid>

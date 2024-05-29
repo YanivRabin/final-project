@@ -4,55 +4,45 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import { textFieldStyle } from "@/styles/textField"; // Adjust import path as necessary
-import { buttonStyle } from "@/styles/button"; // Adjust import path as necessary
+import { textFieldStyle } from "@/styles/textField";
+import { buttonStyle } from "@/styles/button";
 import StepConnector from "@mui/material/StepConnector";
-import { styled } from "@mui/material/styles";
-import StepIcon from "@mui/material/StepIcon";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import { formControlStyle, radioStyle } from "@/styles/radioButton";
+import { CustomStepIcon, CustomStepLabel } from "@/styles/stepper";
+import InputAdornment from "@mui/material/InputAdornment";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 
-const steps = ["Personal Info", "Workout", "Medical and Nutrition"]; // Adjust steps as needed
-
-const CustomStepIcon = styled(StepIcon)(({ theme }) => ({
-  color: "#4E2A84",
-  "& .MuiStepIcon-text": {
-    fill: "white", // Change the number inside the circle to white
-    fontSize: "0.75rem"
-  },
-  "&.Mui-completed": {
-    color: "#4E2A84",
-  },
-  "&.Mui-active": {
-    color: "#4E2A84",
-  },
-}));
-
-const CustomStepLabel = styled(StepLabel)(({ theme }) => ({
-  "& .MuiStepLabel-label": {
-    color: "white", // Change the label text color to white
-    "&.Mui-active": {
-      color: "white",
-    },
-    "&.Mui-completed": {
-      color: "white",
-    },
-  },
-}));
+const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function HorizontalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [workout, setWorkout] = React.useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setWorkout(event.target.value as string);
+  };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
+    if (activeStep === 0) {
+      window.location.href = "/";
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
@@ -66,6 +56,7 @@ export default function HorizontalLinearStepper() {
         return (
           <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+              {/* first name */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
@@ -84,6 +75,7 @@ export default function HorizontalLinearStepper() {
                   }}
                 />
               </Grid>
+              {/* last name */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   required
@@ -101,6 +93,7 @@ export default function HorizontalLinearStepper() {
                   }}
                 />
               </Grid>
+              {/* email */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -118,6 +111,7 @@ export default function HorizontalLinearStepper() {
                   }}
                 />
               </Grid>
+              {/* password */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -136,6 +130,7 @@ export default function HorizontalLinearStepper() {
                   }}
                 />
               </Grid>
+              {/* password 2 */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -158,7 +153,138 @@ export default function HorizontalLinearStepper() {
           </Box>
         );
       case 1:
-        return "Select campaign settings"; // Placeholder for second step content
+        return (
+          <Box component="form" noValidate sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {/* gender */}
+              <Grid item xs={12}>
+                <FormControl sx={formControlStyle}>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                  >
+                    <FormControlLabel
+                      value="male"
+                      control={<Radio sx={radioStyle} />}
+                      label="Male"
+                    />
+                    <FormControlLabel
+                      value="female"
+                      control={<Radio sx={radioStyle} />}
+                      label="Female"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+              {/* age */}
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="age"
+                  label="Age"
+                  name="age"
+                  autoComplete="age"
+                  InputProps={{
+                    style: textFieldStyle.input,
+                    sx: textFieldStyle,
+                    endAdornment: (
+                      <InputAdornment position="end">years</InputAdornment>
+                    ),
+                  }}
+                  InputLabelProps={{
+                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  }}
+                />
+              </Grid>
+              {/* height */}
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="height"
+                  label="Height"
+                  name="height"
+                  autoComplete="height"
+                  InputProps={{
+                    style: textFieldStyle.input,
+                    sx: textFieldStyle,
+                    endAdornment: (
+                      <InputAdornment position="end">cm</InputAdornment>
+                    ),
+                  }}
+                  InputLabelProps={{
+                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  }}
+                />
+              </Grid>
+              {/* weight */}
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="weight"
+                  label="Weight"
+                  name="weight"
+                  autoComplete="weight"
+                  InputProps={{
+                    style: textFieldStyle.input,
+                    sx: textFieldStyle,
+                    endAdornment: (
+                      <InputAdornment position="end">kg</InputAdornment>
+                    ),
+                  }}
+                  InputLabelProps={{
+                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  }}
+                />
+              </Grid>
+              {/* workout goals */}
+              <Grid item xs={12}>
+                <FormControl
+                  fullWidth
+                  sx={textFieldStyle["& .MuiFormControl-root"]}
+                >
+                  <InputLabel
+                    id="demo-simple-select-label"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
+                    Workout Goals
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={workout}
+                    label="Workout Goals"
+                    onChange={handleChange}
+                    sx={{
+                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
+                      "& .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "&:hover .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&:hover .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
+                      "& .MuiMenuItem-root":
+                        textFieldStyle["& .MuiMenuItem-root"],
+                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
+                    }}
+                  >
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
+        );
       case 2:
         return "Create an ad group"; // Placeholder for third step content
       default:
@@ -173,7 +299,7 @@ export default function HorizontalLinearStepper() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage: "url('/singUpBg.jpg')", // path to background image
+        backgroundImage: "url('/signUpBg.jpg')", // path to background image
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -201,7 +327,11 @@ export default function HorizontalLinearStepper() {
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                   <Box sx={{ flex: "1 1 auto" }} />
-                  <Button onClick={handleReset} variant="contained" color="primary">
+                  <Button
+                    onClick={handleReset}
+                    variant="contained"
+                    color="primary"
+                  >
                     Reset
                   </Button>
                 </Box>
@@ -214,16 +344,15 @@ export default function HorizontalLinearStepper() {
                 <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                   <Button
                     color="inherit"
-                    disabled={activeStep === 0}
                     onClick={handleBack}
-                    sx={{ 
+                    sx={{
                       mt: 3,
                       mb: 2,
                       backgroundColor: "#d9dddc",
                       color: "black",
                       "&:hover": {
                         backgroundColor: "#c0c4c3",
-                      }
+                      },
                     }}
                   >
                     Back
