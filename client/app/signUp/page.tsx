@@ -19,25 +19,74 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { formControlStyle, radioStyle } from "@/styles/radioButton";
 import { CustomStepIcon, CustomStepLabel } from "@/styles/stepper";
-import InputAdornment from "@mui/material/InputAdornment";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
+import Slider from "@mui/material/Slider";
+import Input from "@mui/material/Input";
+import { sliderStyle, inputStyle } from "@/styles/slider";
+import Checkbox from "@mui/material/Checkbox";
+import { checkboxStyle } from "@/styles/checkbox";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function HorizontalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [age, setAge] = React.useState(25);
+  const [height, setHeight] = React.useState(175);
+  const [weight, setWeight] = React.useState(70);
   const [workout, setWorkout] = React.useState("");
+  const [daysPerWeek, setDaysPerWeek] = React.useState("");
+  const [minutesPerWorkout, setMinutesPerWorkout] = React.useState("");
+  const [includeWarmup, setIncludeWarmup] = React.useState(false);
+  const [includeStreching, setIncludeStreching] = React.useState(false);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setWorkout(event.target.value as string);
+  const handleAgeSliderChange = (event: Event, newValue: number | number[]) => {
+    setAge(newValue as number);
+  };
+  const handleAgeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAge(event.target.value === "" ? 0 : Number(event.target.value));
+  };
+
+  const handleHeightSliderChange = (
+    event: Event,
+    newValue: number | number[]
+  ) => {
+    setHeight(newValue as number);
+  };
+  const handleHeightInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setHeight(event.target.value === "" ? 0 : Number(event.target.value));
+  };
+
+  const handleWeightSliderChange = (
+    event: Event,
+    newValue: number | number[]
+  ) => {
+    setWeight(newValue as number);
+  };
+  const handleWeightInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setWeight(event.target.value === "" ? 0 : Number(event.target.value));
+  };
+
+  const handleWarmupCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIncludeWarmup(event.target.checked);
+  };
+
+  const handleStrechingCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIncludeStreching(event.target.checked);
   };
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-
   const handleBack = () => {
     if (activeStep === 0) {
       window.location.href = "/";
@@ -45,11 +94,9 @@ export default function HorizontalLinearStepper() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-
   const handleReset = () => {
     setActiveStep(0);
   };
-
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -179,66 +226,106 @@ export default function HorizontalLinearStepper() {
               </Grid>
               {/* age */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="age"
-                  label="Age"
-                  name="age"
-                  autoComplete="age"
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                    endAdornment: (
-                      <InputAdornment position="end">years</InputAdornment>
-                    ),
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
-                  }}
-                />
+                <Box>
+                  <Typography id="input-slider" gutterBottom>
+                    Age
+                  </Typography>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs>
+                      <Slider
+                        value={typeof age === "number" ? age : 0}
+                        onChange={handleAgeSliderChange}
+                        aria-labelledby="input-slider"
+                        sx={sliderStyle}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Input
+                        value={age}
+                        size="small"
+                        onChange={handleAgeInputChange}
+                        inputProps={{
+                          step: 1,
+                          min: 0,
+                          max: 100,
+                          type: "number",
+                          "aria-labelledby": "input-slider",
+                          style: inputStyle, // Apply the input style here
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
               </Grid>
-              {/* height */}
+              {/* Height */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="height"
-                  label="Height"
-                  name="height"
-                  autoComplete="height"
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                    endAdornment: (
-                      <InputAdornment position="end">cm</InputAdornment>
-                    ),
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
-                  }}
-                />
+                <Box>
+                  <Typography id="input-slider" gutterBottom>
+                    Height in cm
+                  </Typography>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs>
+                      <Slider
+                        value={typeof height === "number" ? height : 0}
+                        onChange={handleHeightSliderChange}
+                        aria-labelledby="input-slider"
+                        sx={sliderStyle}
+                        min={0}
+                        max={250}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Input
+                        value={height}
+                        size="small"
+                        onChange={handleHeightInputChange}
+                        inputProps={{
+                          step: 1,
+                          min: 0,
+                          max: 250,
+                          type: "number",
+                          "aria-labelledby": "input-slider",
+                          style: inputStyle, // Apply the input style here
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
               </Grid>
-              {/* weight */}
+              {/* Weight */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="weight"
-                  label="Weight"
-                  name="weight"
-                  autoComplete="weight"
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                    endAdornment: (
-                      <InputAdornment position="end">kg</InputAdornment>
-                    ),
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
-                  }}
-                />
+                <Box>
+                  <Typography id="input-slider" gutterBottom>
+                    Weight in kg
+                  </Typography>
+                  <Grid container spacing={2} alignItems="center">
+                    <Grid item xs>
+                      <Slider
+                        value={typeof weight === "number" ? weight : 0}
+                        onChange={handleWeightSliderChange}
+                        aria-labelledby="input-slider"
+                        sx={sliderStyle}
+                        min={0}
+                        max={250}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Input
+                        value={weight}
+                        size="small"
+                        onChange={handleWeightInputChange}
+                        inputProps={{
+                          step: 1,
+                          min: 0,
+                          max: 250,
+                          type: "number",
+                          "aria-labelledby": "input-slider",
+                          style: inputStyle, // Apply the input style here
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
               </Grid>
               {/* workout goals */}
               <Grid item xs={12}>
@@ -247,17 +334,17 @@ export default function HorizontalLinearStepper() {
                   sx={textFieldStyle["& .MuiFormControl-root"]}
                 >
                   <InputLabel
-                    id="demo-simple-select-label"
+                    id="WorkoutGoals"
                     style={textFieldStyle["& .MuiInputLabel-root"]}
                   >
                     Workout Goals
                   </InputLabel>
                   <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId="WorkoutGoals"
+                    id="goals-select"
                     value={workout}
                     label="Workout Goals"
-                    onChange={handleChange}
+                    onChange={(e) => setWorkout(e.target.value)}
                     sx={{
                       "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
                       "& .MuiOutlinedInput-notchedOutline":
@@ -276,11 +363,135 @@ export default function HorizontalLinearStepper() {
                       "& .Mui-selected": textFieldStyle["& .Mui-selected"],
                     }}
                   >
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
+                    <MenuItem value={"Stay in Shape"}>Stay in Shape</MenuItem>
+                    <MenuItem value={"Muscle Gain"}>Muscle Gain</MenuItem>
+                    <MenuItem value={"Caloric Deficit"}>
+                      Caloric Deficit
+                    </MenuItem>
+                    <MenuItem value={"Flexibility"}>Flexibility</MenuItem>
+                    <MenuItem value={"Endurance"}>Endurance</MenuItem>
                   </Select>
                 </FormControl>
+              </Grid>
+              {/* days per week */}
+              <Grid item xs={12}>
+                <FormControl
+                  fullWidth
+                  sx={textFieldStyle["& .MuiFormControl-root"]}
+                >
+                  <InputLabel
+                    id="daysPerWeek"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
+                    Days per Week
+                  </InputLabel>
+                  <Select
+                    labelId="daysPerWeek"
+                    id="days-select"
+                    value={daysPerWeek}
+                    label="Days per Week"
+                    onChange={(e) => setDaysPerWeek(e.target.value)}
+                    sx={{
+                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
+                      "& .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "&:hover .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&:hover .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
+                      "& .MuiMenuItem-root":
+                        textFieldStyle["& .MuiMenuItem-root"],
+                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
+                    }}
+                  >
+                    <MenuItem value={1}>One</MenuItem>
+                    <MenuItem value={2}>Two</MenuItem>
+                    <MenuItem value={3}>Three</MenuItem>
+                    <MenuItem value={4}>Four</MenuItem>
+                    <MenuItem value={5}>Five</MenuItem>
+                    <MenuItem value={6}>Six</MenuItem>
+                    <MenuItem value={7}>Seven</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              {/* minutes per workout */}
+              <Grid item xs={12}>
+                <FormControl
+                  fullWidth
+                  sx={textFieldStyle["& .MuiFormControl-root"]}
+                >
+                  <InputLabel
+                    id="MinutesPerWorkout"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
+                    Minutes per Workout
+                  </InputLabel>
+                  <Select
+                    labelId="MinutesPerWorkout"
+                    id="minutes-select"
+                    value={minutesPerWorkout}
+                    label="Minutes per Workout"
+                    onChange={(e) => setMinutesPerWorkout(e.target.value)}
+                    sx={{
+                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
+                      "& .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "&:hover .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&:hover .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
+                      "& .MuiMenuItem-root":
+                        textFieldStyle["& .MuiMenuItem-root"],
+                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
+                    }}
+                  >
+                    <MenuItem value={15}>15 minutes</MenuItem>
+                    <MenuItem value={30}>30 minutes</MenuItem>
+                    <MenuItem value={60}>1 hour</MenuItem>
+                    <MenuItem value={90}>1 hour and 30 minutes</MenuItem>
+                    <MenuItem value={120}>2 hours</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              {/* include warmup */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  value="includeWarmup"
+                  control={
+                    <Checkbox
+                      checked={includeWarmup}
+                      onChange={handleWarmupCheckboxChange}
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Include Warmup"
+                  labelPlacement="start"
+                />
+              </Grid>
+              {/* include streching */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  value="includeStreching"
+                  control={
+                    <Checkbox
+                      checked={includeStreching}
+                      onChange={handleStrechingCheckboxChange}
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Include Streching"
+                  labelPlacement="start"
+                />
               </Grid>
             </Grid>
           </Box>
