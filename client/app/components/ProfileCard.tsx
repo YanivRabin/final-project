@@ -64,8 +64,9 @@ export default function ProfileCard(props: any) {
         {/* DETAILS */}
         <Grid container>
           <Grid item xs={6}>
-            <Typography style={styles.details}>Detail 1</Typography>
-            <Typography style={styles.details}>Detail 2</Typography>
+            <Typography style={styles.details}>Weight</Typography>
+            <Typography style={styles.details}>height
+            </Typography>
             <Typography style={styles.details}>Detail 3</Typography>
           </Grid>
           {/* VALUES */}

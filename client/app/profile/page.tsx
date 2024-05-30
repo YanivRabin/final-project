@@ -1,7 +1,7 @@
-"use client"
 // IMPORTS
-// import "./styles.css";
+"use client"
 import React, { useState } from "react";
+import Head from "next/head";
 import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -17,16 +17,15 @@ export default function Profile() {
 
   const mainUser = {
     // DEFAULT VALUES
-    title: "CEO of Apple",
+    title: "title",
     dt1: 32,
     dt2: 40,
     dt3: 50,
-    firstName: { text },
-    lastName: "Doe",
-    midName: "Baker",
+    firstName: "Name",
+    lastName: "Last Name",
     gender: "female",
     phone: "932-555-4247",
-    email: "janedoe@gmail.com",
+    email: "example@gmail.com",
     pass: "password123"
   };
 
@@ -34,6 +33,9 @@ export default function Profile() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Head>
+        <title>Profile Page</title>
+      </Head>
       <CssBaseline>
         {/* BACKGROUND */}
         <Grid container direction="column" sx={{ overflowX: "hidden" }}>
@@ -79,7 +81,6 @@ export default function Profile() {
                 expose={(v: string) => setText(v)}
                 firstName={mainUser.firstName}
                 lastName={mainUser.lastName}
-                midName={mainUser.midName}
                 phone={mainUser.phone}
                 email={mainUser.email}
                 pass={mainUser.pass}
