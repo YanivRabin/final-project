@@ -32,56 +32,25 @@ const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function HorizontalLinearStepper() {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [age, setAge] = React.useState(25);
-  const [height, setHeight] = React.useState(175);
-  const [weight, setWeight] = React.useState(70);
-  const [workout, setWorkout] = React.useState("");
-  const [daysPerWeek, setDaysPerWeek] = React.useState("");
-  const [minutesPerWorkout, setMinutesPerWorkout] = React.useState("");
-  const [includeWarmup, setIncludeWarmup] = React.useState(false);
-  const [includeStreching, setIncludeStreching] = React.useState(false);
+  const [formData, setFormData] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    password2: "",
+    gender: "",
+    age: 25,
+    height: 175,
+    weight: 70,
+    workoutGoals: "",
+    daysPerWeek: 0,
+    minutesPerWorkout: 0,
+    includeWarmup: false,
+    includeStreching: false,
+  });
 
-  const handleAgeSliderChange = (event: Event, newValue: number | number[]) => {
-    setAge(newValue as number);
-  };
-  const handleAgeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAge(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
-  const handleHeightSliderChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
-    setHeight(newValue as number);
-  };
-  const handleHeightInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setHeight(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
-  const handleWeightSliderChange = (
-    event: Event,
-    newValue: number | number[]
-  ) => {
-    setWeight(newValue as number);
-  };
-  const handleWeightInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setWeight(event.target.value === "" ? 0 : Number(event.target.value));
-  };
-
-  const handleWarmupCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIncludeWarmup(event.target.checked);
-  };
-
-  const handleStrechingCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setIncludeStreching(event.target.checked);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleNext = () => {
@@ -97,6 +66,7 @@ export default function HorizontalLinearStepper() {
   const handleReset = () => {
     setActiveStep(0);
   };
+  // get stepper content
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -113,6 +83,8 @@ export default function HorizontalLinearStepper() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,
@@ -131,6 +103,8 @@ export default function HorizontalLinearStepper() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,
@@ -149,6 +123,8 @@ export default function HorizontalLinearStepper() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,
@@ -168,6 +144,8 @@ export default function HorizontalLinearStepper() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,
@@ -187,6 +165,8 @@ export default function HorizontalLinearStepper() {
                   type="password"
                   id="password2"
                   autoComplete="new-password"
+                  value={formData.password2}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,
@@ -209,7 +189,9 @@ export default function HorizontalLinearStepper() {
                   <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
                   >
                     <FormControlLabel
                       value="male"
@@ -224,34 +206,40 @@ export default function HorizontalLinearStepper() {
                   </RadioGroup>
                 </FormControl>
               </Grid>
-              {/* age */}
+              {/* Age */}
               <Grid item xs={12}>
                 <Box>
-                  <Typography id="input-slider" gutterBottom>
+                  <Typography id="input-slider-age" gutterBottom>
                     Age
                   </Typography>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs>
                       <Slider
-                        value={typeof age === "number" ? age : 0}
-                        onChange={handleAgeSliderChange}
-                        aria-labelledby="input-slider"
+                        value={formData.age}
+                        onChange={(e, value) => {
+                          setFormData({ ...formData, age: value as number });
+                        }}
+                        aria-labelledby="input-slider-age"
+                        name="age"
+                        min={0}
+                        max={100}
                         sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
                       <Input
-                        value={age}
+                        value={formData.age}
                         size="small"
-                        onChange={handleAgeInputChange}
+                        onChange={handleInputChange}
+                        name="age"
                         inputProps={{
                           step: 1,
                           min: 0,
                           max: 100,
                           type: "number",
-                          "aria-labelledby": "input-slider",
-                          style: inputStyle, // Apply the input style here
+                          "aria-labelledby": "input-slider-age",
                         }}
+                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -260,33 +248,37 @@ export default function HorizontalLinearStepper() {
               {/* Height */}
               <Grid item xs={12}>
                 <Box>
-                  <Typography id="input-slider" gutterBottom>
+                  <Typography id="input-slider-height" gutterBottom>
                     Height in cm
                   </Typography>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs>
                       <Slider
-                        value={typeof height === "number" ? height : 0}
-                        onChange={handleHeightSliderChange}
-                        aria-labelledby="input-slider"
-                        sx={sliderStyle}
+                        value={formData.height}
+                        onChange={(e, value) => {
+                          setFormData({ ...formData, height: value as number });
+                        }}
+                        aria-labelledby="input-slider-height"
+                        name="height"
                         min={0}
                         max={250}
+                        sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
                       <Input
-                        value={height}
+                        value={formData.height}
                         size="small"
-                        onChange={handleHeightInputChange}
+                        onChange={handleInputChange}
+                        name="height"
                         inputProps={{
                           step: 1,
                           min: 0,
                           max: 250,
                           type: "number",
-                          "aria-labelledby": "input-slider",
-                          style: inputStyle, // Apply the input style here
+                          "aria-labelledby": "input-slider-height",
                         }}
+                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -295,33 +287,37 @@ export default function HorizontalLinearStepper() {
               {/* Weight */}
               <Grid item xs={12}>
                 <Box>
-                  <Typography id="input-slider" gutterBottom>
+                  <Typography id="input-slider-weight" gutterBottom>
                     Weight in kg
                   </Typography>
                   <Grid container spacing={2} alignItems="center">
                     <Grid item xs>
                       <Slider
-                        value={typeof weight === "number" ? weight : 0}
-                        onChange={handleWeightSliderChange}
-                        aria-labelledby="input-slider"
-                        sx={sliderStyle}
+                        value={formData.weight}
+                        onChange={(e, value) => {
+                          setFormData({ ...formData, weight: value as number });
+                        }}
+                        aria-labelledby="input-slider-weight"
+                        name="weight"
                         min={0}
                         max={250}
+                        sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
                       <Input
-                        value={weight}
+                        value={formData.weight}
                         size="small"
-                        onChange={handleWeightInputChange}
+                        onChange={handleInputChange}
+                        name="weight"
                         inputProps={{
                           step: 1,
                           min: 0,
                           max: 250,
                           type: "number",
-                          "aria-labelledby": "input-slider",
-                          style: inputStyle, // Apply the input style here
+                          "aria-labelledby": "input-slider-weight",
                         }}
+                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -341,10 +337,16 @@ export default function HorizontalLinearStepper() {
                   </InputLabel>
                   <Select
                     labelId="WorkoutGoals"
-                    id="goals-select"
-                    value={workout}
+                    id="workoutGoals"
+                    value={formData.workoutGoals}
+                    name="workoutGoals"
                     label="Workout Goals"
-                    onChange={(e) => setWorkout(e.target.value)}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        workoutGoals: e.target.value as string,
+                      });
+                    }}
                     sx={{
                       "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
                       "& .MuiOutlinedInput-notchedOutline":
@@ -387,10 +389,16 @@ export default function HorizontalLinearStepper() {
                   </InputLabel>
                   <Select
                     labelId="daysPerWeek"
-                    id="days-select"
-                    value={daysPerWeek}
+                    id="daysPerWeek"
+                    name="daysPerWeek"
+                    value={formData.daysPerWeek}
                     label="Days per Week"
-                    onChange={(e) => setDaysPerWeek(e.target.value)}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        daysPerWeek: e.target.value as number,
+                      });
+                    }}
                     sx={{
                       "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
                       "& .MuiOutlinedInput-notchedOutline":
@@ -433,10 +441,16 @@ export default function HorizontalLinearStepper() {
                   </InputLabel>
                   <Select
                     labelId="MinutesPerWorkout"
-                    id="minutes-select"
-                    value={minutesPerWorkout}
+                    id="minutesPerWorkout"
+                    name="minutesPerWorkout"
+                    value={formData.minutesPerWorkout}
                     label="Minutes per Workout"
-                    onChange={(e) => setMinutesPerWorkout(e.target.value)}
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        minutesPerWorkout: e.target.value as number,
+                      });
+                    }}
                     sx={{
                       "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
                       "& .MuiOutlinedInput-notchedOutline":
@@ -469,8 +483,15 @@ export default function HorizontalLinearStepper() {
                   value="includeWarmup"
                   control={
                     <Checkbox
-                      checked={includeWarmup}
-                      onChange={handleWarmupCheckboxChange}
+                      checked={formData.includeWarmup}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          includeWarmup: e.target.checked,
+                        });
+                      }}
+                      name="includeWarmup"
+                      color="primary"
                       sx={checkboxStyle}
                     />
                   }
@@ -484,8 +505,15 @@ export default function HorizontalLinearStepper() {
                   value="includeStreching"
                   control={
                     <Checkbox
-                      checked={includeStreching}
-                      onChange={handleStrechingCheckboxChange}
+                      checked={formData.includeStreching}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          includeStreching: e.target.checked,
+                        });
+                      }}
+                      name="includeStreching"
+                      color="primary"
                       sx={checkboxStyle}
                     />
                   }
@@ -534,7 +562,8 @@ export default function HorizontalLinearStepper() {
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
-                  All steps completed - you&apos;re finished
+                  All steps completed - you&apos;re finished. <br />
+                  Are you sure you want to submit?
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                   <Box sx={{ flex: "1 1 auto" }} />
