@@ -42,11 +42,27 @@ export default function HorizontalLinearStepper() {
     age: 25,
     height: 175,
     weight: 70,
-    workoutGoals: "",
+    workoutGoals: " ",
     daysPerWeek: 0,
     minutesPerWorkout: 0,
+    workoutLocation: " ",
     includeWarmup: false,
     includeStreching: false,
+    dairyRestrictions: {
+      vegan: false,
+      vegetarian: false,
+      pescatarian: false,
+      glutenFree: false,
+      dairyFree: false,
+      nutFree: false,
+      soyFree: false,
+      eggFree: false,
+      shellfishFree: false,
+      lactoseFree: false,
+      kosher: false,
+      halal: false,
+      other: "",
+    },
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +70,12 @@ export default function HorizontalLinearStepper() {
   };
 
   const handleNext = () => {
+    if (activeStep === steps.length) {
+      // submit form
+      console.log(formData);
+      window.location.href = "/home";
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
@@ -63,9 +85,7 @@ export default function HorizontalLinearStepper() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+  
   // get stepper content
   const getStepContent = (step: number) => {
     switch (step) {
@@ -477,6 +497,54 @@ export default function HorizontalLinearStepper() {
                   </Select>
                 </FormControl>
               </Grid>
+              {/* workout location */}
+              <Grid item xs={12}>
+                <FormControl
+                  fullWidth
+                  sx={textFieldStyle["& .MuiFormControl-root"]}
+                >
+                  <InputLabel
+                    id="workoutLocation"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
+                    Workout Location
+                  </InputLabel>
+                  <Select
+                    labelId="workoutLocation"
+                    id="workoutLocation"
+                    name="workoutLocation"
+                    value={formData.workoutLocation}
+                    label="Workout Location"
+                    onChange={(e) => {
+                      setFormData({
+                        ...formData,
+                        workoutLocation: e.target.value as string,
+                      });
+                    }}
+                    sx={{
+                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
+                      "& .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "&:hover .MuiOutlinedInput-notchedOutline":
+                        textFieldStyle[
+                          "&:hover .MuiOutlinedInput-notchedOutline"
+                        ],
+                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
+                      "& .MuiMenuItem-root":
+                        textFieldStyle["& .MuiMenuItem-root"],
+                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
+                    }}
+                  >
+                    <MenuItem value={"gym"}>GYM</MenuItem>
+                    <MenuItem value={"home"}>Home</MenuItem>
+                    <MenuItem value={"outdoor"}>Outdoor</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
               {/* include warmup */}
               <Grid item xs={12}>
                 <FormControlLabel
@@ -496,7 +564,7 @@ export default function HorizontalLinearStepper() {
                     />
                   }
                   label="Include Warmup"
-                  labelPlacement="start"
+                  labelPlacement="end"
                 />
               </Grid>
               {/* include streching */}
@@ -518,14 +586,352 @@ export default function HorizontalLinearStepper() {
                     />
                   }
                   label="Include Streching"
-                  labelPlacement="start"
+                  labelPlacement="end"
                 />
               </Grid>
             </Grid>
           </Box>
         );
       case 2:
-        return "Create an ad group"; // Placeholder for third step content
+        return (
+          <Box component="form" noValidate sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {/* Vegan */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="vegan"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.vegan}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            vegan: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="vegan"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Vegan"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Vegetarian */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="vegetarian"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.vegetarian}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            vegetarian: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="vegetarian"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Vegetarian"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Pescatarian */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="pescatarian"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.pescatarian}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            pescatarian: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="pescatarian"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Pescatarian"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Gluten Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="glutenFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.glutenFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            glutenFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="glutenFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Gluten Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Dairy Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="dairyFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.dairyFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            dairyFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="dairyFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Dairy Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Nut Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="nutFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.nutFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            nutFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="nutFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Nut Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Soy Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="soyFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.soyFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            soyFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="soyFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Soy Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Egg Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="eggFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.eggFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            eggFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="eggFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Egg Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Shellfish Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="shellfishFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.shellfishFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            shellfishFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="shellfishFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Shellfish Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Lactose Free */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="lactoseFree"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.lactoseFree}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            lactoseFree: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="lactoseFree"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Lactose Free"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Kosher */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="kosher"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.kosher}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            kosher: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="kosher"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Kosher"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* Halal */}
+              <Grid item xs={6}>
+                <FormControlLabel
+                  value="halal"
+                  control={
+                    <Checkbox
+                      checked={formData.dairyRestrictions.halal}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          dairyRestrictions: {
+                            ...formData.dairyRestrictions,
+                            halal: e.target.checked,
+                          },
+                        });
+                      }}
+                      name="halal"
+                      color="primary"
+                      sx={checkboxStyle}
+                    />
+                  }
+                  label="Halal"
+                  labelPlacement="end"
+                />
+              </Grid>
+              {/* other */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="other"
+                  label="Other"
+                  name="other"
+                  value={formData.dairyRestrictions.other}
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      dairyRestrictions: {
+                        ...formData.dairyRestrictions,
+                        other: e.target.value,
+                      },
+                    });
+                  }}
+                  InputProps={{
+                    style: textFieldStyle.input,
+                    sx: textFieldStyle,
+                  }}
+                  InputLabelProps={{
+                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        );
+      case 3:
+        return (
+          <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
+            All steps completed - you&apos;re finished. <br />
+            Are you sure you want to submit?
+          </Typography>
+        );
       default:
         return "Unknown step";
     }
@@ -559,24 +965,7 @@ export default function HorizontalLinearStepper() {
             ))}
           </Stepper>
           <Box sx={{ mt: 3 }}>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
-                  All steps completed - you&apos;re finished. <br />
-                  Are you sure you want to submit?
-                </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Box sx={{ flex: "1 1 auto" }} />
-                  <Button
-                    onClick={handleReset}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Reset
-                  </Button>
-                </Box>
-              </React.Fragment>
-            ) : (
+            
               <React.Fragment>
                 <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
                   {getStepContent(activeStep)}
@@ -606,11 +995,11 @@ export default function HorizontalLinearStepper() {
                       ...buttonStyle,
                     }}
                   >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    {activeStep === steps.length - 1 ? "Finish" : (activeStep === steps.length ? "Submit" : "Next")}
                   </Button>
                 </Box>
               </React.Fragment>
-            )}
+            
           </Box>
         </Box>
       </Container>
