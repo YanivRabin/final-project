@@ -42,7 +42,6 @@ export default function SettingsCard(props: any) {
     // DEFAULT VALUES
     firstName: props.firstName,
     lastName: props.lastName,
-    midName: props.midName,
     gender: props.gender,
     phone: props.phone,
     email: props.email,

@@ -51,8 +51,7 @@ export default function ProfileCard(props: any) {
           >
             <Avatar
               sx={{ width: 100, height: 100, mb: 1.5 }}
-              src="https://media.glamour.com/photos/5a425fd3b6bcee68da9f86f8/master/pass/best-face-oil.png"
-            ></Avatar>
+              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"            ></Avatar>
           </Badge>
 
           {/* DESCRIPTION */}

@@ -44,12 +44,12 @@ export default function Profile() {
               alt="avatar"
               style={{
                 width: "100vw",
-                height: "35vh",
+                // height: "35vh",
                 objectFit: "cover",
                 objectPosition: "50% 50%",
                 position: "relative"
               }}
-              src="https://iris2.gettimely.com/images/default-cover-image.jpg"
+              src="https://247fitness.co/public/images/select-gym-bg.jpg"
             />
           </Grid>
 
