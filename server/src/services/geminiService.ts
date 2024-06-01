@@ -4,7 +4,7 @@ import { WorkoutPlan } from '../model/workout_model';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI(process.env.ddeed);
+const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
 
 // ...
 
@@ -28,42 +28,70 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
         Include Stretching: ${profile.includeStretching}
 
         Please provide the following details:
-        1. A detailed weekly workout schedule including daily workouts.
+        1. A detailed weekly workout schedule including daily workouts:
+           For each day, list the exercises, how many times they should be done, and a brief description of each exercise.
+           Example:
+           Sunday:
+           - Exercise 1: 3 sets of 10 reps, description of Exercise 1
+           - Exercise 2: 4 sets of 15 reps, description of Exercise 2
+           - Exercise 3: 3 sets of 12 reps, description of Exercise 3
+           - Exercise 4: 4 sets of 10 reps, description of Exercise 4
+           - Exercise 5: 3 sets of 8 reps, description of Exercise 5
+
+           Monday:
+           - Exercise 1: 3 sets of 10 reps, description of Exercise 1
+           - Exercise 2: 4 sets of 15 reps, description of Exercise 2
+           - Exercise 3: 3 sets of 12 reps, description of Exercise 3
+           - Exercise 4: 4 sets of 10 reps, description of Exercise 4
+           - Exercise 5: 3 sets of 8 reps, description of Exercise 5
+
+           Continue this format for each day of the week.
+           If the user needs to rest on certain days based on their training frequency, return:
+           {name: "Rest", sets: "", reps: "", description: "" }
+
+
         2. A breakdown of nutritional information including:
-        - Breakfast option, which raw materials, and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
-        - Lunch option, which raw materials, and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
-        - Dinner option, which raw materials, and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
-        - Snacks option, which raw materials, and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
+        - Breakfast option, which name of ingredients and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
+        - Lunch option, which name of ingredients and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
+        - Dinner option, which name of ingredients and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
+        - Snacks option, which name of ingredients and how much (amount in grams) the meal consists of and each raw material with nutritional values (carbohydrates, fats, proteins).
 
         Example but use the spicific name of the raw materiel you suggest me and not just "raw matriel 1":
         {
             dailyMenu: "This is a sample daily menu",
             weeklyWorkout: {
-                monday: "Chest and Triceps workout",
-                tuesday: "Back and Biceps workout",
-                wednesday: "Rest day",
-                thursday: "Legs workout",
-                friday: "Shoulders workout",
-                saturday: "Rest or active recovery",
-                sunday: "Rest day"
+                sunday: [
+                    { name: "Exercise 1", sets: "3", reps: "10", description: "Description of Exercise 1" },
+                    { name: "Exercise 2", sets: "4", reps: "15", description: "Description of Exercise 2" }
+                ],
+                monday: [
+                    { name: "Exercise 1", sets: "3", reps: "10", description: "Description of Exercise 1" },
+                    { name: "Exercise 2", sets: "4", reps: "15", description: "Description of Exercise 2" }
+                ],
+                tuesday: [
+                    // Continue in the same format for other days
+                ],
+                wednesday: [],
+                thursday: [],
+                friday: [],
+                saturday: [],
+                sunday: []
             },
-            specificCalories: 2500,
+            specificCalories: caloriesValue,
             nutritionalInformation: {
                 breakfast: [
                     {
                         name: "Breakfast Option 1",
                         ingredients: [
-                            { name: "Breakfast Raw Material 1", carbohydrates: 30, fats: 5, proteins: 7, amount: "50g" },
-                            { name: "Breakfast Raw Material 2", carbohydrates: 15, fats: 1, proteins: 1, amount: "30g" },
-                            { name: "Breakfast Raw Material 3", carbohydrates: 0, fats: 6, proteins: 2, amount: "10g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "30", fats: "5", proteins: "7", amount: "50g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "15", fats: "1", proteins: "1", amount: "30g" }
                         ]
                     },
                     {
                         name: "Breakfast Option 2",
                         ingredients: [
-                            { name: "Breakfast Raw Material 4", carbohydrates: 2, fats: 10, proteins: 14, amount: "100g" },
-                            { name: "Breakfast Raw Material 5", carbohydrates: 15, fats: 25, proteins: 2, amount: "50g" },
-                            { name: "Breakfast Raw Material 6", carbohydrates: 20, fats: 2, proteins: 5, amount: "40g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "2", fats: "10", proteins: "14", amount: "100g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "15", fats: "25", proteins: "2", amount: "50g" }
                         ]
                     }
                 ],
@@ -71,18 +99,15 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
                     {
                         name: "Lunch Option 1",
                         ingredients: [
-                            { name: "Lunch Raw Material 1", carbohydrates: 0, fats: 3, proteins: 26, amount: "120g" },
-                            { name: "Lunch Raw Material 2", carbohydrates: 3, fats: 0, proteins: 1, amount: "50g" },
-                            { name: "Lunch Raw Material 3", carbohydrates: 5, fats: 0, proteins: 1, amount: "30g" },
-                            { name: "Lunch Raw Material 4", carbohydrates: 2, fats: 0, proteins: 1, amount: "30g" },
-                            { name: "Lunch Raw Material 5", carbohydrates: 2, fats: 4, proteins: 1, amount: "20g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "0", fats: "3", proteins: "26", amount: "120g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "3", fats: "0", proteins: "1", amount: "50g" }
                         ]
                     },
                     {
                         name: "Lunch Option 2",
                         ingredients: [
-                            { name: "Lunch Raw Material 6", carbohydrates: 40, fats: 6, proteins: 8, amount: "100g" },
-                            { name: "Lunch Raw Material 7", carbohydrates: 10, fats: 3, proteins: 2, amount: "80g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "40", fats: "6", proteins: "8", amount: "100g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "10", fats: "3", proteins: "2", amount: "80g" }
                         ]
                     }
                 ],
@@ -90,16 +115,15 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
                     {
                         name: "Dinner Option 1",
                         ingredients: [
-                            { name: "Dinner Raw Material 1", carbohydrates: 0, fats: 12, proteins: 20, amount: "150g" },
-                            { name: "Dinner Raw Material 2", carbohydrates: 30, fats: 0, proteins: 2, amount: "120g" },
-                            { name: "Dinner Raw Material 3", carbohydrates: 5, fats: 1, proteins: 2, amount: "80g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "0", fats: "12", proteins: "20", amount: "150g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "30", fats: "0", proteins: "2", amount: "120g" }
                         ]
                     },
                     {
                         name: "Dinner Option 2",
                         ingredients: [
-                            { name: "Dinner Raw Material 4", carbohydrates: 0, fats: 5, proteins: 25, amount: "120g" },
-                            { name: "Dinner Raw Material 5", carbohydrates: 15, fats: 3, proteins: 2, amount: "100g" }
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "0", fats: "5", proteins: "25", amount: "120g" },
+                            { name: "Specify a type of ingredient, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "15", fats: "3", proteins: "2", amount: "100g" }
                         ]
                     }
                 ],
@@ -107,16 +131,15 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
                     {
                         name: "Snack Option 1",
                         ingredients: [
-                            { name: "Snack Raw Material 1", carbohydrates: 10, fats: 2, proteins: 5, amount: "150g" },
-                            { name: "Snack Raw Material 2", carbohydrates: 5, fats: 0, proteins: 1, amount: "50g" }
+                            { name: "Specify a type of snack, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "10", fats: "2", proteins: "5", amount: "150g" },
+                            { name: "Specify a type of snack, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "5", fats: "0", proteins: "1", amount: "50g" }
                         ]
                     },
                     {
                         name: "Snack Option 2",
                         ingredients: [
-                            { name: "Snack Raw Material 3", carbohydrates: 10, fats: 2, proteins: 15, amount: "40g" },
-                            { name: "Snack Raw Material 4", carbohydrates: 5, fats: 1, proteins: 2, amount: "30g" },
-                            { name: "Snack Raw Material 5", carbohydrates: 5, fats: 3, proteins: 1, amount: "200ml" }
+                            { name: "Specify a type of snack, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "10", fats: "2", proteins: "15", amount: "40g" },
+                            { name: "Specify a type of snack, e.g., a type of vegetable, protein, carbohydrate, etc.", carbohydrates: "5", fats: "1", proteins: "2", amount: "30g" }
                         ]
                     }
                 ]
@@ -125,59 +148,65 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
 
         Please return the workout plan in the following JSON format:
         {
-            dailyMenu: string;
-            weeklyWorkout: {
-                monday: string;
-                tuesday: string;
-                wednesday: string;
-                thursday: string;
-                friday: string;
-                saturday: string;
-                sunday: string;
-            };
-            specificCalories: number;
-            nutritionalInformation: {
-                breakfast: {
-                    name: string;
-                    ingredients: {
-                        name: string;
-                        carbohydrates: number;
-                        fats: number;
-                        proteins: number;
-                        amount: string;
-                    }[];
-                }[];
-                lunch: {
-                    name: string;
-                    ingredients: {
-                        name: string;
-                        carbohydrates: number;
-                        fats: number;
-                        proteins: number;
-                        amount: string;
-                    }[];
-                }[];
-                dinner: {
-                    name: string;
-                    ingredients: {
-                        name: string;
-                        carbohydrates: number;
-                        fats: number;
-                        proteins: number;
-                        amount: string;
-                    }[];
-                }[];
-                snacks: {
-                    name: string;
-                    ingredients: {
-                        name: string;
-                        carbohydrates: number;
-                        fats: number;
-                        proteins: number;
-                        amount: string;
-                    }[];
-                }[];
-            };
+            "dailyMenu": "string",
+            "weeklyWorkout": {
+                "sunday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "monday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "tuesday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "wednesday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "thursday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "friday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ],
+                "saturday": [
+                    { "name": string, "sets": string, "reps": string, "description": string }
+                ]
+            },
+            "specificCalories": number,
+            "nutritionalInformation": {
+                "breakfast": [
+                    {
+                        "name": string,
+                        "ingredients": [
+                            { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                        ]
+                    }
+                ],
+                "lunch": [
+                    {
+                        "name": string,
+                        "ingredients": [
+                            { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                        ]
+                    }
+                ],
+                "dinner": [
+                    {
+                        "name": string,
+                        "ingredients": [
+                            { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                        ]
+                    }
+                ],
+                "snacks": [
+                    {
+                        "name": string,
+                        "ingredients": [
+                            { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                        ]
+                    }
+                ]
+            }
         }
     `;
     const result = await model.generateContent(prompt);
@@ -194,25 +223,22 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
     const workoutPlan: WorkoutPlan = JSON.parse(cleanJsonString);
     // Log the entire workout plan object
     console.log("Received Workout Plan:");
-    console.log("Daily Menu:");
-    console.log(workoutPlan.dailyMenu);
-    console.log("\nWeekly Workout Schedule:");
-    console.log(`Monday: ${workoutPlan.weeklyWorkout.monday}`);
-    console.log(`Tuesday: ${workoutPlan.weeklyWorkout.tuesday}`);
-    console.log(`Wednesday: ${workoutPlan.weeklyWorkout.wednesday}`);
-    console.log(`Thursday: ${workoutPlan.weeklyWorkout.thursday}`);
-    console.log(`Friday: ${workoutPlan.weeklyWorkout.friday}`);
-    console.log(`Saturday: ${workoutPlan.weeklyWorkout.saturday}`);
-    console.log(`Sunday: ${workoutPlan.weeklyWorkout.sunday}`);
-    console.log("\nSpecific Calories:");
-    console.log(workoutPlan.specificCalories);
+    console.log("Weekly Workout Schedule:");
+    Object.keys(workoutPlan.weeklyWorkout).forEach(day => {
+    console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
+    workoutPlan.weeklyWorkout[day].forEach(exercise => {
+        console.log(`  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`);
+        console.log(`    Description: ${exercise.description}`);
+        });
+    });
     console.log("\nNutritional Information:");
-
+    console.log(workoutPlan.dailyMenu);
+    console.log("Specific Calories: " + workoutPlan.specificCalories);
     console.log("\nBreakfast:");
     workoutPlan.nutritionalInformation.breakfast.forEach((item, index) => {
         console.log(`- Breakfast Option ${index + 1}:`);
         item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Breakfast Raw Material ${i + 1}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
+            console.log(`  - Breakfast Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
 
@@ -220,7 +246,7 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
     workoutPlan.nutritionalInformation.lunch.forEach((item, index) => {
         console.log(`- Lunch Option ${index + 1}:`);
         item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Lunch Raw Material ${i + 1}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
+            console.log(`  - Lunch Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
 
@@ -228,7 +254,7 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
     workoutPlan.nutritionalInformation.dinner.forEach((item, index) => {
         console.log(`- Dinner Option ${index + 1}:`);
         item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Dinner Raw Material ${i + 1}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
+            console.log(`  - Dinner Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
 
@@ -236,7 +262,7 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
     workoutPlan.nutritionalInformation.snacks.forEach((item, index) => {
         console.log(`- Snack Option ${index + 1}:`);
         item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Snack Raw Material ${i + 1}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
+            console.log(`  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
 

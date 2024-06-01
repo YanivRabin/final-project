@@ -16,13 +16,48 @@ const workoutSchema: Schema = new Schema({
 export interface WorkoutPlan extends Document{
     dailyMenu: string;
     weeklyWorkout: {
-        monday: string;
-        tuesday: string;
-        wednesday: string;
-        thursday: string;
-        friday: string;
-        saturday: string;
-        sunday: string;
+        monday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        tuesday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        wednesday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        thursday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        friday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        saturday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
+        sunday: {
+            name: string;
+            sets: string;
+            reps: string;
+            description: string;
+        }[];
     };
     specificCalories: number;
     nutritionalInformation: {
@@ -30,9 +65,9 @@ export interface WorkoutPlan extends Document{
             name: string;
             ingredients: {
                 name: string;
-                carbohydrates: number;
-                fats: number;
-                proteins: number;
+                carbohydrates: string;
+                fats: string;
+                proteins: string;
                 amount: string;
             }[];
         }[];
@@ -40,9 +75,9 @@ export interface WorkoutPlan extends Document{
             name: string;
             ingredients: {
                 name: string;
-                carbohydrates: number;
-                fats: number;
-                proteins: number;
+                carbohydrates: string;
+                fats: string;
+                proteins: string;
                 amount: string;
             }[];
         }[];
@@ -50,9 +85,9 @@ export interface WorkoutPlan extends Document{
             name: string;
             ingredients: {
                 name: string;
-                carbohydrates: number;
-                fats: number;
-                proteins: number;
+                carbohydrates: string;
+                fats: string;
+                proteins: string;
                 amount: string;
             }[];
         }[];
@@ -60,9 +95,9 @@ export interface WorkoutPlan extends Document{
             name: string;
             ingredients: {
                 name: string;
-                carbohydrates: number;
-                fats: number;
-                proteins: number;
+                carbohydrates: string;
+                fats: string;
+                proteins: string;
                 amount: string;
             }[];
         }[];
