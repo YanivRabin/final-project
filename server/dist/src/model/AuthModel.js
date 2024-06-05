@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModel = void 0;
 const firebaseConfig_1 = require("./firebaseConfig");
@@ -36,10 +47,11 @@ class AuthModel {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield (0, auth_1.createUserWithEmailAndPassword)(firebaseConfig_1.auth, user.email, user.password);
+                const { password } = user, userDataWithoutPassword = __rest(user, ["password"]);
                 // Save user in Firestore
                 if (firebaseConfig_1.auth.currentUser) {
                     const userDocRef = (0, firestore_1.doc)(firebaseConfig_1.firestore, 'users', firebaseConfig_1.auth.currentUser.uid);
-                    yield (0, firestore_1.setDoc)(userDocRef, user);
+                    yield (0, firestore_1.setDoc)(userDocRef, userDataWithoutPassword);
                 }
             }
             catch (error) {
@@ -54,6 +66,30 @@ class AuthModel {
     logout() {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, auth_1.signOut)(firebaseConfig_1.auth);
+        });
+    }
+    signInWithGoogle() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const provider = new auth_1.GoogleAuthProvider();
+                yield (0, auth_1.signInWithPopup)(firebaseConfig_1.auth, provider);
+            }
+            catch (error) {
+                console.error("Google sign-in failed:", error);
+                throw new Error("Google sign-in failed.");
+            }
+        });
+    }
+    signInWithFacebook() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const provider = new auth_1.FacebookAuthProvider();
+                yield (0, auth_1.signInWithPopup)(firebaseConfig_1.auth, provider);
+            }
+            catch (error) {
+                console.error("Facebook sign-in failed:", error);
+                throw new Error("Facebook sign-in failed.");
+            }
         });
     }
 }

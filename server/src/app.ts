@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { Express } from "express";
 import geminiRoutes from './routes/gemini_route';
+import path from "path";
 
 
 const app: Express = express();

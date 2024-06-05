@@ -58,10 +58,12 @@ export class AuthModel {
     try {
       await createUserWithEmailAndPassword(auth, user.email, user.password);
 
+      const { password, ...userDataWithoutPassword } = user;
+
       // Save user in Firestore
       if (auth.currentUser) {
         const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
-        await setDoc(userDocRef, user);
+        await setDoc(userDocRef, userDataWithoutPassword);
       }
     } catch (error) {
       console.error("Registration failed:", error);

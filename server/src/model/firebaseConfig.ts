@@ -1,9 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const firebaseConfig = {
-    apiKey: "AIzaSyARpYvzLdZwqpdTvSTgeNwclSlsDV7TQNA",
+    apiKey: process.env.FireBaseAPIKey,
     authDomain: "finalproject-de046.firebaseapp.com",
     projectId: "finalproject-de046",
     storageBucket: "finalproject-de046.appspot.com",
@@ -16,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and Firestore
+console.log(process.env.FireBaseAPIKey)
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
