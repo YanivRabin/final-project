@@ -35,6 +35,7 @@ interface User {
 }
 
 export class AuthModel {
+
   private static instance: AuthModel;
   private constructor() {}
 
@@ -97,8 +98,11 @@ export class AuthModel {
       throw new Error("Facebook sign-in failed.");
     }
   }
-}
 
+}
+const authModelInstance = AuthModel.getInstance();
+export const signIn = authModelInstance.signIn.bind(authModelInstance);
+export const signUp = authModelInstance.signUp.bind(authModelInstance);
 
 
 // // Google Authentication

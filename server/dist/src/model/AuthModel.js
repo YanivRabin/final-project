@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthModel = void 0;
+exports.signUp = exports.signIn = exports.AuthModel = void 0;
 const firebaseConfig_1 = require("./firebaseConfig");
 const auth_1 = require("firebase/auth");
 const firestore_1 = require("firebase/firestore");
@@ -94,6 +94,9 @@ class AuthModel {
     }
 }
 exports.AuthModel = AuthModel;
+const authModelInstance = AuthModel.getInstance();
+exports.signIn = authModelInstance.signIn.bind(authModelInstance);
+exports.signUp = authModelInstance.signUp.bind(authModelInstance);
 // // Google Authentication
 // const googleProvider = new firebase.auth.GoogleAuthProvider();
 // function signInWithGoogle(): Promise<{ user: firebase.User | null, token: string | undefined }> {
