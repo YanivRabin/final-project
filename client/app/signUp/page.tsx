@@ -30,7 +30,7 @@ import { checkboxStyle } from "@/styles/checkbox";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
-export default function HorizontalLinearStepper() {
+export default function SignUp() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [formData, setFormData] = React.useState({
     firstName: "",
@@ -78,6 +78,7 @@ export default function HorizontalLinearStepper() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
+
   const handleBack = () => {
     if (activeStep === 0) {
       window.location.href = "/";
@@ -85,13 +86,13 @@ export default function HorizontalLinearStepper() {
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  
+
   // get stepper content
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
         return (
-          <Box component="form" noValidate sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               {/* first name */}
               <Grid item xs={12} sm={6}>
@@ -201,7 +202,7 @@ export default function HorizontalLinearStepper() {
         );
       case 1:
         return (
-          <Box component="form" noValidate sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               {/* gender */}
               <Grid item xs={12}>
@@ -594,7 +595,7 @@ export default function HorizontalLinearStepper() {
         );
       case 2:
         return (
-          <Box component="form" noValidate sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               {/* Vegan */}
               <Grid item xs={6}>
@@ -965,41 +966,44 @@ export default function HorizontalLinearStepper() {
             ))}
           </Stepper>
           <Box sx={{ mt: 3 }}>
-            
-              <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
-                  {getStepContent(activeStep)}
-                </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Button
-                    color="inherit"
-                    onClick={handleBack}
-                    sx={{
-                      mt: 3,
-                      mb: 2,
-                      backgroundColor: "#d9dddc",
-                      color: "black",
-                      "&:hover": {
-                        backgroundColor: "#c0c4c3",
-                      },
-                    }}
-                  >
-                    Back
-                  </Button>
-                  <Box sx={{ flex: "1 1 auto" }} />
-                  <Button
-                    onClick={handleNext}
-                    sx={{
-                      mt: 3,
-                      mb: 2,
-                      ...buttonStyle,
-                    }}
-                  >
-                    {activeStep === steps.length - 1 ? "Finish" : (activeStep === steps.length ? "Submit" : "Next")}
-                  </Button>
-                </Box>
-              </React.Fragment>
-            
+            <React.Fragment>
+              <Box sx={{ mt: 2, mb: 1, color: "white" }}>
+                {getStepContent(activeStep)}
+              </Box>
+
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Button
+                  color="inherit"
+                  onClick={handleBack}
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    backgroundColor: "#d9dddc",
+                    color: "black",
+                    "&:hover": {
+                      backgroundColor: "#c0c4c3",
+                    },
+                  }}
+                >
+                  Back
+                </Button>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button
+                  onClick={handleNext}
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    ...buttonStyle,
+                  }}
+                >
+                  {activeStep === steps.length - 1
+                    ? "Finish"
+                    : activeStep === steps.length
+                    ? "Submit"
+                    : "Next"}
+                </Button>
+              </Box>
+            </React.Fragment>
           </Box>
         </Box>
       </Container>

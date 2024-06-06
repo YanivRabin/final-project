@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -11,8 +13,22 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { textFieldStyle } from "../styles/textField";
 import { buttonStyle } from "@/styles/button";
+import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import { authApi, useLoginMutation } from "@/app/services/authApi";
+import { Provider } from "react-redux";
+import { store } from "@/app/store";
 
-export default function ColumnsGrid() {
+export default function SignIn() {
+  const [formData, setFormData] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
       <CssBaseline />
@@ -56,15 +72,23 @@ export default function ColumnsGrid() {
           <Typography component="h1" variant="h5" style={{ color: "white" }}>
             Sign in
           </Typography>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-
+          <Box
+            component="form"
+            noValidate
+            sx={{ mt: 1 }}
+            onSubmit={handleSubmit}
+          >
+            {/* email */}
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
               label="Email Address"
-              name="email"
+              autoComplete="email"
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+              }}
               InputProps={{
                 style: textFieldStyle.input,
                 sx: textFieldStyle,
@@ -73,16 +97,18 @@ export default function ColumnsGrid() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
-            
+            {/* password */}
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
               label="Password"
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+              }}
               InputProps={{
                 style: textFieldStyle.input,
                 sx: textFieldStyle,
@@ -91,7 +117,7 @@ export default function ColumnsGrid() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
-
+            {/* submit button */}
             <Button
               type="submit"
               fullWidth
@@ -104,7 +130,7 @@ export default function ColumnsGrid() {
             >
               Sign In
             </Button>
-
+            {/* go to sign up page */}
             <Grid container justifyContent="center">
               <Grid item>
                 <Link href="/signUp" variant="body2" sx={{ color: "white" }}>
@@ -112,7 +138,6 @@ export default function ColumnsGrid() {
                 </Link>
               </Grid>
             </Grid>
-            
           </Box>
         </Box>
       </Grid>
