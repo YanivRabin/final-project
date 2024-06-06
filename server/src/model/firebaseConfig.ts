@@ -18,7 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and Firestore
-console.log(process.env.FireBaseAPIKey)
+// console.log(process.env.FireBaseAPIKey)
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 
