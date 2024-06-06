@@ -82,7 +82,7 @@ export default function SignUp() {
       try {
         const { data } = await signUpUser(formData).unwrap();
         console.log("Sign up user:", data);
-        location.href = "/";
+        window.location.href = "/";
       } catch (error) {
         console.error("Login error:", error);
         // display error message
