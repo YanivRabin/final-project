@@ -27,17 +27,18 @@ import Input from "@mui/material/Input";
 import { sliderStyle, inputStyle } from "@/styles/slider";
 import Checkbox from "@mui/material/Checkbox";
 import { checkboxStyle } from "@/styles/checkbox";
+import { useSignUpMutation } from "../services/authApi";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function SignUp() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [password2, setPassword2] = React.useState("");
   const [formData, setFormData] = React.useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    password2: "",
     gender: "",
     age: 25,
     height: 175,
@@ -65,16 +66,29 @@ export default function SignUp() {
     },
   });
 
+  const [signUpUser, { isLoading, isError }] = useSignUpMutation();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (activeStep === 0 && formData.password !== password2) {
+      alert("Passwords do not match");
+      return;
+    }
     if (activeStep === steps.length) {
       // submit form
-      console.log(formData);
-      window.location.href = "/home";
-      return;
+      try {
+        const { data } = await signUpUser(formData).unwrap();
+        console.log("Sign up user:", data);
+        location.href = "/";
+      } catch (error) {
+        console.error("Login error:", error);
+        // display error message
+        setActiveStep(0);
+        return;
+      }
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -186,8 +200,8 @@ export default function SignUp() {
                   type="password"
                   id="password2"
                   autoComplete="new-password"
-                  value={formData.password2}
-                  onChange={handleInputChange}
+                  value={password2}
+                  onChange={(e) => setPassword2(e.target.value)}
                   InputProps={{
                     style: textFieldStyle.input,
                     sx: textFieldStyle,

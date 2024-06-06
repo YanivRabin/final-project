@@ -13,10 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { textFieldStyle } from "../styles/textField";
 import { buttonStyle } from "@/styles/button";
-import { ApiProvider } from "@reduxjs/toolkit/query/react";
-import { authApi, useLoginMutation } from "@/app/services/authApi";
-import { Provider } from "react-redux";
-import { store } from "@/app/store";
+import { useLoginMutation } from "@/app/services/authApi";
 
 export default function SignIn() {
   const [formData, setFormData] = React.useState({
@@ -24,9 +21,17 @@ export default function SignIn() {
     password: "",
   });
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const [loginUser, { isLoading, isError }] = useLoginMutation();
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      const { data } = await loginUser(formData).unwrap();
+      console.log("Logged in user:", data);
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
