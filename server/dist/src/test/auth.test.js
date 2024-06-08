@@ -23,8 +23,8 @@ describe('AuthModel', () => {
         const testUser = {
             firstName: 'John',
             lastName: 'Doe',
-            email: 'john@example.com',
-            password: 'password123',
+            email: '1@2.com',
+            password: '123',
             gender: 'male',
             age: 25,
             height: 180,

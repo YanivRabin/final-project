@@ -80,8 +80,8 @@ export default function SignUp() {
     if (activeStep === steps.length) {
       // submit form
       try {
-        const { data } = await signUpUser(formData).unwrap();
-        console.log("Sign up user:", data);
+        const { res } = await signUpUser(formData).unwrap();
+        localStorage.setItem("user", JSON.stringify(res));
         window.location.href = "/";
       } catch (error) {
         console.error("Login error:", error);

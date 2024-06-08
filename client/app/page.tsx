@@ -16,19 +16,19 @@ import { buttonStyle } from "@/styles/button";
 import { useLoginMutation } from "@/app/services/authApi";
 
 export default function SignIn() {
-  const [formData, setFormData] = React.useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const [loginUser, { isLoading, isError }] = useLoginMutation();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     try {
-      const { data } = await loginUser(formData).unwrap();
-      console.log("Logged in user:", data);
+      const user = await loginUser({
+        email,
+        password,
+      }).unwrap();
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -92,7 +92,7 @@ export default function SignIn() {
               label="Email Address"
               autoComplete="email"
               onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
+                setEmail(e.target.value);
               }}
               InputProps={{
                 style: textFieldStyle.input,
@@ -112,7 +112,7 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               onChange={(e) => {
-                setFormData({ ...formData, password: e.target.value });
+                setPassword(e.target.value);
               }}
               InputProps={{
                 style: textFieldStyle.input,
