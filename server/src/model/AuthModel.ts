@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface User {
   firstName: string;
@@ -52,16 +52,17 @@ export class AuthModel {
     return AuthModel.instance;
   }
 
-  public async signIn(email: string, password: string): Promise<void> {
+  public async signIn(email: string, password: string): Promise<User | null> {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      return this.getCurrentUser();
     } catch (error) {
       console.error("Login failed:", error);
       throw new Error("Login failed.");
     }
   }
 
-  public async signUp(user: User): Promise<void> {
+  public async signUp(user: User): Promise<User | null> {
     try {
       await createUserWithEmailAndPassword(auth, user.email, user.password);
 
@@ -72,6 +73,7 @@ export class AuthModel {
         const userDocRef = doc(firestore, "users", auth.currentUser.uid);
         await setDoc(userDocRef, userDataWithoutPassword);
       }
+      return this.getCurrentUser();
     } catch (error) {
       console.error("Registration failed:", error);
       throw new Error("Registration failed.");
@@ -104,10 +106,24 @@ export class AuthModel {
       throw new Error("Facebook sign-in failed.");
     }
   }
+
+  public async getCurrentUser(): Promise<User | null> {
+    if (!auth.currentUser) return null;
+
+    const userDocRef = doc(firestore, "users", auth.currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      return userDoc.data() as User;
+    } else {
+      return null;
+    }
+  }
 }
 const authModelInstance = AuthModel.getInstance();
-export const signIn = authModelInstance.signIn.bind(authModelInstance);
-export const signUp = authModelInstance.signUp.bind(authModelInstance);
+export const signIn = (email: string, password: string) =>
+  authModelInstance.signIn(email, password);
+export const signUp = (user: User) => authModelInstance.signUp(user);
 
 // // Google Authentication
 // const googleProvider = new firebase.auth.GoogleAuthProvider();
