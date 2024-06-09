@@ -1,6 +1,13 @@
-import { auth, firestore } from './firebaseConfig';
-import { FacebookAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { auth, firestore } from "./firebaseConfig";
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 interface User {
   firstName: string;
@@ -35,7 +42,6 @@ interface User {
 }
 
 export class AuthModel {
-
   private static instance: AuthModel;
   private constructor() {}
 
@@ -63,7 +69,7 @@ export class AuthModel {
 
       // Save user in Firestore
       if (auth.currentUser) {
-        const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+        const userDocRef = doc(firestore, "users", auth.currentUser.uid);
         await setDoc(userDocRef, userDataWithoutPassword);
       }
     } catch (error) {
@@ -98,12 +104,10 @@ export class AuthModel {
       throw new Error("Facebook sign-in failed.");
     }
   }
-
 }
 const authModelInstance = AuthModel.getInstance();
 export const signIn = authModelInstance.signIn.bind(authModelInstance);
 export const signUp = authModelInstance.signUp.bind(authModelInstance);
-
 
 // // Google Authentication
 // const googleProvider = new firebase.auth.GoogleAuthProvider();

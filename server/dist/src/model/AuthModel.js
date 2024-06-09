@@ -50,7 +50,7 @@ class AuthModel {
                 const { password } = user, userDataWithoutPassword = __rest(user, ["password"]);
                 // Save user in Firestore
                 if (firebaseConfig_1.auth.currentUser) {
-                    const userDocRef = (0, firestore_1.doc)(firebaseConfig_1.firestore, 'users', firebaseConfig_1.auth.currentUser.uid);
+                    const userDocRef = (0, firestore_1.doc)(firebaseConfig_1.firestore, "users", firebaseConfig_1.auth.currentUser.uid);
                     yield (0, firestore_1.setDoc)(userDocRef, userDataWithoutPassword);
                 }
             }
