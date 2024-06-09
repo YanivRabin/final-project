@@ -3,6 +3,7 @@ import swaggerUI from "swagger-ui-express"
 import swaggerJsDoc from "swagger-jsdoc"
 
 initApp().then((app) => {
+    const port = process.env.PORT;
     // Swagger
     if (process.env.NODE_ENV == "development") {
         const options = { 
@@ -13,7 +14,7 @@ initApp().then((app) => {
                    version: "1.0.0",
                    description: "REST server including authentication using JWT",
                 },
-                servers: [{url: "http://localhost:3000",},],
+                servers: [{url: `http://localhost:${port}`,},],
             },
             apis: ["./src/routes/*.ts"],
         };
@@ -21,7 +22,7 @@ initApp().then((app) => {
         app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
     }
 
-    const port = process.env.PORT;
+    
     app.listen(port, () => {
         console.log(`App listening at http://localhost:${port}`);
     });
