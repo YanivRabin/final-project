@@ -1,17 +1,22 @@
-import { UserProfile } from '../model/user_model';
-import { WorkoutPlan } from '../model/workout_model';
-
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getResponseFromGemini = exports.generateWorkoutPlan = void 0;
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
-
 // ...
-
 // The Gemini 1.5 models are versatile and work with most use cases
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
-
-export const generateWorkoutPlan = async (profile: UserProfile) => {
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, function* () {
     const prompt = `
         Create a detailed workout and nutrition plan for a user with the following profile:
         Age: ${profile.age}
@@ -208,26 +213,24 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             }
         }
     `;
-    const result = await model.generateContent(prompt);
+    const result = yield model.generateContent(prompt);
     // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }
     // const workoutPlan: WorkoutPlan = new WorkoutPlan(result);
-
     // // Extract and clean the JSON string from the result
     const jsonString = result.response.candidates[0].content.parts[0].text;
     const jsonStart = jsonString.indexOf('{');
     const jsonEnd = jsonString.lastIndexOf('}') + 1;
     const cleanJsonString = jsonString.slice(jsonStart, jsonEnd).replace(/\\n/g, '');
-
     // Parse the JSON string into an object
-    const workoutPlan: WorkoutPlan = JSON.parse(cleanJsonString);
+    const workoutPlan = JSON.parse(cleanJsonString);
     // Log the entire workout plan object
     console.log("Received Workout Plan:");
     console.log("Weekly Workout Schedule:");
     Object.keys(workoutPlan.weeklyWorkout).forEach(day => {
-    console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
-    workoutPlan.weeklyWorkout[day].forEach(exercise => {
-        console.log(`  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`);
-        console.log(`    Description: ${exercise.description}`);
+        console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
+        workoutPlan.weeklyWorkout[day].forEach(exercise => {
+            console.log(`  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`);
+            console.log(`    Description: ${exercise.description}`);
         });
     });
     console.log("\nNutritional Information:");
@@ -240,7 +243,6 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             console.log(`  - Breakfast Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
-
     console.log("\nLunch:");
     workoutPlan.nutritionalInformation.lunch.forEach((item, index) => {
         console.log(`- Lunch Option ${index + 1}:`);
@@ -248,7 +250,6 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             console.log(`  - Lunch Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
-
     console.log("\nDinner:");
     workoutPlan.nutritionalInformation.dinner.forEach((item, index) => {
         console.log(`- Dinner Option ${index + 1}:`);
@@ -256,7 +257,6 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             console.log(`  - Dinner Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
-
     console.log("\nSnacks:");
     workoutPlan.nutritionalInformation.snacks.forEach((item, index) => {
         console.log(`- Snack Option ${index + 1}:`);
@@ -264,18 +264,18 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             console.log(`  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
-
-
     return workoutPlan;
-}
-
-export const getResponseFromGemini = async () => {
+});
+exports.generateWorkoutPlan = generateWorkoutPlan;
+const getResponseFromGemini = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Generating content from Gemini API");
-    const prompt = "Write a story about a magic backpack."
-    const result = await model.generateContent(prompt);
-    console.log("Content generated from Gemini API"+result);
-    const response = await result.response;
+    const prompt = "Write a story about a magic backpack.";
+    const result = yield model.generateContent(prompt);
+    console.log("Content generated from Gemini API" + result);
+    const response = yield result.response;
     const text = response.text();
     console.log(text);
     return text;
-}
+});
+exports.getResponseFromGemini = getResponseFromGemini;
+//# sourceMappingURL=geminiService.js.map

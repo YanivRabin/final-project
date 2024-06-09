@@ -1,10 +1,12 @@
-import express from 'express';
-import { createWorkoutPlan, tryGemini } from '../controller/gemini_api_controller';
-const router = express.Router();
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const gemini_api_controller_1 = require("../controller/gemini_api_controller");
+const router = express_1.default.Router();
 console.log("Registering routes");
-
-
 // #region route configuration
 /**
  * @swagger
@@ -13,7 +15,6 @@ console.log("Registering routes");
  *   description: The Workout API
  */
 // #endregion
-
 // #region UserProfile schema
 /**
  * @swagger
@@ -90,7 +91,6 @@ console.log("Registering routes");
  *         includeStretching: true
  */
 // #endregion
-
 // #region CreateWorkoutPlan POST request 
 /**
  * @swagger
@@ -111,9 +111,8 @@ console.log("Registering routes");
  *       500:
  *         description: Internal server error
  */
-router.post('/create-workout', createWorkoutPlan);
+router.post('/create-workout', gemini_api_controller_1.createWorkoutPlan);
 // #endregion
-
 // #region TryGemini GET request
 /**
  * @swagger
@@ -128,9 +127,7 @@ router.post('/create-workout', createWorkoutPlan);
  *      500:
  *        description: Internal server error
  */
-
-router.get('/try-gemini', tryGemini);
+router.get('/try-gemini', gemini_api_controller_1.tryGemini);
 // #endregion
-
-
-export default router;
+exports.default = router;
+//# sourceMappingURL=gemini_route.js.map
