@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import  { useState } from "react";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -41,6 +43,7 @@ export default function SettingsCard(props: any) {
     includeWarmup: props.includeWarmup,
     includeStretching: props.includeStretching,
     showPassword: false,
+    dietary: props.dietary,
   });
 
   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -340,7 +343,7 @@ export default function SettingsCard(props: any) {
                     <CustomInput
                       id={restriction}
                       name={restriction}
-                      value={props.dietary?.[restriction]}
+                      value={user.dietary[restriction]}
                       onChange={toggleCheckbox}
                       title={
                         restriction.charAt(0).toUpperCase() + restriction.slice(1)
@@ -355,7 +358,7 @@ export default function SettingsCard(props: any) {
                   <CustomInput
                     id="other"
                     name="other"
-                    value={props.dietary?.other}
+                    value={user.dietary.other}
                     onChange={changeField}
                     title="Other"
                     dis={edit.disabled}
