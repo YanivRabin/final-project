@@ -1,5 +1,4 @@
-// IMPORTS
-"use client"
+"use client";
 import React, { useState } from "react";
 import Head from "next/head";
 import Grid from "@mui/material/Grid";
@@ -16,20 +15,45 @@ export default function Profile() {
   const [text, setText] = useState("");
 
   const mainUser = {
-    // DEFAULT VALUES
-    title: "title",
-    dt1: 32,
-    dt2: 40,
-    dt3: 50,
-    firstName: "Name",
-    lastName: "Last Name",
-    gender: "female",
-    phone: "932-555-4247",
-    email: "example@gmail.com",
-    pass: "password123"
+    title: "User Profile",
+    general: {
+      gender: "female",
+      age: 25,
+      height: 175,
+      weight: 70,
+    },
+    info: {
+      firstName: "Name",
+      lastName: "Last Name",
+      email: "example@gmail.com",
+      password: "password123",
+    },
+    workout: {
+      workoutGoals: "Stay in Shape",
+      daysPerWeek: 3,
+      minutesPerWorkout: 60,
+      workoutLocation: "gym",
+      includeWarmup: true,
+      includeStretching: true,
+    },
+    dietary: {
+      vegan: false,
+      vegetarian: false,
+      pescatarian: false,
+      glutenFree: false,
+      dairyFree: false,
+      nutFree: false,
+      soyFree: false,
+      eggFree: false,
+      shellfishFree: false,
+      lactoseFree: false,
+      kosher: false,
+      halal: false,
+      other: "",
+    },
   };
 
-  const fullName = `${mainUser.firstName} ${mainUser.lastName}`;
+  const fullName = `${mainUser.info.firstName} ${mainUser.info.lastName}`;
 
   return (
     <ThemeProvider theme={theme}>
@@ -44,10 +68,9 @@ export default function Profile() {
               alt="avatar"
               style={{
                 width: "100vw",
-                // height: "35vh",
                 objectFit: "cover",
                 objectPosition: "50% 50%",
-                position: "relative"
+                position: "relative",
               }}
               src="https://247fitness.co/public/images/select-gym-bg.jpg"
             />
@@ -61,7 +84,7 @@ export default function Profile() {
             sx={{
               position: "absolute",
               top: "20vh",
-              px: { xs: 0, md: 7 }
+              px: { xs: 0, md: 7 },
             }}
           >
             {/* PROFILE CARD */}
@@ -69,23 +92,27 @@ export default function Profile() {
               <ProfileCard
                 name={fullName}
                 sub={mainUser.title}
-                dt1={mainUser.dt1}
-                dt2={mainUser.dt2}
-                dt3={mainUser.dt3}
-              ></ProfileCard>
+                general={mainUser.general}
+              />
             </Grid>
 
             {/* SETTINGS CARD */}
             <Grid item md={9}>
               <SettingsCard
-                expose={(v: string) => setText(v)}
-                firstName={mainUser.firstName}
-                lastName={mainUser.lastName}
-                phone={mainUser.phone}
-                email={mainUser.email}
-                pass={mainUser.pass}
-                gender={mainUser.gender}
-              ></SettingsCard>
+                firstName={mainUser.info.firstName}
+                lastName={mainUser.info.lastName}
+                gender={mainUser.general.gender}
+                phone=""
+                email={mainUser.info.email}
+                pass={mainUser.info.password}
+                workoutGoals={mainUser.workout.workoutGoals}
+                daysPerWeek={mainUser.workout.daysPerWeek}
+                minutesPerWorkout={mainUser.workout.minutesPerWorkout}
+                workoutLocation={mainUser.workout.workoutLocation}
+                includeWarmup={mainUser.workout.includeWarmup}
+                includeStretching={mainUser.workout.includeStretching}
+                dietary={mainUser.dietary}
+              />
             </Grid>
           </Grid>
         </Grid>
