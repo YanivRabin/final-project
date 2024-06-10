@@ -1,13 +1,13 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Head from "next/head";
-import Grid from "@mui/material/Grid";
-import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import ProfileCard from "../components/ProfileCard";
-import SettingsCard from "../components/SettingsCard";
+"use client"; 
 
-// Type Definitions
+import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
+import Grid from '@mui/material/Grid';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ProfileCard from '../components/ProfileCard';
+import SettingsCard from '../components/SettingsCard';
+
 interface UserDietaryRestrictions {
   vegan: boolean;
   vegetarian: boolean;
@@ -42,21 +42,19 @@ interface MainUser {
   dairyRestrictions: UserDietaryRestrictions;
 }
 
-// STYLE & THEME
 const theme = createTheme();
 
-export default function Profile() {
+const Profile: React.FC = () => {
   const [mainUser, setMainUser] = useState<MainUser | null>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
-        console.log('Parsed user:', parsedUser); // Debugging statement
         setMainUser(parsedUser);
       } catch (error) {
-        console.error("Failed to parse user from localStorage:", error);
+        console.error('Failed to parse user from localStorage:', error);
       }
     }
   }, []);
@@ -71,33 +69,30 @@ export default function Profile() {
         <title>Profile Page</title>
       </Head>
       <CssBaseline>
-        {/* BACKGROUND */}
-        <Grid container direction="column" sx={{ overflowX: "hidden" }}>
+        <Grid container direction="column" sx={{ overflowX: 'hidden' }}>
           <Grid item xs={12} md={6}>
             <img
               alt="avatar"
               style={{
-                width: "100vw",
-                objectFit: "cover",
-                objectPosition: "50% 50%",
-                position: "relative",
+                width: '100vw',
+                objectFit: 'cover',
+                objectPosition: '50% 50%',
+                position: 'relative',
               }}
               src="https://247fitness.co/public/images/select-gym-bg.jpg"
             />
           </Grid>
 
-          {/* COMPONENTS */}
           <Grid
             container
-            direction={{ xs: "column", md: "row" }}
+            direction={{ xs: 'column', md: 'row' }}
             spacing={3}
             sx={{
-              position: "absolute",
-              top: "20vh",
+              position: 'absolute',
+              top: '20vh',
               px: { xs: 0, md: 7 },
             }}
           >
-            {/* PROFILE CARD */}
             <Grid item md={3}>
               <ProfileCard
                 name={fullName}
@@ -106,12 +101,10 @@ export default function Profile() {
                   gender: mainUser.gender,
                   age: mainUser.age,
                   height: mainUser.height,
-                  weight: mainUser.weight
+                  weight: mainUser.weight,
                 }}
               />
             </Grid>
-
-            {/* SETTINGS CARD */}
             <Grid item md={9}>
               <SettingsCard
                 firstName={mainUser.firstName}
@@ -119,7 +112,7 @@ export default function Profile() {
                 gender={mainUser.gender}
                 phone=""
                 email={mainUser.email}
-                pass={mainUser.password || ""}
+                pass={mainUser.password || ''}
                 workoutGoals={mainUser.workoutGoals}
                 daysPerWeek={mainUser.daysPerWeek}
                 minutesPerWorkout={mainUser.minutesPerWorkout}
@@ -134,4 +127,6 @@ export default function Profile() {
       </CssBaseline>
     </ThemeProvider>
   );
-}
+};
+
+export default Profile;

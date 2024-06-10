@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import { Grid, TextField, Button, Avatar, Badge } from "@mui/material";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import React, { useState } from 'react';
+import { Card, Grid, Typography, TextField, Button, Avatar, Badge } from '@mui/material';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 const styles = {
   details: {
-    padding: "1rem",
-    borderTop: "1px solid #e1e1e1",
+    padding: '1rem',
+    borderTop: '1px solid #e1e1e1',
   },
   value: {
-    padding: "1rem 2rem",
-    borderTop: "1px solid #e1e1e1",
-    color: "#899499",
+    padding: '1rem 2rem',
+    borderTop: '1px solid #e1e1e1',
+    color: '#899499',
   },
 };
 
@@ -27,7 +25,7 @@ interface ProfileCardProps {
   };
 }
 
-export default function ProfileCard(props: ProfileCardProps) {
+const ProfileCard: React.FC<ProfileCardProps> = (props) => {
   const [editMode, setEditMode] = useState(false);
   const [general, setGeneral] = useState(props.general);
 
@@ -45,29 +43,23 @@ export default function ProfileCard(props: ProfileCardProps) {
 
   const handleSaveClick = () => {
     setEditMode(false);
-    // Save the updated data
-    console.log("Saved data:", general);
+    console.log('Saved data:', general);
   };
 
   return (
     <Card variant="outlined">
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid item sx={{ p: '1.5rem 0rem', textAlign: 'center' }}>
           <Badge
             overlap="circular"
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={
               <PhotoCameraIcon
                 sx={{
-                  border: "5px solid white",
-                  backgroundColor: "#ff558f",
-                  borderRadius: "50%",
-                  padding: ".2rem",
+                  border: '5px solid white',
+                  backgroundColor: '#ff558f',
+                  borderRadius: '50%',
+                  padding: '.2rem',
                   width: 35,
                   height: 35,
                 }}
@@ -90,7 +82,7 @@ export default function ProfileCard(props: ProfileCardProps) {
             <Typography style={styles.details}>Height</Typography>
             <Typography style={styles.details}>Weight</Typography>
           </Grid>
-          <Grid item xs={6} sx={{ textAlign: "end" }}>
+          <Grid item xs={6} sx={{ textAlign: 'end' }}>
             {editMode ? (
               <>
                 <TextField
@@ -137,17 +129,19 @@ export default function ProfileCard(props: ProfileCardProps) {
           </Grid>
         </Grid>
 
-        <Grid item style={styles.details} sx={{ width: "100%" }}>
+        <Grid item style={styles.details} sx={{ width: '100%' }}>
           <Button
             variant="contained"
             color="secondary"
-            sx={{ width: "99%", p: 1, my: 2 }}
+            sx={{ width: '99%', p: 1, my: 2 }}
             onClick={editMode ? handleSaveClick : handleEditClick}
           >
-            {editMode ? "Save" : "Edit"}
+            {editMode ? 'Save' : 'Edit'}
           </Button>
         </Grid>
       </Grid>
     </Card>
   );
-}
+};
+
+export default ProfileCard;

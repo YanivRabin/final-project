@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from 'next/navigation'; // Ensure to use 'next/navigation' for Next.js App Router
+import React, { useState } from "react";
+import { useRouter } from 'next/navigation'; 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -19,12 +19,12 @@ import { buttonStyle } from "@/styles/button";
 import { useLoginMutation } from "@/app/services/authApi";
 
 export default function SignIn() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const router = useRouter(); // Use useRouter hook
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter(); 
 
   const [loginUser, { isLoading, isError }] = useLoginMutation();
-  const [error, setError] = React.useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -33,11 +33,9 @@ export default function SignIn() {
         email,
         password,
       }).unwrap();
-      console.log('User logged in:', user); // Debugging statement
       localStorage.setItem("user", JSON.stringify(user));
-      router.push("/profile"); // Navigate to profile page
+      router.push("/profile"); 
     } catch (error) {
-      console.error('Login error:', error);
       setError("Failed to log in. Please check your credentials and try again.");
     }
   };

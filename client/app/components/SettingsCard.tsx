@@ -151,7 +151,7 @@ export default function SettingsCard(props: any) {
                   req={edit.required}
                   InputProps={{
                     startAdornment: (
-                      <InputAdornment position="start">63+</InputAdornment>
+                      <InputAdornment position="start">972+</InputAdornment>
                     ),
                   }}
                 />
