@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from 'next/navigation'; // Make sure to use 'next/navigation' for Next.js App Router
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,6 +19,7 @@ import { useLoginMutation } from "@/app/services/authApi";
 export default function SignIn() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const router = useRouter(); // Use useRouter hook
 
   const [loginUser, { isLoading, isError }] = useLoginMutation();
 
@@ -29,6 +31,7 @@ export default function SignIn() {
         password,
       }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
+      router.push("/profile"); // Navigate to profile page
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -83,7 +86,6 @@ export default function SignIn() {
             sx={{ mt: 1 }}
             onSubmit={handleSubmit}
           >
-            {/* email */}
             <TextField
               margin="normal"
               required
@@ -91,9 +93,7 @@ export default function SignIn() {
               id="email"
               label="Email Address"
               autoComplete="email"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
               InputProps={{
                 style: textFieldStyle.input,
                 sx: textFieldStyle,
@@ -102,7 +102,6 @@ export default function SignIn() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
-            {/* password */}
             <TextField
               margin="normal"
               required
@@ -111,9 +110,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
               InputProps={{
                 style: textFieldStyle.input,
                 sx: textFieldStyle,
@@ -122,20 +119,14 @@ export default function SignIn() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
-            {/* submit button */}
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-                ...buttonStyle,
-              }}
+              sx={{ mt: 3, mb: 2, ...buttonStyle }}
             >
               Sign In
             </Button>
-            {/* go to sign up page */}
             <Grid container justifyContent="center">
               <Grid item>
                 <Link href="/signUp" variant="body2" sx={{ color: "white" }}>
