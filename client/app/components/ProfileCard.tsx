@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import { Grid, TextField, Button, Avatar, Badge } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
-// STYLES
 const styles = {
   details: {
     padding: "1rem",

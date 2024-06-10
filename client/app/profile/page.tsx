@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,53 +7,63 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProfileCard from "../components/ProfileCard";
 import SettingsCard from "../components/SettingsCard";
 
+// Type Definitions
+interface UserDietaryRestrictions {
+  vegan: boolean;
+  vegetarian: boolean;
+  pescatarian: boolean;
+  glutenFree: boolean;
+  dairyFree: boolean;
+  nutFree: boolean;
+  soyFree: boolean;
+  eggFree: boolean;
+  shellfishFree: boolean;
+  lactoseFree: boolean;
+  kosher: boolean;
+  halal: boolean;
+  other: string;
+}
+
+interface MainUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  gender: string;
+  age: number;
+  height: number;
+  weight: number;
+  workoutGoals: string;
+  daysPerWeek: number;
+  minutesPerWorkout: number;
+  workoutLocation: string;
+  includeWarmup: boolean;
+  includeStreching: boolean;
+  dairyRestrictions: UserDietaryRestrictions;
+}
+
 // STYLE & THEME
 const theme = createTheme();
 
-// APP
 export default function Profile() {
-  const [text, setText] = useState("");
+  const [mainUser, setMainUser] = useState<MainUser | null>(null);
 
-  const mainUser = {
-    title: "User Profile",
-    general: {
-      gender: "female",
-      age: 25,
-      height: 175,
-      weight: 70,
-    },
-    info: {
-      firstName: "Name",
-      lastName: "Last Name",
-      email: "example@gmail.com",
-      password: "password123",
-    },
-    workout: {
-      workoutGoals: "Stay in Shape",
-      daysPerWeek: 3,
-      minutesPerWorkout: 60,
-      workoutLocation: "gym",
-      includeWarmup: true,
-      includeStretching: true,
-    },
-    dietary: {
-      vegan: false,
-      vegetarian: false,
-      pescatarian: false,
-      glutenFree: false,
-      dairyFree: false,
-      nutFree: false,
-      soyFree: false,
-      eggFree: false,
-      shellfishFree: false,
-      lactoseFree: false,
-      kosher: false,
-      halal: false,
-      other: "",
-    },
-  };
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        console.log('Parsed user:', parsedUser); // Debugging statement
+        setMainUser(parsedUser);
+      } catch (error) {
+        console.error("Failed to parse user from localStorage:", error);
+      }
+    }
+  }, []);
 
-  const fullName = `${mainUser.info.firstName} ${mainUser.info.lastName}`;
+  if (!mainUser) return <div>Loading...</div>;
+
+  const fullName = `${mainUser.firstName} ${mainUser.lastName}`;
 
   return (
     <ThemeProvider theme={theme}>
@@ -91,27 +101,32 @@ export default function Profile() {
             <Grid item md={3}>
               <ProfileCard
                 name={fullName}
-                sub={mainUser.title}
-                general={mainUser.general}
+                sub="User Profile"
+                general={{
+                  gender: mainUser.gender,
+                  age: mainUser.age,
+                  height: mainUser.height,
+                  weight: mainUser.weight
+                }}
               />
             </Grid>
 
             {/* SETTINGS CARD */}
             <Grid item md={9}>
               <SettingsCard
-                firstName={mainUser.info.firstName}
-                lastName={mainUser.info.lastName}
-                gender={mainUser.general.gender}
+                firstName={mainUser.firstName}
+                lastName={mainUser.lastName}
+                gender={mainUser.gender}
                 phone=""
-                email={mainUser.info.email}
-                pass={mainUser.info.password}
-                workoutGoals={mainUser.workout.workoutGoals}
-                daysPerWeek={mainUser.workout.daysPerWeek}
-                minutesPerWorkout={mainUser.workout.minutesPerWorkout}
-                workoutLocation={mainUser.workout.workoutLocation}
-                includeWarmup={mainUser.workout.includeWarmup}
-                includeStretching={mainUser.workout.includeStretching}
-                dietary={mainUser.dietary}
+                email={mainUser.email}
+                pass={mainUser.password || ""}
+                workoutGoals={mainUser.workoutGoals}
+                daysPerWeek={mainUser.daysPerWeek}
+                minutesPerWorkout={mainUser.minutesPerWorkout}
+                workoutLocation={mainUser.workoutLocation}
+                includeWarmup={mainUser.includeWarmup}
+                includeStretching={mainUser.includeStreching}
+                dietary={mainUser.dairyRestrictions}
               />
             </Grid>
           </Grid>

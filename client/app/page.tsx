@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from 'next/navigation'; // Make sure to use 'next/navigation' for Next.js App Router
+import { useRouter } from 'next/navigation'; // Ensure to use 'next/navigation' for Next.js App Router
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +12,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from "@mui/material/Alert";
 import { textFieldStyle } from "../styles/textField";
 import { buttonStyle } from "@/styles/button";
 import { useLoginMutation } from "@/app/services/authApi";
@@ -22,6 +24,7 @@ export default function SignIn() {
   const router = useRouter(); // Use useRouter hook
 
   const [loginUser, { isLoading, isError }] = useLoginMutation();
+  const [error, setError] = React.useState("");
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -30,10 +33,12 @@ export default function SignIn() {
         email,
         password,
       }).unwrap();
+      console.log('User logged in:', user); // Debugging statement
       localStorage.setItem("user", JSON.stringify(user));
       router.push("/profile"); // Navigate to profile page
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Login error:', error);
+      setError("Failed to log in. Please check your credentials and try again.");
     }
   };
 
@@ -119,13 +124,15 @@ export default function SignIn() {
                 style: textFieldStyle["& .MuiInputLabel-root"],
               }}
             />
+            {isError && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2, ...buttonStyle }}
+              disabled={isLoading}
             >
-              Sign In
+              {isLoading ? <CircularProgress size={24} /> : "Sign In"}
             </Button>
             <Grid container justifyContent="center">
               <Grid item>

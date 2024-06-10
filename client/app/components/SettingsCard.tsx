@@ -16,20 +16,17 @@ import Tab from "@mui/material/Tab";
 import CustomInput from "./CustomInput";
 
 export default function SettingsCard(props: any) {
-  // TAB STATES
   const [value, setValue] = useState("one");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  // GENDER SELECT STATES
   const genderSelect = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
   ];
 
-  // FORM STATES
   const [user, setUser] = useState({
     firstName: props.firstName,
     lastName: props.lastName,
@@ -54,7 +51,6 @@ export default function SettingsCard(props: any) {
     setUser({ ...user, [event.target.name]: event.target.checked });
   };
 
-  // BUTTON STATES
   const [edit, update] = useState({
     required: true,
     disabled: true,
@@ -78,8 +74,7 @@ export default function SettingsCard(props: any) {
 
   return (
     <Card variant="outlined" sx={{ height: "100%", width: "100%" }}>
-      {/* TABS */}
-      <br></br>
+      <br />
       <Tabs
         value={value}
         onChange={handleChange}
@@ -90,9 +85,7 @@ export default function SettingsCard(props: any) {
         <Tab value="two" label="Workout Info" />
         <Tab value="three" label="Dietary Restrictions" />
       </Tabs>
-      <Divider></Divider>
-
-      {/* MAIN CONTENT CONTAINER */}
+      <Divider />
       <CardContent
         sx={{
           p: 3,
@@ -193,7 +186,11 @@ export default function SettingsCard(props: any) {
                           edge="end"
                           disabled={edit.disabled}
                         >
-                          {user.showPassword ? <VisibilityOff /> : <Visibility />}
+                          {user.showPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -345,7 +342,9 @@ export default function SettingsCard(props: any) {
                       name={restriction}
                       value={props.dietary?.[restriction]}
                       onChange={toggleCheckbox}
-                      title={restriction.charAt(0).toUpperCase() + restriction.slice(1)}
+                      title={
+                        restriction.charAt(0).toUpperCase() + restriction.slice(1)
+                      }
                       dis={edit.disabled}
                       req={edit.required}
                       type="checkbox"
