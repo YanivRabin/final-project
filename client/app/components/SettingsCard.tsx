@@ -1,6 +1,6 @@
 "use client";
 
-import  { useState } from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -15,7 +15,49 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import { textFieldStyle } from "@/styles/textField";
 import CustomInput from "./CustomInput";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+
+const genderOptions = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+];
+
+const workoutGoalsOptions = [
+  { value: "Stay in Shape", label: "Stay in Shape" },
+  { value: "Muscle Gain", label: "Muscle Gain" },
+  { value: "Caloric Deficit", label: "Caloric Deficit" },
+  { value: "Flexibility", label: "Flexibility" },
+  { value: "Endurance", label: "Endurance" },
+];
+
+const daysPerWeekOptions = [
+  { value: 1, label: "One" },
+  { value: 2, label: "Two" },
+  { value: 3, label: "Three" },
+  { value: 4, label: "Four" },
+  { value: 5, label: "Five" },
+  { value: 6, label: "Six" },
+  { value: 7, label: "Seven" },
+];
+
+const minutesPerWorkoutOptions = [
+  { value: 15, label: "15 minutes" },
+  { value: 30, label: "30 minutes" },
+  { value: 60, label: "1 hour" },
+  { value: 90, label: "1 hour and 30 minutes" },
+  { value: 120, label: "2 hours" },
+];
+
+const workoutLocationOptions = [
+  { value: "gym", label: "GYM" },
+  { value: "home", label: "Home" },
+  { value: "outdoor", label: "Outdoor" },
+];
 
 export default function SettingsCard(props: any) {
   const [value, setValue] = useState("one");
@@ -23,11 +65,6 @@ export default function SettingsCard(props: any) {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
-  const genderSelect = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-  ];
 
   const [user, setUser] = useState({
     firstName: props.firstName,
@@ -48,6 +85,11 @@ export default function SettingsCard(props: any) {
 
   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [event.target.name]: event.target.value });
+  };
+
+  const changeSelectField = (event: SelectChangeEvent) => {
+    const name = event.target.name as keyof typeof user;
+    setUser({ ...user, [name]: event.target.value });
   };
 
   const toggleCheckbox = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,13 +118,22 @@ export default function SettingsCard(props: any) {
   };
 
   return (
-    <Card variant="outlined" sx={{ height: "100%", width: "100%" }}>
-      <br />
+    <Card
+      variant="outlined"
+      sx={{
+        height: "100%",
+        width: "100%",
+        padding: "20px",
+        boxShadow: "0 3px 5px rgba(0,0,0,0.2)",
+        borderRadius: "10px",
+      }}
+    >
       <Tabs
         value={value}
         onChange={handleChange}
         textColor="secondary"
         indicatorColor="secondary"
+        sx={{ borderBottom: 1, borderColor: "divider" }}
       >
         <Tab value="one" label="Account" />
         <Tab value="two" label="Workout Info" />
@@ -101,10 +152,10 @@ export default function SettingsCard(props: any) {
             <Grid
               container
               direction={{ xs: "column", md: "row" }}
-              columnSpacing={5}
-              rowSpacing={3}
+              columnSpacing={3}
+              rowSpacing={2}
             >
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <CustomInput
                   id="firstName"
                   name="firstName"
@@ -115,7 +166,7 @@ export default function SettingsCard(props: any) {
                   req={edit.required}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <CustomInput
                   id="lastName"
                   name="lastName"
@@ -126,24 +177,31 @@ export default function SettingsCard(props: any) {
                   req={edit.required}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  select
-                  id="gender"
-                  name="gender"
-                  value={user.gender}
-                  onChange={changeField}
-                  title="Gender"
-                  dis={edit.disabled}
-                  req={edit.required}
-                  content={genderSelect.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                />
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="gender-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                    Gender
+                  </InputLabel>
+                  <Select
+                    labelId="gender-label"
+                    id="gender"
+                    name="gender"
+                    value={user.gender}
+                    onChange={changeSelectField}
+                    label="Gender"
+                    disabled={edit.disabled}
+                    required={edit.required}
+                    sx={textFieldStyle}
+                  >
+                    {genderOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <CustomInput
                   id="phone"
                   name="phone"
@@ -159,7 +217,7 @@ export default function SettingsCard(props: any) {
                   }}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <CustomInput
                   type="email"
                   id="email"
@@ -171,7 +229,7 @@ export default function SettingsCard(props: any) {
                   req={edit.required}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} md={6}>
                 <CustomInput
                   id="pass"
                   name="pass"
@@ -189,29 +247,28 @@ export default function SettingsCard(props: any) {
                           edge="end"
                           disabled={edit.disabled}
                         >
-                          {user.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
+                          {user.showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
-              <Grid
-                container
-                justifyContent={{ xs: "center", md: "flex-end" }}
-                item
-                xs={6}
-              >
+              <Grid container justifyContent="flex-end" item xs={12} md={6}>
                 <Button
-                  sx={{ p: "1rem 2rem", my: 2, height: "3rem" }}
+                  sx={{
+                    p: "1rem 2rem",
+                    my: 2,
+                    height: "3rem",
+                    backgroundColor: "#ff4081",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#ff79b0",
+                    },
+                  }}
                   component="button"
                   size="large"
                   variant="contained"
-                  color="secondary"
                   onClick={changeButton}
                 >
                   {edit.isEdit ? "EDIT" : "UPDATE"}
@@ -225,93 +282,132 @@ export default function SettingsCard(props: any) {
             <Grid
               container
               direction={{ xs: "column", md: "row" }}
-              columnSpacing={5}
-              rowSpacing={3}
+              columnSpacing={3}
+              rowSpacing={2}
             >
-              <Grid item xs={6}>
-                <CustomInput
-                  id="workoutGoals"
-                  name="workoutGoals"
-                  value={user.workoutGoals}
-                  onChange={changeField}
-                  title="Workout Goals"
-                  dis={edit.disabled}
-                  req={edit.required}
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="workoutGoals-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                    Workout Goals
+                  </InputLabel>
+                  <Select
+                    labelId="workoutGoals-label"
+                    id="workoutGoals"
+                    name="workoutGoals"
+                    value={user.workoutGoals}
+                    onChange={changeSelectField}
+                    label="Workout Goals"
+                    disabled={edit.disabled}
+                    required={edit.required}
+                    sx={textFieldStyle}
+                  >
+                    {workoutGoalsOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="daysPerWeek-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                    Days per Week
+                  </InputLabel>
+                  <Select
+                    labelId="daysPerWeek-label"
+                    id="daysPerWeek"
+                    name="daysPerWeek"
+                    value={user.daysPerWeek}
+                    onChange={changeSelectField}
+                    label="Days per Week"
+                    disabled={edit.disabled}
+                    required={edit.required}
+                    sx={textFieldStyle}
+                  >
+                    {daysPerWeekOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="minutesPerWorkout-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                    Minutes per Workout
+                  </InputLabel>
+                  <Select
+                    labelId="minutesPerWorkout-label"
+                    id="minutesPerWorkout"
+                    name="minutesPerWorkout"
+                    value={user.minutesPerWorkout}
+                    onChange={changeSelectField}
+                    label="Minutes per Workout"
+                    disabled={edit.disabled}
+                    required={edit.required}
+                    sx={textFieldStyle}
+                  >
+                    {minutesPerWorkoutOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="workoutLocation-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                    Workout Location
+                  </InputLabel>
+                  <Select
+                    labelId="workoutLocation-label"
+                    id="workoutLocation"
+                    name="workoutLocation"
+                    value={user.workoutLocation}
+                    onChange={changeSelectField}
+                    label="Workout Location"
+                    disabled={edit.disabled}
+                    required={edit.required}
+                    sx={textFieldStyle}
+                  >
+                    {workoutLocationOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={user.includeWarmup}
+                      onChange={toggleCheckbox}
+                      name="includeWarmup"
+                      color="primary"
+                    />
+                  }
+                  label="Include Warmup"
+                  disabled={edit.disabled}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  id="daysPerWeek"
-                  name="daysPerWeek"
-                  value={user.daysPerWeek}
-                  onChange={changeField}
-                  title="Days per Week"
-                  dis={edit.disabled}
-                  req={edit.required}
+              <Grid item xs={12} md={6}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={user.includeStretching}
+                      onChange={toggleCheckbox}
+                      name="includeStretching"
+                      color="primary"
+                    />
+                  }
+                  label="Include Stretching"
+                  disabled={edit.disabled}
                 />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  id="minutesPerWorkout"
-                  name="minutesPerWorkout"
-                  value={user.minutesPerWorkout}
-                  onChange={changeField}
-                  title="Minutes per Workout"
-                  dis={edit.disabled}
-                  req={edit.required}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  id="workoutLocation"
-                  name="workoutLocation"
-                  value={user.workoutLocation}
-                  onChange={changeField}
-                  title="Workout Location"
-                  dis={edit.disabled}
-                  req={edit.required}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  id="includeWarmup"
-                  name="includeWarmup"
-                  value={user.includeWarmup}
-                  onChange={toggleCheckbox}
-                  title="Include Warmup"
-                  dis={edit.disabled}
-                  req={edit.required}
-                  type="checkbox"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CustomInput
-                  id="includeStretching"
-                  name="includeStretching"
-                  value={user.includeStretching}
-                  onChange={toggleCheckbox}
-                  title="Include Stretching"
-                  dis={edit.disabled}
-                  req={edit.required}
-                  type="checkbox"
-                />
-              </Grid>
-              <Grid
-                container
-                justifyContent={{ xs: "center", md: "flex-end" }}
-                item
-                xs={6}
-              >
-                <Button
-                  sx={{ p: "1rem 2rem", my: 2, height: "3rem" }}
-                  component="button"
-                  size="large"
-                  variant="contained"
-                  color="secondary"
-                  onClick={changeButton}
-                >
-                  {edit.isEdit ? "EDIT" : "UPDATE"}
-                </Button>
               </Grid>
             </Grid>
           </FormControl>
@@ -322,8 +418,8 @@ export default function SettingsCard(props: any) {
               <Grid
                 container
                 direction="column"
-                columnSpacing={5}
-                rowSpacing={3}
+                columnSpacing={3}
+                rowSpacing={2}
               >
                 {[
                   "vegan",
@@ -340,17 +436,25 @@ export default function SettingsCard(props: any) {
                   "halal",
                 ].map((restriction) => (
                   <Grid item xs={12} key={restriction}>
-                    <CustomInput
-                      id={restriction}
-                      name={restriction}
-                      value={user.dietary[restriction]}
-                      onChange={toggleCheckbox}
-                      title={
-                        restriction.charAt(0).toUpperCase() + restriction.slice(1)
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={user.dietary[restriction]}
+                          onChange={(e) => {
+                            setUser({
+                              ...user,
+                              dietary: {
+                                ...user.dietary,
+                                [restriction]: e.target.checked,
+                              },
+                            });
+                          }}
+                          name={restriction}
+                          color="primary"
+                        />
                       }
-                      dis={edit.disabled}
-                      req={edit.required}
-                      type="checkbox"
+                      label={restriction.charAt(0).toUpperCase() + restriction.slice(1)}
+                      disabled={edit.disabled}
                     />
                   </Grid>
                 ))}
@@ -367,16 +471,24 @@ export default function SettingsCard(props: any) {
                 </Grid>
                 <Grid
                   container
-                  justifyContent={{ xs: "center", md: "flex-end" }}
+                  justifyContent="flex-end"
                   item
                   xs={12}
                 >
                   <Button
-                    sx={{ p: "1rem 2rem", my: 2, height: "3rem" }}
+                    sx={{
+                      p: "1rem 2rem",
+                      my: 2,
+                      height: "3rem",
+                      backgroundColor: "#ff4081",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#ff79b0",
+                      },
+                    }}
                     component="button"
                     size="large"
                     variant="contained"
-                    color="secondary"
                     onClick={changeButton}
                   >
                     {edit.isEdit ? "EDIT" : "UPDATE"}

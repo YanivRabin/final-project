@@ -226,6 +226,7 @@ export default function SignUp() {
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="gender"
                     value={formData.gender}
+                    id="gender"
                     onChange={handleInputChange}
                   >
                     <FormControlLabel
