@@ -8,12 +8,11 @@ export const feedApi = createApi({
   endpoints: (builder) => ({
     getFeed: builder.query({
       query: () => ({
-        url: "/api/gemini/try-gemini",
-        method: "GET",
+        url: '/api/gemini/try-gemini',
+        method: 'GET',
       }),
     }),
   }),
 });
 
 export const { useGetFeedQuery } = feedApi;
-
