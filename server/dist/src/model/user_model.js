@@ -25,15 +25,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const userSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
+    photo: { type: String, default: null },
     age: { type: Number, required: true },
     height: { type: Number, required: true },
     weight: { type: Number, required: true },
     workoutGoal: { type: String, required: true },
     allergies: { type: [String], required: true },
-    trainingFrequency: { type: String, required: true },
-    biologicalSex: { type: String, enum: ['male', 'female', 'other'], required: true },
-    workoutLocation: { type: String, enum: ['gym', 'home'], required: true },
-    daysPerWeek: { type: Number, required: true },
+    trainingFrequency: { type: Number, required: true },
+    biologicalSex: { type: String, required: true },
+    workoutLocation: { type: String, required: true },
     minutesPerWorkout: { type: Number, required: true },
     includeWarmup: { type: Boolean, required: true },
     includeStretching: { type: Boolean, required: true },

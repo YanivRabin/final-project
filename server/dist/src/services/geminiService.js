@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getResponseFromGemini = exports.generateWorkoutPlan = void 0;
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 // Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI(process.env.GENERATIVE_API_KEY);
+const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
 // ...
 // The Gemini 1.5 models are versatile and work with most use cases
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -27,7 +27,6 @@ const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, funct
         Training Frequency: ${profile.trainingFrequency}
         Biological Sex: ${profile.biologicalSex}
         Workout Location: ${profile.workoutLocation}
-        Days Per Week: ${profile.daysPerWeek}
         Minutes Per Workout: ${profile.minutesPerWorkout}
         Include Warmup: ${profile.includeWarmup}
         Include Stretching: ${profile.includeStretching}
@@ -265,7 +264,7 @@ const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, funct
             console.log(`  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
         });
     });
-    return result;
+    return workoutPlan;
 });
 exports.generateWorkoutPlan = generateWorkoutPlan;
 const getResponseFromGemini = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -276,7 +275,7 @@ const getResponseFromGemini = () => __awaiter(void 0, void 0, void 0, function* 
     const response = yield result.response;
     const text = response.text();
     console.log(text);
-    return result;
+    return text;
 });
 exports.getResponseFromGemini = getResponseFromGemini;
 //# sourceMappingURL=geminiService.js.map

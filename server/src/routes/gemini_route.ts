@@ -114,7 +114,6 @@ console.log("Registering routes");
 router.post('/create-workout', createWorkoutPlan);
 // #endregion
 
-
 // #region TryGemini GET request
 /**
  * @swagger

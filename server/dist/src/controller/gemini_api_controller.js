@@ -16,9 +16,7 @@ const createWorkoutPlan = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const userProfile = req.body;
         const workoutPlanData = yield (0, geminiService_1.generateWorkoutPlan)(userProfile);
         // Save the workout plan to the database
-        // const workoutPlan = new Workout(workoutPlanData);
-        // await workoutPlan.save();
-        res.status(200).json(workoutPlanData.response);
+        res.status(200).json(workoutPlanData);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
