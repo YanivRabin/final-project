@@ -6,13 +6,14 @@ export const feedApi = createApi({
   reducerPath: 'feedApi',
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    getFeed: builder.query({
-      query: () => ({
-        url: '/api/gemini/try-gemini',
-        method: 'GET',
+    createWorkoutPlan: builder.mutation({
+      query: (userProfile) => ({
+        url: '/api/gemini/create-workout',
+        method: 'POST',
+        body: userProfile,
       }),
     }),
   }),
 });
 
-export const { useGetFeedQuery } = feedApi;
+export const { useCreateWorkoutPlanMutation } = feedApi;
