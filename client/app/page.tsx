@@ -1,147 +1,173 @@
 "use client";
 
+import { Box, Button, CssBaseline, Grid, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation'; 
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import { textFieldStyle } from "../styles/textField";
-import { buttonStyle } from "@/styles/button";
-import { useLoginMutation } from "@/app/services/authApi";
+import Image from "next/image";
+import "../styles/main.css"; // Import your CSS file
+import { Copyright } from "@mui/icons-material";
 
-export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter(); 
-
-  const [loginUser, { isLoading, isError }] = useLoginMutation();
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    try {
-      const user = await loginUser({
-        email,
-        password,
-      }).unwrap();
-      localStorage.setItem("user", JSON.stringify(user));
-      router.push("/profile"); 
-    } catch (error) {
-      setError("Failed to log in. Please check your credentials and try again.");
-    }
-  };
-
+export default function Main() {
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
+    <Box display="flex" flexDirection="column">
       <CssBaseline />
+      {/* video */}
+      <Grid className="video-container" paddingBottom={"20px"}>
+        <video src={require("../public/homeBg.mp4")} autoPlay muted loop />
+        <div className="overlay-text">
+          <h1>
+            Welcome to the world
+            <br />
+            of AI fitness
+          </h1>
+        </div>
+      </Grid>
+      {/* text 1 */}
       <Grid
-        item
-        xs={false}
-        sm={false}
-        md={8}
-        sx={{
-          backgroundImage: "url(/signInBg.png)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={4}
-        component={Paper}
-        elevation={6}
-        square
         container
+        className="margin"
+        direction="row"
         justifyContent="center"
         alignItems="center"
-        sx={{ height: "100vh", backgroundColor: "#222021" }}
       >
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" style={{ color: "white" }}>
-            Sign in
+        <Grid item>
+          <Typography className="title">
+            The new way for
+            <br />
+            workout & nutrition
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            sx={{ mt: 1 }}
-            onSubmit={handleSubmit}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              autoComplete="email"
-              onChange={(e) => setEmail(e.target.value)}
-              InputProps={{
-                style: textFieldStyle.input,
-                sx: textFieldStyle,
-              }}
-              InputLabelProps={{
-                style: textFieldStyle["& .MuiInputLabel-root"],
-              }}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
-              InputProps={{
-                style: textFieldStyle.input,
-                sx: textFieldStyle,
-              }}
-              InputLabelProps={{
-                style: textFieldStyle["& .MuiInputLabel-root"],
-              }}
-            />
-            {isError && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2, ...buttonStyle }}
-              disabled={isLoading}
-            >
-              {isLoading ? <CircularProgress size={24} /> : "Sign In"}
-            </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link href="/signUp" variant="body2" sx={{ color: "white" }}>
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
+        </Grid>
+        <Grid item>
+          <Typography className="content">
+            Set out on a personalized fitness journey
+            <br />
+            with artificial intelligence that will build
+            <br />
+            workout plan and menu just for you.
+          </Typography>
+        </Grid>
       </Grid>
-    </Grid>
+      {/* text 2 */}
+      <Grid
+        container
+        className="margin"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <Image
+            className="image"
+            src={require("./images/main/workout.png")}
+            alt="workout"
+            style={{ marginRight: "20px" }}
+          />
+        </Grid>
+        <Grid item>
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography className="title">
+                No matter who
+                <br />
+                No matter what
+                <br />
+                No matter where
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className="content">
+                Whether you want to gain muscles,
+                <br className="br" />
+                lose fat or even just to stay in shape.
+                <br />
+                <br />
+                With a few simple steps we build a workou
+                <br />
+                that suites for you, all you need to do is enter
+                <br />
+                your personal info and workout goals.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* text 3 */}
+      <Grid
+        container
+        className="margin"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography className="title">
+                Menu that is
+                <br />
+                specific for you
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography className="content">
+                You have allergies?
+                <br />
+                You are vegetarian or vegan?
+                <br />
+                You have personal preferences to avoid certain food?
+                <br />
+                <br />
+                No problems, we take care of you and build
+                <br />
+                you a personal menu that will suit you.
+                <br />
+                <br />
+                The menu is made up of all the nutrients you need
+                <br />
+                and broken down into calories, protein, fat and more.
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Image
+            className="image"
+            src={require("./images/main/food.png")}
+            alt="workout"
+            style={{ marginLeft: "20px" }}
+          />
+        </Grid>
+      </Grid>
+      {/* button */}
+      <Grid
+        container
+        className="margin"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Button className="button margin">Start now</Button>
+      </Grid>
+      {/* footer */}
+      <div className="footer" >
+        <hr className="horizontal-line" />
+        <p className="MuiTypography-root MuiTypography-body2 MuiTypography-alignCenter css-1jm6nq8">
+          Copyright ©{" "}
+          <a className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1i1yl23">
+            FITNESS
+          </a>{" "}
+          2024.
+        </p>
+      </div>
+    </Box>
   );
 }

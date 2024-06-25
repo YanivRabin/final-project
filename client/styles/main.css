@@ -1,0 +1,91 @@
+.video-container {
+  position: relative;
+  width: 100%;
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+  z-index: 1; /* Ensure text is above the video */
+}
+
+@media (max-width: 1800px) {
+  .overlay-text {
+    font-size: 2rem; /* Adjust font size for large screens */
+  }
+}
+
+@media (max-width: 1600px) {
+  .overlay-text {
+    font-size: 1.5rem; /* Adjust font size for large screens */
+  }
+}
+
+@media (max-width: 1200px) {
+  .overlay-text {
+    font-size: 1rem; /* Adjust font size for medium screens */
+  }
+}
+
+@media (max-width: 800px) {
+  .overlay-text {
+    font-size: 0.8rem; /* Adjust font size for small screens */
+  }
+}
+
+.content {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.title {
+  color: #3d2d69;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.image {
+  width: 500px;
+  height: 500px;
+}
+
+.margin {
+  margin: 30px 0 30px 0;
+}
+
+.button {
+  background-color: #3d2d69;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  width: fit-content;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #645394; /* New background color on hover */
+}
+
+.horizontal-line {
+  border: none; /* Remove default border */
+  height: 1px; /* Adjust thickness as needed */
+  background-color: #ccc; /* Adjust color as needed */
+  margin: 1px 0; /* Optional: Adjust margin for spacing */
+}
+
+.footer {
+    margin: 30px 30px 0 30px ;
+}
