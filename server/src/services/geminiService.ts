@@ -1,5 +1,5 @@
-import { UserProfile } from '../model/user_model';
-import { WorkoutPlan } from '../model/workout_model';
+import { User } from "../model/AuthModel";
+import { WorkoutPlan } from "../model/workout_model";
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
@@ -9,22 +9,29 @@ const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
 // ...
 
 // The Gemini 1.5 models are versatile and work with most use cases
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-export const generateWorkoutPlan = async (profile: UserProfile) => {
-    const prompt = `
+export const generateWorkoutPlan = async (profile: User) => {
+
+    console.log(profile);
+    console.log("daietry ", profile.dietaryRestrictions);    
+    
+    
+
+
+  const prompt = `
         Create a detailed workout and nutrition plan for a user with the following profile:
         Age: ${profile.age}
         Height: ${profile.height}
         Weight: ${profile.weight}
-        Workout Goal: ${profile.workoutGoal}
-        Allergies: ${profile.allergies.join(', ')}
-        Training Frequency: ${profile.trainingFrequency}
-        Biological Sex: ${profile.biologicalSex}
+        Workout Goal: ${profile.workoutGoals}
+    Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
+        Training Frequency: ${profile.daysPerWeek}
+        Biological Sex: ${profile.gender}
         Workout Location: ${profile.workoutLocation}
         Minutes Per Workout: ${profile.minutesPerWorkout}
         Include Warmup: ${profile.includeWarmup}
-        Include Stretching: ${profile.includeStretching}
+        Include Stretching: ${profile.includeStreching}
 
         Please provide the following details:
         1. A detailed weekly workout schedule including daily workouts:
@@ -208,74 +215,101 @@ export const generateWorkoutPlan = async (profile: UserProfile) => {
             }
         }
     `;
-    const result = await model.generateContent(prompt);
-    // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }
-    // const workoutPlan: WorkoutPlan = new WorkoutPlan(result);
+  const result = await model.generateContent(prompt);
+  // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }
+  // const workoutPlan: WorkoutPlan = new WorkoutPlan(result);
 
-    // // Extract and clean the JSON string from the result
-    const jsonString = result.response.candidates[0].content.parts[0].text;
-    const jsonStart = jsonString.indexOf('{');
-    const jsonEnd = jsonString.lastIndexOf('}') + 1;
-    const cleanJsonString = jsonString.slice(jsonStart, jsonEnd).replace(/\\n/g, '');
+  // // Extract and clean the JSON string from the result
+  const jsonString = result.response.candidates[0].content.parts[0].text;
+  const jsonStart = jsonString.indexOf("{");
+  const jsonEnd = jsonString.lastIndexOf("}") + 1;
+  const cleanJsonString = jsonString
+    .slice(jsonStart, jsonEnd)
+    .replace(/\\n/g, "");
 
-    // Parse the JSON string into an object
-    const workoutPlan: WorkoutPlan = JSON.parse(cleanJsonString);
-    // Log the entire workout plan object
-    console.log("Received Workout Plan:");
-    console.log("Weekly Workout Schedule:");
-    Object.keys(workoutPlan.weeklyWorkout).forEach(day => {
+  // Parse the JSON string into an object
+  const workoutPlan: WorkoutPlan = JSON.parse(cleanJsonString);
+  // Log the entire workout plan object
+  console.log("Received Workout Plan:");
+  console.log("Weekly Workout Schedule:");
+  Object.keys(workoutPlan.weeklyWorkout).forEach((day) => {
     console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
-    workoutPlan.weeklyWorkout[day].forEach(exercise => {
-        console.log(`  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`);
-        console.log(`    Description: ${exercise.description}`);
-        });
+    workoutPlan.weeklyWorkout[day].forEach((exercise) => {
+      console.log(
+        `  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`
+      );
+      console.log(`    Description: ${exercise.description}`);
     });
-    console.log("\nNutritional Information:");
-    console.log(workoutPlan.dailyMenu);
-    console.log("Specific Calories: " + workoutPlan.specificCalories);
-    console.log("\nBreakfast:");
-    workoutPlan.nutritionalInformation.breakfast.forEach((item, index) => {
-        console.log(`- Breakfast Option ${index + 1}:`);
-        item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Breakfast Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
-        });
+  });
+  console.log("\nNutritional Information:");
+  console.log(workoutPlan.dailyMenu);
+  console.log("Specific Calories: " + workoutPlan.specificCalories);
+  console.log("\nBreakfast:");
+  workoutPlan.nutritionalInformation.breakfast.forEach((item, index) => {
+    console.log(`- Breakfast Option ${index + 1}:`);
+    item.ingredients.forEach((ingredient, i) => {
+      console.log(
+        `  - Breakfast Raw Material ${i + 1}, ${ingredient.name}: Carbs ${
+          ingredient.carbohydrates
+        }g, Fats ${ingredient.fats}g, Proteins ${
+          ingredient.proteins
+        }g, Amount: ${ingredient.amount}`
+      );
     });
+  });
 
-    console.log("\nLunch:");
-    workoutPlan.nutritionalInformation.lunch.forEach((item, index) => {
-        console.log(`- Lunch Option ${index + 1}:`);
-        item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Lunch Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
-        });
+  console.log("\nLunch:");
+  workoutPlan.nutritionalInformation.lunch.forEach((item, index) => {
+    console.log(`- Lunch Option ${index + 1}:`);
+    item.ingredients.forEach((ingredient, i) => {
+      console.log(
+        `  - Lunch Raw Material ${i + 1}, ${ingredient.name}: Carbs ${
+          ingredient.carbohydrates
+        }g, Fats ${ingredient.fats}g, Proteins ${
+          ingredient.proteins
+        }g, Amount: ${ingredient.amount}`
+      );
     });
+  });
 
-    console.log("\nDinner:");
-    workoutPlan.nutritionalInformation.dinner.forEach((item, index) => {
-        console.log(`- Dinner Option ${index + 1}:`);
-        item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Dinner Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
-        });
+  console.log("\nDinner:");
+  workoutPlan.nutritionalInformation.dinner.forEach((item, index) => {
+    console.log(`- Dinner Option ${index + 1}:`);
+    item.ingredients.forEach((ingredient, i) => {
+      console.log(
+        `  - Dinner Raw Material ${i + 1}, ${ingredient.name}: Carbs ${
+          ingredient.carbohydrates
+        }g, Fats ${ingredient.fats}g, Proteins ${
+          ingredient.proteins
+        }g, Amount: ${ingredient.amount}`
+      );
     });
+  });
 
-    console.log("\nSnacks:");
-    workoutPlan.nutritionalInformation.snacks.forEach((item, index) => {
-        console.log(`- Snack Option ${index + 1}:`);
-        item.ingredients.forEach((ingredient, i) => {
-            console.log(`  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`);
-        });
+  console.log("\nSnacks:");
+  workoutPlan.nutritionalInformation.snacks.forEach((item, index) => {
+    console.log(`- Snack Option ${index + 1}:`);
+    item.ingredients.forEach((ingredient, i) => {
+      console.log(
+        `  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${
+          ingredient.carbohydrates
+        }g, Fats ${ingredient.fats}g, Proteins ${
+          ingredient.proteins
+        }g, Amount: ${ingredient.amount}`
+      );
     });
+  });
 
-
-    return workoutPlan;
-}
+  return workoutPlan;
+};
 
 export const getResponseFromGemini = async () => {
-    console.log("Generating content from Gemini API");
-    const prompt = "Write a story about a magic backpack."
-    const result = await model.generateContent(prompt);
-    console.log("Content generated from Gemini API"+result);
-    const response = await result.response;
-    const text = response.text();
-    console.log(text);
-    return text;
-}
+  console.log("Generating content from Gemini API");
+  const prompt = "Write a story about a magic backpack.";
+  const result = await model.generateContent(prompt);
+  console.log("Content generated from Gemini API" + result);
+  const response = await result.response;
+  const text = response.text();
+  console.log(text);
+  return text;
+};

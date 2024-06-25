@@ -39,7 +39,7 @@ interface MainUser {
   workoutLocation: string;
   includeWarmup: boolean;
   includeStreching: boolean;
-  dairyRestrictions: UserDietaryRestrictions;
+  dietaryRestrictions: UserDietaryRestrictions;
 }
 
 const theme = createTheme();
@@ -119,7 +119,7 @@ const Profile: React.FC = () => {
                 workoutLocation={mainUser.workoutLocation}
                 includeWarmup={mainUser.includeWarmup}
                 includeStretching={mainUser.includeStreching}
-                dietary={mainUser.dairyRestrictions}
+                dietary={mainUser.dietaryRestrictions}
               />
             </Grid>
           </Grid>

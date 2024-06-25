@@ -49,7 +49,7 @@ export default function SignUp() {
     workoutLocation: " ",
     includeWarmup: false,
     includeStreching: false,
-    dairyRestrictions: {
+    dietaryRestrictions: {
       vegan: false,
       vegetarian: false,
       pescatarian: false,
@@ -618,12 +618,12 @@ export default function SignUp() {
                   value="vegan"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.vegan}
+                      checked={formData.dietaryRestrictions.vegan}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             vegan: e.target.checked,
                           },
                         });
@@ -643,12 +643,12 @@ export default function SignUp() {
                   value="vegetarian"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.vegetarian}
+                      checked={formData.dietaryRestrictions.vegetarian}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             vegetarian: e.target.checked,
                           },
                         });
@@ -668,12 +668,12 @@ export default function SignUp() {
                   value="pescatarian"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.pescatarian}
+                      checked={formData.dietaryRestrictions.pescatarian}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             pescatarian: e.target.checked,
                           },
                         });
@@ -693,12 +693,12 @@ export default function SignUp() {
                   value="glutenFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.glutenFree}
+                      checked={formData.dietaryRestrictions.glutenFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             glutenFree: e.target.checked,
                           },
                         });
@@ -718,12 +718,12 @@ export default function SignUp() {
                   value="dairyFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.dairyFree}
+                      checked={formData.dietaryRestrictions.dairyFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             dairyFree: e.target.checked,
                           },
                         });
@@ -743,12 +743,12 @@ export default function SignUp() {
                   value="nutFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.nutFree}
+                      checked={formData.dietaryRestrictions.nutFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             nutFree: e.target.checked,
                           },
                         });
@@ -768,12 +768,12 @@ export default function SignUp() {
                   value="soyFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.soyFree}
+                      checked={formData.dietaryRestrictions.soyFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             soyFree: e.target.checked,
                           },
                         });
@@ -793,12 +793,12 @@ export default function SignUp() {
                   value="eggFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.eggFree}
+                      checked={formData.dietaryRestrictions.eggFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             eggFree: e.target.checked,
                           },
                         });
@@ -818,12 +818,12 @@ export default function SignUp() {
                   value="shellfishFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.shellfishFree}
+                      checked={formData.dietaryRestrictions.shellfishFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             shellfishFree: e.target.checked,
                           },
                         });
@@ -843,12 +843,12 @@ export default function SignUp() {
                   value="lactoseFree"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.lactoseFree}
+                      checked={formData.dietaryRestrictions.lactoseFree}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             lactoseFree: e.target.checked,
                           },
                         });
@@ -868,12 +868,12 @@ export default function SignUp() {
                   value="kosher"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.kosher}
+                      checked={formData.dietaryRestrictions.kosher}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             kosher: e.target.checked,
                           },
                         });
@@ -893,12 +893,12 @@ export default function SignUp() {
                   value="halal"
                   control={
                     <Checkbox
-                      checked={formData.dairyRestrictions.halal}
+                      checked={formData.dietaryRestrictions.halal}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          dairyRestrictions: {
-                            ...formData.dairyRestrictions,
+                          dietaryRestrictions: {
+                            ...formData.dietaryRestrictions,
                             halal: e.target.checked,
                           },
                         });
@@ -919,12 +919,12 @@ export default function SignUp() {
                   id="other"
                   label="Other"
                   name="other"
-                  value={formData.dairyRestrictions.other}
+                  value={formData.dietaryRestrictions.other}
                   onChange={(e) => {
                     setFormData({
                       ...formData,
-                      dairyRestrictions: {
-                        ...formData.dairyRestrictions,
+                      dietaryRestrictions: {
+                        ...formData.dietaryRestrictions,
                         other: e.target.value,
                       },
                     });

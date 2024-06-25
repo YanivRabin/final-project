@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-interface User {
+export interface User {
   firstName: string;
   lastName: string;
   email: string;

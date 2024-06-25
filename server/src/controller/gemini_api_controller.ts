@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { generateWorkoutPlan, getResponseFromGemini} from '../services/geminiService';
-import { UserProfile } from '../model/user_model';
+import { User } from '../model/AuthModel';
 
 export const createWorkoutPlan = async (req: Request, res: Response) => {
     try {
-        const userProfile: UserProfile = req.body;
+        const userProfile: User = req.body;
         const workoutPlanData = await generateWorkoutPlan(userProfile);
         
         // Save the workout plan to the database

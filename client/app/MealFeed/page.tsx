@@ -5,40 +5,57 @@ import { Box, Grid, Typography, Button } from '@mui/material';
 import MealCard from '../components/MealCard';
 import { useCreateWorkoutPlanMutation } from '../services/feedApi'; 
 import backgroundImage from '../images/back.png';
-
+import WorkoutCard from '../components/workoutCard';
 interface UserProfile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  gender: string;
   age: number;
   height: number;
   weight: number;
-  workoutGoal: string;
-  allergies: string[];
-  trainingFrequency: string;
-  biologicalSex: string;
-  workoutLocation: string;
+  workoutGoals: string;
   daysPerWeek: number;
   minutesPerWorkout: number;
+  workoutLocation: string;
   includeWarmup: boolean;
-  includeStretching: boolean;
+  includeStreching: boolean;
+  dietaryRestrictions: {
+    vegan: boolean;
+    vegetarian: boolean;
+    pescatarian: boolean;
+    glutenFree: boolean;
+    dairyFree: boolean;
+    nutFree: boolean;
+    soyFree: boolean;
+    eggFree: boolean;
+    shellfishFree: boolean;
+    lactoseFree: boolean;
+    kosher: boolean;
+    halal: boolean;
+    other: string;
+  }
 }
 
 const MealFeed: React.FC = () => {
   const [createWorkoutPlan, { data, error, isLoading }] = useCreateWorkoutPlanMutation();
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    age: 30,
-    height: 180,
-    weight: 75.5,
-    workoutGoal: 'muscle gain',
-    allergies: ['none'],
-    trainingFrequency: '3-4 times a week',
-    biologicalSex: 'male',
-    workoutLocation: 'gym',
-    daysPerWeek: 4,
-    minutesPerWorkout: 60,
-    includeWarmup: true,
-    includeStretching: true,
-  });
+  const [userProfile, setUserProfile] = useState<UserProfile>();
+  
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setUserProfile(parsedUser);
+      } catch (error) {
+        console.error('Failed to parse user from localStorage:', error);
+      }
+    }
+  },[])
 
   useEffect(() => {
+    
     if (data) {
       console.log('Received data:', data);
       if (data.nutritionalInformation) {
@@ -50,9 +67,9 @@ const MealFeed: React.FC = () => {
   }, [data]);
 
   const handleCreateWorkoutPlan = async () => {
+    console.log(userProfile)
     try {
       await createWorkoutPlan(userProfile).unwrap();
-      console.log(data.nutritionalInformation.breakfast);
     } catch (err) {
       console.error('Failed to create workout plan:', err);
     }
@@ -76,7 +93,7 @@ const MealFeed: React.FC = () => {
       {isLoading && <Typography>Loading...</Typography>}
       {error && <Typography>Error: {error.toString()}</Typography>}
       {data && data.nutritionalInformation ? (
-        <Box>
+          <Box>
           <Typography variant="h4" sx={{ textAlign: 'center', color: '#3D2D69', fontWeight: 'bold', mb: 2 }}>
             Daily Menu
           </Typography>
@@ -94,7 +111,19 @@ const MealFeed: React.FC = () => {
               <MealCard mealType="Snacks" options={data.nutritionalInformation.snacks} />
             </Grid>
           </Grid>
+
+          <Typography variant="h4" sx={{ textAlign: 'center', color: '#3D2D69', fontWeight: 'bold', mb: 2 }}>
+            Your Weekly Workout Plan
+          </Typography>
+          <Grid container spacing={2} justifyContent="center">
+            {Object.keys(data.weeklyWorkout).map((day, index) => (
+              <Grid item xs={12} md={6} lg={4} key={index}>
+                <WorkoutCard day={day} exercises={data.weeklyWorkout[day]} />
+              </Grid>
+            ))}
+          </Grid>
         </Box>
+        
       ) : (
         !isLoading && <Typography>No data available</Typography>
       )}
