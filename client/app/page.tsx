@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import "../styles/main.css"; // Import your CSS file
 import { Copyright } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function Main() {
   return (
@@ -155,10 +156,16 @@ export default function Main() {
         justifyContent="center"
         alignItems="center"
       >
-        <Button className="button margin">Start now</Button>
+        <Link href="/signIn">
+          <Button
+            className="button margin"
+          >
+            Start now
+          </Button>
+        </Link>
       </Grid>
       {/* footer */}
-      <div className="footer" >
+      <div className="footer">
         <hr className="horizontal-line" />
         <p className="MuiTypography-root MuiTypography-body2 MuiTypography-alignCenter css-1jm6nq8">
           Copyright ©{" "}

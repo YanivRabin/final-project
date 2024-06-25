@@ -6,7 +6,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -17,6 +17,7 @@ import Alert from "@mui/material/Alert";
 import { textFieldStyle } from "@/styles/textField";
 import { buttonStyle } from "@/styles/button";
 import { useLoginMutation } from "@/app/services/authApi";
+import Link from "next/link";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ export default function SignIn() {
         password,
       }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
-      router.push("/profile"); 
+      window.location.href = "/feed";
     } catch (error) {
       setError("Failed to log in. Please check your credentials and try again.");
     }
@@ -134,7 +135,7 @@ export default function SignIn() {
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Link href="/signUp" variant="body2" sx={{ color: "white" }}>
+                <Link href="/signUp">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

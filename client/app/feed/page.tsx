@@ -5,7 +5,7 @@ import { Box, Grid, Typography, Button } from '@mui/material';
 import MealCard from '../components/MealCard';
 import { useCreateWorkoutPlanMutation } from '../services/feedApi'; 
 import backgroundImage from '../images/back.png';
-import WorkoutCard from '../components/workoutCard';
+import WorkoutCard from '../components/WorkoutCard';
 interface UserProfile {
   firstName: string;
   lastName: string;

@@ -82,7 +82,7 @@ export default function SignUp() {
       try {
         const { res } = await signUpUser(formData).unwrap();
         localStorage.setItem("user", JSON.stringify(res));
-        window.location.href = "/";
+        window.location.href = "/feed";
       } catch (error) {
         console.error("Login error:", error);
         // display error message
