@@ -1,33 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Grid, Typography, Button } from '@mui/material';
 import MealCard from '../components/MealCard';
-import { useCreateWorkoutPlanMutation } from '../services/feedApi'; // Adjust the import path as necessary
+import { useCreateWorkoutPlanMutation } from '../services/feedApi'; 
 import backgroundImage from '../images/back.png';
-
-// Define types for the response data
-interface MealOption {
-  name: string;
-  carbs: number;
-  fats: number;
-  proteins: number;
-  amount: string;
-}
-
-interface DailyPlan {
-  breakfast: MealOption[];
-  lunch: MealOption[];
-  dinner: MealOption[];
-}
-
-interface WeeklyPlan {
-  [key: string]: DailyPlan;
-}
-
-interface WorkoutPlanResponse {
-  weeklyPlan: WeeklyPlan;
-}
 
 interface UserProfile {
   age: number;
@@ -61,9 +38,21 @@ const MealFeed: React.FC = () => {
     includeStretching: true,
   });
 
+  useEffect(() => {
+    if (data) {
+      console.log('Received data:', data);
+      if (data.nutritionalInformation) {
+        console.log('Nutritional Information:', data.nutritionalInformation);
+      } else {
+        console.log('No nutritionalInformation in the response');
+      }
+    }
+  }, [data]);
+
   const handleCreateWorkoutPlan = async () => {
     try {
-      await createWorkoutPlan(userProfile);
+      await createWorkoutPlan(userProfile).unwrap();
+      console.log(data.nutritionalInformation.breakfast);
     } catch (err) {
       console.error('Failed to create workout plan:', err);
     }
@@ -86,27 +75,28 @@ const MealFeed: React.FC = () => {
       
       {isLoading && <Typography>Loading...</Typography>}
       {error && <Typography>Error: {error.toString()}</Typography>}
-      {data && data.weeklyPlan && (
+      {data && data.nutritionalInformation ? (
         <Box>
-          {Object.keys(data.weeklyPlan).map((day, idx) => (
-            <Box key={idx} sx={{ mb: 4 }}>
-              <Typography variant="h4" sx={{ textAlign: 'center', color: '#3D2D69', fontWeight: 'bold', mb: 2 }}>
-                {day}
-              </Typography>
-              <Grid container spacing={2} justifyContent="center">
-                <Grid item xs={12} md={6} lg={4}>
-                  <MealCard mealType="Breakfast" options={data.weeklyPlan[day].breakfast} />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MealCard mealType="Lunch" options={data.weeklyPlan[day].lunch} />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <MealCard mealType="Dinner" options={data.weeklyPlan[day].dinner} />
-                </Grid>
-              </Grid>
-            </Box>
-          ))}
+          <Typography variant="h4" sx={{ textAlign: 'center', color: '#3D2D69', fontWeight: 'bold', mb: 2 }}>
+            Daily Menu
+          </Typography>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={12} md={6} lg={4}>
+              <MealCard mealType="Breakfast" options={data.nutritionalInformation.breakfast} />
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MealCard mealType="Lunch" options={data.nutritionalInformation.lunch} />
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MealCard mealType="Dinner" options={data.nutritionalInformation.dinner} />
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MealCard mealType="Snacks" options={data.nutritionalInformation.snacks} />
+            </Grid>
+          </Grid>
         </Box>
+      ) : (
+        !isLoading && <Typography>No data available</Typography>
       )}
     </Box>
   );

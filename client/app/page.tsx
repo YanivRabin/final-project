@@ -12,7 +12,7 @@ export default function Main() {
       <CssBaseline />
       {/* video */}
       <Grid className="video-container" paddingBottom={"20px"}>
-        <video src={require("../public/homeBg.mp4")} autoPlay muted loop />
+        {/* <video src={require("../public/homeBg.mp4")} autoPlay muted loop /> */}
         <div className="overlay-text">
           <h1>
             Welcome to the world
