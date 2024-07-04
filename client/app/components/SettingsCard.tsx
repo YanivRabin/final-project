@@ -17,7 +17,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import { textFieldStyle } from "@/styles/textField";
+import { textFieldStyle } from "../../styles/textField";
 import CustomInput from "./CustomInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
