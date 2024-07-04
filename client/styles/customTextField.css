@@ -1,0 +1,34 @@
+.textFieldContainer {
+  position: relative;
+}
+
+.customTextField .MuiOutlinedInput-root {
+  fieldset {
+    border-color: #4e2a84;
+  }
+  &:hover fieldset {
+    border-color: #4e2a84;
+  }
+  &.Mui-focused fieldset {
+    border-color: #4e2a84;
+  }
+}
+
+.customTextField .MuiInputLabel-root {
+  color: #adadcd;
+}
+
+.customTextField .MuiInputLabel-root.Mui-focused {
+  color: #adadcd;
+}
+
+.errorAlert {
+  margin-top: 8px;
+}
+
+.loadingIndicator {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}

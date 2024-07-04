@@ -1,25 +1,32 @@
 "use client";
 
 import { Box, Button, CssBaseline, Grid, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import "../styles/main.css"; // Import your CSS file
-import { Copyright } from "@mui/icons-material";
+import "../styles/main.css";
 import Link from "next/link";
 
 export default function Main() {
+
   return (
     <Box display="flex" flexDirection="column">
       <CssBaseline />
       {/* video */}
-      <Grid className="video-container" paddingBottom={"20px"}>
-        {/* <video src={require("../public/homeBg.mp4")} autoPlay muted loop /> */}
-        <div className="overlay-text">
-          <h1>
-            Welcome to the world
-            <br />
-            of AI fitness
-          </h1>
+      <Grid className="video-container">
+        <div className="video-wrapper">
+          <video
+            src={require("./images/main/man_traning.mp4")}
+            autoPlay
+            muted
+            loop
+          />
+          <div className="overlay-text">
+            <h1>
+              Welcome to the world
+              <br />
+              of AI fitness
+            </h1>
+          </div>
         </div>
       </Grid>
       {/* text 1 */}
@@ -38,7 +45,7 @@ export default function Main() {
           </Typography>
         </Grid>
         <Grid item>
-          <Typography className="content">
+          <Typography className="text">
             Set out on a personalized fitness journey
             <br />
             with artificial intelligence that will build
@@ -80,7 +87,7 @@ export default function Main() {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography className="content">
+              <Typography className="text">
                 Whether you want to gain muscles,
                 <br className="br" />
                 lose fat or even just to stay in shape.
@@ -119,7 +126,7 @@ export default function Main() {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography className="content">
+              <Typography className="text">
                 You have allergies?
                 <br />
                 You are vegetarian or vegan?
@@ -156,12 +163,8 @@ export default function Main() {
         justifyContent="center"
         alignItems="center"
       >
-        <Link href="/signIn">
-          <Button
-            className="button margin"
-          >
-            Start now
-          </Button>
+        <Link href="/signUp">
+          <Button className="button margin">Start now</Button>
         </Link>
       </Grid>
       {/* footer */}

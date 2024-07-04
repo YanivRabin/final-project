@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
+
+.title {
+  font-family: "Inria Sans", sans-serif;
+  color: #3d2d69;
+  font-size: 52px;
+}
+
+.signInForm {
+  border: 3px solid #4e2a84;
+  padding: 20px 0 20px 0;
+  border-radius: 8px;
+  width: 350px;
+  height: 510px;
+}
+
+.signInButton {
+  background-color: #4e2a84;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.signInButton:hover {
+  background-color: #7158b6;
+}
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.orLine {
+  flex: 1;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.orText {
+  margin: 0 10px;
+  color: #666;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.googleButton {
+  background-color: #4285f4;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  margin: 10px 0 20px 0;
+}
+
+.signUpLink {
+  color: #4e2a84;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+}

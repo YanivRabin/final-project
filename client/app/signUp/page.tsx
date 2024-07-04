@@ -6,28 +6,25 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import { textFieldStyle } from "@/styles/textField";
-import { buttonStyle } from "@/styles/button";
 import StepConnector from "@mui/material/StepConnector";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { formControlStyle, radioStyle } from "@/styles/radioButton";
-import { CustomStepIcon, CustomStepLabel } from "@/styles/stepper";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import Slider from "@mui/material/Slider";
 import Input from "@mui/material/Input";
-import { sliderStyle, inputStyle } from "@/styles/slider";
 import Checkbox from "@mui/material/Checkbox";
-import { checkboxStyle } from "@/styles/checkbox";
 import { useSignUpMutation } from "../services/authApi";
+import CustomTextField from "../components/CustomTextField";
+import Image from "next/image";
+import StepLabel from "@mui/material/StepLabel";
+import "../../styles/signUp.css";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
@@ -65,7 +62,6 @@ export default function SignUp() {
       other: "",
     },
   });
-
   const [signUpUser, { isLoading, isError }] = useSignUpMutation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +73,27 @@ export default function SignUp() {
       alert("Passwords do not match");
       return;
     }
+    if (
+      activeStep === 0 &&
+      (formData.firstName === "" ||
+        formData.lastName === "" ||
+        formData.email === "" ||
+        formData.password === "")
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+    if (
+      activeStep === 1 &&
+      (formData.gender === "" ||
+        formData.workoutGoals === " " ||
+        formData.workoutLocation === " " ||
+        formData.daysPerWeek === 0 ||
+        formData.minutesPerWorkout === 0)
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
     if (activeStep === steps.length) {
       // submit form
       try {
@@ -85,7 +102,6 @@ export default function SignUp() {
         window.location.href = "/feed";
       } catch (error) {
         console.error("Login error:", error);
-        // display error message
         setActiveStep(0);
         return;
       }
@@ -95,7 +111,7 @@ export default function SignUp() {
 
   const handleBack = () => {
     if (activeStep === 0) {
-      window.location.href = "/";
+      window.location.href = "/signIn";
       return;
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -110,105 +126,50 @@ export default function SignUp() {
             <Grid container spacing={2}>
               {/* first name */}
               <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
+                <CustomTextField
                   label="First Name"
-                  autoFocus
                   value={formData.firstName}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  onChange={(e) => {
+                    setFormData({ ...formData, firstName: e.target.value });
                   }}
                 />
               </Grid>
               {/* last name */}
               <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
+                <CustomTextField
                   label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
                   value={formData.lastName}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  onChange={(e) => {
+                    setFormData({ ...formData, lastName: e.target.value });
                   }}
                 />
               </Grid>
               {/* email */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
+                <CustomTextField
                   label="Email Address"
-                  name="email"
-                  autoComplete="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
                   }}
                 />
               </Grid>
               {/* password */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
+                <CustomTextField
                   label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
                   value={formData.password}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
+                  onChange={(e) => {
+                    setFormData({ ...formData, password: e.target.value });
                   }}
                 />
               </Grid>
               {/* password 2 */}
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password2"
+                <CustomTextField
                   label="Password Confirmation"
-                  type="password"
-                  id="password2"
-                  autoComplete="new-password"
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
-                  }}
                 />
               </Grid>
             </Grid>
@@ -220,7 +181,7 @@ export default function SignUp() {
             <Grid container spacing={2}>
               {/* gender */}
               <Grid item xs={12}>
-                <FormControl sx={formControlStyle}>
+                <FormControl>
                   <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
@@ -231,12 +192,12 @@ export default function SignUp() {
                   >
                     <FormControlLabel
                       value="male"
-                      control={<Radio sx={radioStyle} />}
+                      control={<Radio />}
                       label="Male"
                     />
                     <FormControlLabel
                       value="female"
-                      control={<Radio sx={radioStyle} />}
+                      control={<Radio />}
                       label="Female"
                     />
                   </RadioGroup>
@@ -259,7 +220,6 @@ export default function SignUp() {
                         name="age"
                         min={0}
                         max={100}
-                        sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
@@ -275,7 +235,6 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-age",
                         }}
-                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -298,7 +257,6 @@ export default function SignUp() {
                         name="height"
                         min={0}
                         max={250}
-                        sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
@@ -314,7 +272,6 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-height",
                         }}
-                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -337,7 +294,6 @@ export default function SignUp() {
                         name="weight"
                         min={0}
                         max={250}
-                        sx={sliderStyle}
                       />
                     </Grid>
                     <Grid item>
@@ -353,7 +309,6 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-weight",
                         }}
-                        sx={inputStyle}
                       />
                     </Grid>
                   </Grid>
@@ -361,16 +316,8 @@ export default function SignUp() {
               </Grid>
               {/* workout goals */}
               <Grid item xs={12}>
-                <FormControl
-                  fullWidth
-                  sx={textFieldStyle["& .MuiFormControl-root"]}
-                >
-                  <InputLabel
-                    id="WorkoutGoals"
-                    style={textFieldStyle["& .MuiInputLabel-root"]}
-                  >
-                    Workout Goals
-                  </InputLabel>
+                <FormControl fullWidth>
+                  <InputLabel id="WorkoutGoals">Workout Goals</InputLabel>
                   <Select
                     labelId="WorkoutGoals"
                     id="workoutGoals"
@@ -382,23 +329,6 @@ export default function SignUp() {
                         ...formData,
                         workoutGoals: e.target.value as string,
                       });
-                    }}
-                    sx={{
-                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
-                      "& .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "&:hover .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&:hover .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
-                      "& .MuiMenuItem-root":
-                        textFieldStyle["& .MuiMenuItem-root"],
-                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
                     }}
                   >
                     <MenuItem value={"Stay in Shape"}>Stay in Shape</MenuItem>
@@ -413,16 +343,8 @@ export default function SignUp() {
               </Grid>
               {/* days per week */}
               <Grid item xs={12}>
-                <FormControl
-                  fullWidth
-                  sx={textFieldStyle["& .MuiFormControl-root"]}
-                >
-                  <InputLabel
-                    id="daysPerWeek"
-                    style={textFieldStyle["& .MuiInputLabel-root"]}
-                  >
-                    Days per Week
-                  </InputLabel>
+                <FormControl fullWidth>
+                  <InputLabel id="daysPerWeek">Days per Week</InputLabel>
                   <Select
                     labelId="daysPerWeek"
                     id="daysPerWeek"
@@ -434,23 +356,6 @@ export default function SignUp() {
                         ...formData,
                         daysPerWeek: e.target.value as number,
                       });
-                    }}
-                    sx={{
-                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
-                      "& .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "&:hover .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&:hover .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
-                      "& .MuiMenuItem-root":
-                        textFieldStyle["& .MuiMenuItem-root"],
-                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
                     }}
                   >
                     <MenuItem value={1}>One</MenuItem>
@@ -465,14 +370,8 @@ export default function SignUp() {
               </Grid>
               {/* minutes per workout */}
               <Grid item xs={12}>
-                <FormControl
-                  fullWidth
-                  sx={textFieldStyle["& .MuiFormControl-root"]}
-                >
-                  <InputLabel
-                    id="MinutesPerWorkout"
-                    style={textFieldStyle["& .MuiInputLabel-root"]}
-                  >
+                <FormControl fullWidth>
+                  <InputLabel id="MinutesPerWorkout">
                     Minutes per Workout
                   </InputLabel>
                   <Select
@@ -487,23 +386,6 @@ export default function SignUp() {
                         minutesPerWorkout: e.target.value as number,
                       });
                     }}
-                    sx={{
-                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
-                      "& .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "&:hover .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&:hover .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
-                      "& .MuiMenuItem-root":
-                        textFieldStyle["& .MuiMenuItem-root"],
-                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
-                    }}
                   >
                     <MenuItem value={15}>15 minutes</MenuItem>
                     <MenuItem value={30}>30 minutes</MenuItem>
@@ -515,16 +397,8 @@ export default function SignUp() {
               </Grid>
               {/* workout location */}
               <Grid item xs={12}>
-                <FormControl
-                  fullWidth
-                  sx={textFieldStyle["& .MuiFormControl-root"]}
-                >
-                  <InputLabel
-                    id="workoutLocation"
-                    style={textFieldStyle["& .MuiInputLabel-root"]}
-                  >
-                    Workout Location
-                  </InputLabel>
+                <FormControl fullWidth>
+                  <InputLabel id="workoutLocation">Workout Location</InputLabel>
                   <Select
                     labelId="workoutLocation"
                     id="workoutLocation"
@@ -536,23 +410,6 @@ export default function SignUp() {
                         ...formData,
                         workoutLocation: e.target.value as string,
                       });
-                    }}
-                    sx={{
-                      "& .MuiSelect-root": textFieldStyle["& .MuiSelect-root"],
-                      "& .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle["& .MuiOutlinedInput-notchedOutline"],
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "&:hover .MuiOutlinedInput-notchedOutline":
-                        textFieldStyle[
-                          "&:hover .MuiOutlinedInput-notchedOutline"
-                        ],
-                      "& .MuiSelect-icon": textFieldStyle["& .MuiSelect-icon"],
-                      "& .MuiMenuItem-root":
-                        textFieldStyle["& .MuiMenuItem-root"],
-                      "& .Mui-selected": textFieldStyle["& .Mui-selected"],
                     }}
                   >
                     <MenuItem value={"gym"}>GYM</MenuItem>
@@ -576,7 +433,6 @@ export default function SignUp() {
                       }}
                       name="includeWarmup"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Include Warmup"
@@ -598,7 +454,6 @@ export default function SignUp() {
                       }}
                       name="includeStreching"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Include Streching"
@@ -630,7 +485,6 @@ export default function SignUp() {
                       }}
                       name="vegan"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Vegan"
@@ -655,7 +509,6 @@ export default function SignUp() {
                       }}
                       name="vegetarian"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Vegetarian"
@@ -680,7 +533,6 @@ export default function SignUp() {
                       }}
                       name="pescatarian"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Pescatarian"
@@ -705,7 +557,6 @@ export default function SignUp() {
                       }}
                       name="glutenFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Gluten Free"
@@ -730,7 +581,6 @@ export default function SignUp() {
                       }}
                       name="dairyFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Dairy Free"
@@ -755,7 +605,6 @@ export default function SignUp() {
                       }}
                       name="nutFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Nut Free"
@@ -780,7 +629,6 @@ export default function SignUp() {
                       }}
                       name="soyFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Soy Free"
@@ -805,7 +653,6 @@ export default function SignUp() {
                       }}
                       name="eggFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Egg Free"
@@ -830,7 +677,6 @@ export default function SignUp() {
                       }}
                       name="shellfishFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Shellfish Free"
@@ -855,7 +701,6 @@ export default function SignUp() {
                       }}
                       name="lactoseFree"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Lactose Free"
@@ -880,7 +725,6 @@ export default function SignUp() {
                       }}
                       name="kosher"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Kosher"
@@ -905,7 +749,6 @@ export default function SignUp() {
                       }}
                       name="halal"
                       color="primary"
-                      sx={checkboxStyle}
                     />
                   }
                   label="Halal"
@@ -914,11 +757,8 @@ export default function SignUp() {
               </Grid>
               {/* other */}
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  id="other"
+                <CustomTextField
                   label="Other"
-                  name="other"
                   value={formData.dietaryRestrictions.other}
                   onChange={(e) => {
                     setFormData({
@@ -929,13 +769,6 @@ export default function SignUp() {
                       },
                     });
                   }}
-                  InputProps={{
-                    style: textFieldStyle.input,
-                    sx: textFieldStyle,
-                  }}
-                  InputLabelProps={{
-                    style: textFieldStyle["& .MuiInputLabel-root"],
-                  }}
                 />
               </Grid>
             </Grid>
@@ -943,83 +776,64 @@ export default function SignUp() {
         );
       case 3:
         return (
-          <Typography sx={{ mt: 2, mb: 1, color: "white" }}>
+          <Typography sx={{ mt: 2, mb: 1, color: "black" }}>
             All steps completed - you&apos;re finished. <br />
             Are you sure you want to submit?
           </Typography>
         );
-      default:
-        return "Unknown step";
+      case 4:
+        return (
+          <Typography sx={{ mt: 2, mb: 1, color: "black" }}>
+            {isLoading ? "Loading..." : isError ? "Error" : ""}
+          </Typography>
+        );
     }
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh", // Ensure the page covers the full viewport height
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundImage: "url('/signUpBg.jpg')", // path to background image
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <Box className="mainContainer">
       <CssBaseline />
       <Container component="main" maxWidth="xs">
-        <Box
-          sx={{ width: "100%", backgroundColor: "#222021", padding: "20px" }}
-        >
-          <Stepper activeStep={activeStep} connector={<StepConnector />}>
+        <Box className="outerBox">
+          <Typography className="title">Sign Up</Typography>
+          <Stepper
+            className="stepper"
+            activeStep={activeStep}
+            connector={<StepConnector />}
+          >
             {steps.map((label, index) => (
-              <Step key={label}>
-                <CustomStepLabel StepIconComponent={CustomStepIcon}>
-                  {label}
-                </CustomStepLabel>
+              <Step key={label} className="step">
+                <StepLabel className="stepLabel">{label}</StepLabel>
               </Step>
             ))}
           </Stepper>
-          <Box sx={{ mt: 3 }}>
-            <React.Fragment>
-              <Box sx={{ mt: 2, mb: 1, color: "white" }}>
-                {getStepContent(activeStep)}
-              </Box>
-
-              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                <Button
-                  color="inherit"
-                  onClick={handleBack}
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    backgroundColor: "#d9dddc",
-                    color: "black",
-                    "&:hover": {
-                      backgroundColor: "#c0c4c3",
-                    },
-                  }}
-                >
-                  Back
-                </Button>
-                <Box sx={{ flex: "1 1 auto" }} />
-                <Button
-                  onClick={handleNext}
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    ...buttonStyle,
-                  }}
-                >
-                  {activeStep === steps.length - 1
-                    ? "Finish"
-                    : activeStep === steps.length
-                    ? "Submit"
-                    : "Next"}
-                </Button>
-              </Box>
-            </React.Fragment>
+          <Box mt={3}>
+            <Box mt={2} mb={1}>
+              {getStepContent(activeStep)}
+            </Box>
+            <Box display="flex" flexDirection="row" pt={2}>
+              <Button className="buttonBack" onClick={handleBack}>
+                Back
+              </Button>
+              <Box flex="1 1 auto" />
+              <Button className="buttonNext" onClick={handleNext}>
+                {activeStep === steps.length - 1
+                  ? "Finish"
+                  : activeStep === steps.length
+                  ? "Submit"
+                  : "Next"}
+              </Button>
+            </Box>
           </Box>
+        </Box>
+        {/* Image component for background */}
+        <Box className="bgImage">
+          <Image
+            src={require("../images/signUp/signUpBg.png")}
+            alt="Background"
+            layout="fill"
+            objectFit="cover"
+          />
         </Box>
       </Container>
     </Box>

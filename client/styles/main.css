@@ -1,13 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
+
+/* Ensure that the video container takes up the full width and height */
 .video-container {
   position: relative;
   width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.video-container video {
+/* Wrapper to keep the video responsive */
+.video-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
+.video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the video covers the entire area */
+}
+
+/* Overlay text styling */
 .overlay-text {
   position: absolute;
   top: 50%;
@@ -15,50 +31,32 @@
   transform: translate(-50%, -50%);
   color: white;
   text-align: center;
-  font-size: 3rem;
-  z-index: 1; /* Ensure text is above the video */
+  font-size: 2vw; /* Responsive font size */
+  font-family: "Inria Sans", sans-serif;
 }
 
-@media (max-width: 1800px) {
-  .overlay-text {
-    font-size: 2rem; /* Adjust font size for large screens */
-  }
-}
-
-@media (max-width: 1600px) {
-  .overlay-text {
-    font-size: 1.5rem; /* Adjust font size for large screens */
-  }
-}
-
-@media (max-width: 1200px) {
-  .overlay-text {
-    font-size: 1rem; /* Adjust font size for medium screens */
-  }
-}
-
-@media (max-width: 800px) {
-  .overlay-text {
-    font-size: 0.8rem; /* Adjust font size for small screens */
-  }
-}
-
-.content {
-  padding: 20px;
-  text-align: center;
-  font-size: 1.3rem;
+.overlay-text h1 {
+  margin: 0;
 }
 
 .title {
   color: #3d2d69;
   text-align: center;
-  font-size: 3rem;
+  font-size: 3vw;
   font-weight: bold;
 }
 
+.text {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2vw;
+}
+
 .image {
-  width: 500px;
-  height: 500px;
+  width: 30vw;
+  height: auto;
+  max-width: 600px;
+  max-height: 600px;
 }
 
 .margin {
@@ -71,7 +69,7 @@
   padding: 10px 20px;
   border-radius: 30px;
   width: fit-content;
-  font-size: 1.5rem;
+  font-size: 1.5vw;
   font-weight: bold;
 }
 
@@ -87,5 +85,29 @@
 }
 
 .footer {
-    margin: 30px 30px 0 30px ;
+  margin: 30px 30px 0 30px;
+}
+
+@media (max-width: 1280px) {
+  .title {
+    font-size: 4vw;
+  }
+
+  .content {
+    font-size: 1.5vw;
+  }
+
+  .button {
+    font-size: 2vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    font-size: 2vw;
+  }
+
+  .button {
+    font-size: 3vw;
+  }
 }
