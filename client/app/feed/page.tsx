@@ -89,7 +89,7 @@ const MealFeed: React.FC = () => {
       <Button variant="contained" onClick={handleCreateWorkoutPlan} disabled={isLoading}>
         Create Workout Plan
       </Button>
-      
+{/*       
       {isLoading && <Typography>Loading...</Typography>}
       {error && <Typography>Error: {error.toString()}</Typography>}
       {data && data.nutritionalInformation ? (
@@ -99,16 +99,16 @@ const MealFeed: React.FC = () => {
           </Typography>
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={12} md={6} lg={4}>
-              <MealCard mealType="Breakfast" options={data.nutritionalInformation.breakfast} />
+              <MealCard mealType="Breakfast" meals={data.nutritionalInformation.breakfast} />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MealCard mealType="Lunch" options={data.nutritionalInformation.lunch} />
+              <MealCard mealType="Lunch" meals={data.nutritionalInformation.lunch} />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MealCard mealType="Dinner" options={data.nutritionalInformation.dinner} />
+              <MealCard mealType="Dinner" meals={data.nutritionalInformation.dinner} />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <MealCard mealType="Snacks" options={data.nutritionalInformation.snacks} />
+              <MealCard mealType="Snacks" meals={data.nutritionalInformation.snacks} />
             </Grid>
           </Grid>
 
@@ -118,7 +118,7 @@ const MealFeed: React.FC = () => {
           <Grid container spacing={2} justifyContent="center">
             {Object.keys(data.weeklyWorkout).map((day, index) => (
               <Grid item xs={12} md={6} lg={4} key={index}>
-                <WorkoutCard day={day} exercises={data.weeklyWorkout[day]} />
+                <WorkoutCard day={day} plan={data.weeklyWorkout[day]} />
               </Grid>
             ))}
           </Grid>
@@ -126,7 +126,7 @@ const MealFeed: React.FC = () => {
         
       ) : (
         !isLoading && <Typography>No data available</Typography>
-      )}
+      )} */}
     </Box>
   );
 };

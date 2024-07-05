@@ -1,7 +1,11 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
+import Image from "next/image";
+import "../../styles/workoutCard.css"; // Assuming you have a separate CSS file for WorkoutCard styling
 
 interface WorkoutExercise {
+  muscleGroup: string;
+  duration: string;
   name: string;
   description: string;
   reps: string;
@@ -10,23 +14,41 @@ interface WorkoutExercise {
 
 interface WorkoutCardProps {
   day: string;
-  exercises: WorkoutExercise[];
+  exercie: WorkoutExercise;
 }
 
-const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
+const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercie }) => {
+  const backgroundImage = require(`../images/workout/next-workout.png`);
+
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5">{day}</Typography>
-        {exercises.map((exercise, index) => (
-          <div key={index}>
-            <Typography variant="h6">{exercise.name}</Typography>
-            <Typography>
-              Sets: {exercise.sets}, Reps: {exercise.reps}, Description: {exercise.description}
-            </Typography>
-          </div>
-        ))}
+    <Card className="workoutCard">
+      <Image
+        src={backgroundImage}
+        alt={day}
+        layout="fill"
+        className="workoutCardImage"
+      />
+      <Box className="workoutCardOverlay" />
+      <CardContent className="workoutCardContent">
+        <Typography variant="h5" className="workoutCardTitle">
+          {day}
+        </Typography>
       </CardContent>
+      <Grid container className="workoutCardFooter">
+        <Grid item display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+          <Typography className="exercise-description" variant="h4">
+            Mucsles Group
+          </Typography>
+          <Typography className="exercise-description" variant="h6">
+            {exercie.muscleGroup}
+          </Typography>
+          <br />
+          <Typography className="exercise-description" variant="h5">
+            {exercie.duration}
+          </Typography>
+          <Button>Start</Button>
+        </Grid>
+      </Grid>
     </Card>
   );
 };

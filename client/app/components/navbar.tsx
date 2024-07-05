@@ -18,6 +18,7 @@ import { CssBaseline } from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
 const settings = ["Profile", "Logout"];
+const combined = [...pages, ...settings];
 
 function ResponsiveAppBar() {
   const pathname = usePathname();
@@ -71,21 +72,19 @@ function ResponsiveAppBar() {
                 justifyContent: "flex-end",
               }}
             >
-              <Button
-                key={"signIn"}
-                onClick={() => {
-                  window.location.href = "/signIn";
-                }}
-                sx={{
-                  my: 2,
-                  color: "#4e2a84",
-                  display: "block",
-                  margin: "0 10px",
-                  fontWeight: "bold",
-                }}
-              >
-                Sign In
-              </Button>
+              <Link href="/signIn">
+                <Button
+                  sx={{
+                    my: 2,
+                    color: "#4e2a84",
+                    display: "block",
+                    margin: "0 10px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Sign In
+                </Button>
+              </Link>
             </Box>
           )}
           {/* Desktop menu */}
@@ -98,103 +97,101 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{
-                    my: 2,
-                    color: "black",
-                    display: "block",
-                    margin: "0 10px",
-                  }}
-                >
-                  {page}
-                </Button>
+                <Link href={`/${page.toLowerCase()}`} key={page}>
+                  <Button
+                    sx={{
+                      my: 2,
+                      color: "black",
+                      display: "block",
+                      margin: "0 10px",
+                      textDecoration: "none"
+                    }}
+                  >
+                    {page}
+                  </Button>
+                </Link>
               ))}
             </Box>
           )}
           {/* Mobile menu */}
           {!isHomePage && !isSignPage && (
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: { xs: "flex", md: "none" },
-              justifyContent: "flex-end",
-              color: "#4e2a84",
-            }}
-          >
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+            <Box
               sx={{
-                display: { xs: "block", md: "none" },
+                flexGrow: 1,
+                display: { xs: "flex", md: "none" },
+                justifyContent: "flex-end",
+                color: "#4e2a84",
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-              {settings.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          )} 
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {combined.map((page) => (
+                  <Link key={page} href={`/${page.toLowerCase()}`}>
+                    <MenuItem>
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  </Link>
+                ))}
+              </Menu>
+            </Box>
+          )}
           {/* User menu display only in desktop */}
           {!isHomePage && !isSignPage && (
-          <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+            <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
           )}
         </Toolbar>
       </Container>

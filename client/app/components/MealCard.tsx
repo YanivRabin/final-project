@@ -1,38 +1,37 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
-
-interface MealOption {
-  name: string;
-  ingredients: {
-    name: string;
-    carbohydrates: string;
-    fats: string;
-    proteins: string;
-    amount: string;
-  }[];
-}
+import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
+import Image from "next/image";
+import "../../styles/mealCard.css";
 
 interface MealCardProps {
   mealType: string;
-  options: MealOption[];
+  meals: string[];
 }
 
-const MealCard: React.FC<MealCardProps> = ({ mealType, options }) => {
+const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
+  const backgroundImage = require(`../images/food/${mealType}.png`);
+
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5">{mealType}</Typography>
-        {options.map((option, index) => (
-          <div key={index}>
-            <Typography variant="h6">{option.name}</Typography>
-            {option.ingredients.map((ingredient, index2) => (
-              <Typography key={index2}>
-                {ingredient.name}: Carbs {ingredient.carbohydrates}g, Fats {ingredient.fats}g, Proteins {ingredient.proteins}g, Amount: {ingredient.amount}
-              </Typography>
-            ))}
-          </div>
-        ))}
+    <Card className="mealCard">
+      <Image
+        src={backgroundImage}
+        alt={mealType}
+        layout="fill"
+        className="mealCardImage"
+      />
+      <Box className="mealCardOverlay" />
+      <CardContent className="mealCardContent">
+        <Typography variant="h5" className="mealCardTitle">
+          {mealType}
+        </Typography>
       </CardContent>
+      <Grid container className="mealCardFooter">
+        {meals.map((meal, index) => (
+          <Grid item key={index}>
+            <Button>{meal}</Button>
+          </Grid>
+        ))}
+      </Grid>
     </Card>
   );
 };
