@@ -14,10 +14,10 @@ interface WorkoutExercise {
 
 interface WorkoutCardProps {
   day: string;
-  exercie: WorkoutExercise;
+  exercise: WorkoutExercise;
 }
 
-const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercie }) => {
+const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercise }) => {
   const backgroundImage = require(`../images/workout/next-workout.png`);
 
   return (
@@ -40,11 +40,11 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercie }) => {
             Mucsles Group
           </Typography>
           <Typography className="exercise-description" variant="h6">
-            {exercie.muscleGroup}
+            {exercise.muscleGroup}
           </Typography>
           <br />
           <Typography className="exercise-description" variant="h5">
-            {exercie.duration}
+            {exercise.duration}
           </Typography>
           <Button>Start</Button>
         </Grid>

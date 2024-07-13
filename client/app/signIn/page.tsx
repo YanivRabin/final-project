@@ -31,7 +31,7 @@ export default function SignIn() {
         password,
       }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
-      router.push("/feed");
+      router.push("/home");
     } catch (error) {
       setError(
         "Failed to log in. Please check your credentials and try again."

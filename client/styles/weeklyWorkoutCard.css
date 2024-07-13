@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
+
+.workoutCardOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.workoutCard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  margin: 20px;
+}
+
+.workoutCardTitle {
+  font-family: "Inika", serif;
+  font-size: 2rem;
+  width: 180px;
+  margin-right: 100px;
+  font-weight: bold;
+}
+
+.muscleGroup {
+  font-size: 1.2rem;
+  width: 100px;
+  margin-right: 100px;
+  text-align: center;
+}
+
+.duration {
+  font-size: 1.5rem;
+  width: 80px;
+  margin-right: 100px;
+}
+
+.startButton {
+  color: #4e2a84;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1rem;
+}
