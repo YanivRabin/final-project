@@ -25,7 +25,7 @@ export const generateWorkoutPlan = async (profile: User) => {
         Height: ${profile.height}
         Weight: ${profile.weight}
         Workout Goal: ${profile.workoutGoals}
-    Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
+        Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
         Training Frequency: ${profile.daysPerWeek}
         Biological Sex: ${profile.gender}
         Workout Location: ${profile.workoutLocation}
@@ -313,3 +313,153 @@ export const getResponseFromGemini = async () => {
   console.log(text);
   return text;
 };
+
+export const changeWorkoutPlan = async (workoutPlan: WorkoutPlan, changes: Partial<WorkoutPlan>) => {
+  // Combine the existing workout plan with the requested changes
+  const updatedWorkoutPlan = { ...workoutPlan, ...changes };
+
+  const prompt = `
+      Update the following workout and nutrition plan based on the requested changes:
+      
+      Existing Workout Plan:
+      ${JSON.stringify(workoutPlan, null, 2)}
+      
+      Requested Changes:
+      ${JSON.stringify(changes, null, 2)}
+      
+      Please provide the updated workout and nutrition plan in the following JSON format:
+      {
+          "dailyMenu": "string",
+          "weeklyWorkout": {
+              "sunday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "monday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "tuesday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "wednesday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "thursday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "friday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ],
+              "saturday": [
+                  { "name": string, "sets": string, "reps": string, "description": string }
+              ]
+          },
+          "specificCalories": number,
+          "nutritionalInformation": {
+              "breakfast": [
+                  {
+                      "name": string,
+                      "ingredients": [
+                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                      ]
+                  }
+              ],
+              "lunch": [
+                  {
+                      "name": string,
+                      "ingredients": [
+                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                      ]
+                  }
+              ],
+              "dinner": [
+                  {
+                      "name": string,
+                      "ingredients": [
+                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                      ]
+                  }
+              ],
+              "snacks": [
+                  {
+                      "name": string,
+                      "ingredients": [
+                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
+                      ]
+                  }
+              ]
+          }
+      }
+  `;
+
+  const result = await model.generateContent(prompt);
+  // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }
+  // const newWorkoutPlan: WorkoutPlan = new WorkoutPlan(result);
+
+  // Extract and clean the JSON string from the result
+  const jsonString = result.response.candidates[0].content.parts[0].text;
+  const jsonStart = jsonString.indexOf("{");
+  const jsonEnd = jsonString.lastIndexOf("}") + 1;
+  const cleanJsonString = jsonString
+      .slice(jsonStart, jsonEnd)
+      .replace(/\\n/g, "");
+
+  // Parse the JSON string into an object
+  const newWorkoutPlan: WorkoutPlan = JSON.parse(cleanJsonString);
+  // Log the entire updated workout plan object
+  console.log("Received Updated Workout Plan:");
+  console.log("Weekly Workout Schedule:");
+  Object.keys(newWorkoutPlan.weeklyWorkout).forEach((day) => {
+      console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
+      newWorkoutPlan.weeklyWorkout[day].forEach((exercise) => {
+          console.log(
+              `  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`
+          );
+          console.log(`    Description: ${exercise.description}`);
+      });
+  });
+  console.log("\nNutritional Information:");
+  console.log(newWorkoutPlan.dailyMenu);
+  console.log("Specific Calories: " + newWorkoutPlan.specificCalories);
+  console.log("\nBreakfast:");
+  newWorkoutPlan.nutritionalInformation.breakfast.forEach((item, index) => {
+      console.log(`- Breakfast Option ${index + 1}:`);
+      item.ingredients.forEach((ingredient, i) => {
+          console.log(
+              `  - Breakfast Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`
+          );
+      });
+  });
+
+  console.log("\nLunch:");
+  newWorkoutPlan.nutritionalInformation.lunch.forEach((item, index) => {
+      console.log(`- Lunch Option ${index + 1}:`);
+      item.ingredients.forEach((ingredient, i) => {
+          console.log(
+              `  - Lunch Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`
+          );
+      });
+  });
+
+  console.log("\nDinner:");
+  newWorkoutPlan.nutritionalInformation.dinner.forEach((item, index) => {
+      console.log(`- Dinner Option ${index + 1}:`);
+      item.ingredients.forEach((ingredient, i) => {
+          console.log(
+              `  - Dinner Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`
+          );
+      });
+  });
+
+  console.log("\nSnacks:");
+  newWorkoutPlan.nutritionalInformation.snacks.forEach((item, index) => {
+      console.log(`- Snack Option ${index + 1}:`);
+      item.ingredients.forEach((ingredient, i) => {
+          console.log(
+              `  - Snack Raw Material ${i + 1}, ${ingredient.name}: Carbs ${ingredient.carbohydrates}g, Fats ${ingredient.fats}g, Proteins ${ingredient.proteins}g, Amount: ${ingredient.amount}`
+          );
+      });
+  });
+
+  return newWorkoutPlan;
+};
+
