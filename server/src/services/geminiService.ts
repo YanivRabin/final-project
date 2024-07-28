@@ -319,77 +319,22 @@ export const changeWorkoutPlan = async (workoutPlan: WorkoutPlan, changes: Parti
   const updatedWorkoutPlan = { ...workoutPlan, ...changes };
 
   const prompt = `
-      Update the following workout and nutrition plan based on the requested changes:
-      
-      Existing Workout Plan:
-      ${JSON.stringify(workoutPlan, null, 2)}
-      
-      Requested Changes:
-      ${JSON.stringify(changes, null, 2)}
-      
-      Please provide the updated workout and nutrition plan in the following JSON format:
-      {
-          "dailyMenu": "string",
-          "weeklyWorkout": {
-              "sunday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "monday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "tuesday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "wednesday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "thursday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "friday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ],
-              "saturday": [
-                  { "name": string, "sets": string, "reps": string, "description": string }
-              ]
-          },
-          "specificCalories": number,
-          "nutritionalInformation": {
-              "breakfast": [
-                  {
-                      "name": string,
-                      "ingredients": [
-                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
-                      ]
-                  }
-              ],
-              "lunch": [
-                  {
-                      "name": string,
-                      "ingredients": [
-                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
-                      ]
-                  }
-              ],
-              "dinner": [
-                  {
-                      "name": string,
-                      "ingredients": [
-                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
-                      ]
-                  }
-              ],
-              "snacks": [
-                  {
-                      "name": string,
-                      "ingredients": [
-                          { "name": string, "carbohydrates": string, "fats": string, "proteins": string, "amount": string }
-                      ]
-                  }
-              ]
-          }
-      }
-  `;
+    This is my Workout Plan:
+    ${JSON.stringify(workoutPlan, null, 2)}
+    
+    My request refering --only-- to the following sections:
+    ${JSON.stringify(changes, null, 2)}
+    
+    The soulution is good, i want another option instead of this one.
+    Replace this section answer with another replacement.
+
+    Return the updated Workout Plan with only the specified changes applied. Do not alter any other sections.
+    Ensure the response is a complete Workout Plan, maintaining the original goals and nutritional values.
+`;
+
+
+
+
 
   const result = await model.generateContent(prompt);
   // Assuming response.data has the structure { dailyMenu, weeklyWorkout, specificCalories }

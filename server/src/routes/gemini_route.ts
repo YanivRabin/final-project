@@ -394,7 +394,85 @@ router.post('/create-workout', createWorkoutPlan);
  *               - PartialWorkoutPlan
  *             properties:
  *               WorkoutPlan:
- *                 $ref: '#/components/schemas/WorkoutPlan'
+ *                 type: object
+ *                 properties:
+ *                   dailyMenu:
+ *                     type: string
+ *                     example: "Sample daily menu"
+ *                   weeklyWorkout:
+ *                     type: object
+ *                     properties:
+ *                       monday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       tuesday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       wednesday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       thursday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       friday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       saturday:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             name:
+ *                               type: string
+ *                               example: "Lunges"
+ *                             sets:
+ *                               type: string
+ *                               example: "3"
+ *                             reps:
+ *                               type: string
+ *                               example: "12"
+ *                             description:
+ *                               type: string
+ *                               example: "Alternating lunges"
+ *                         example: [
+ *                           {
+ *                             "name": "Lunges",
+ *                             "sets": "3",
+ *                             "reps": "12",
+ *                             "description": "Alternating lunges"
+ *                           }
+ *                         ]
+ *                       sunday:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                   specificCalories:
+ *                     type: integer
+ *                     example: 2500
+ *                   nutritionalInformation:
+ *                     type: object
+ *                     properties:
+ *                       breakfast:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       lunch:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       dinner:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
+ *                       snacks:
+ *                         type: array
+ *                         items: {}
+ *                         example: []
  *               PartialWorkoutPlan:
  *                 type: object
  *                 properties:
@@ -403,89 +481,32 @@ router.post('/create-workout', createWorkoutPlan);
  *                     example: "Updated daily menu"
  *                   weeklyWorkout:
  *                     type: object
- *                     additionalProperties:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           name:
- *                             type: string
- *                             example: "Push-ups"
- *                           sets:
- *                             type: string
- *                             example: "3"
- *                           reps:
- *                             type: string
- *                             example: "10"
- *                           description:
- *                             type: string
- *                             example: "Standard push-ups"
- *                   specificCalories:
- *                     type: integer
- *                     example: 2700
- *                   nutritionalInformation:
- *                     type: object
  *                     properties:
- *                       breakfast:
+ *                       saturday:
  *                         type: array
  *                         items:
  *                           type: object
  *                           properties:
  *                             name:
  *                               type: string
- *                             ingredients:
- *                               type: array
- *                               items:
- *                                 type: object
- *                                 properties:
- *                                   name:
- *                                     type: string
- *                                     example: "Oats"
- *                                   carbohydrates:
- *                                     type: string
- *                                     example: "30g"
- *                                   fats:
- *                                     type: string
- *                                     example: "5g"
- *                                   proteins:
- *                                     type: string
- *                                     example: "7g"
- *                                   amount:
- *                                     type: string
- *                                     example: "50g"
- *                       lunch:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             name:
+ *                               example: "Lunges"
+ *                             sets:
  *                               type: string
- *                             ingredients:
- *                               type: array
- *                               items:
- *                                 type: object
- *                       dinner:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             name:
+ *                               example: "3"
+ *                             reps:
  *                               type: string
- *                             ingredients:
- *                               type: array
- *                               items:
- *                                 type: object
- *                       snacks:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             name:
+ *                               example: "12"
+ *                             description:
  *                               type: string
- *                             ingredients:
- *                               type: array
- *                               items:
- *                                 type: object
+ *                               example: "Alternating lunges"
+ *                         example: [
+ *                           {
+ *                             "name": "Lunges",
+ *                             "sets": "3",
+ *                             "reps": "12",
+ *                             "description": "Alternating lunges"
+ *                           }
+ *                         ]
  *     responses:
  *       200:
  *         description: Successful response
@@ -494,6 +515,7 @@ router.post('/create-workout', createWorkoutPlan);
  */
 router.post('/update-workout-plan', updateWorkoutPlan);
 // #endregion
+
 
 // #region TryGemini GET request
 /**
