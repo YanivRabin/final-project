@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { CssBaseline } from "@mui/material";
 
@@ -61,7 +62,12 @@ function ResponsiveAppBar() {
         <Toolbar disableGutters>
           {/* logo */}
           <Link href="/">
-            <AdbIcon />
+            <Image
+              src={require("../images/navber/logo.png")}
+              alt="logo"
+              width={100}
+              height={20}
+            />
           </Link>
           {/* show sign in button on the main page */}
           {isHomePage && (
@@ -104,7 +110,7 @@ function ResponsiveAppBar() {
                       color: "black",
                       display: "block",
                       margin: "0 10px",
-                      textDecoration: "none"
+                      textDecoration: "none",
                     }}
                   >
                     {page}

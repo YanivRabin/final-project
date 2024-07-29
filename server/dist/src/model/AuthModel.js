@@ -36,6 +36,7 @@ class AuthModel {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield (0, auth_1.signInWithEmailAndPassword)(firebaseConfig_1.auth, email, password);
+                return this.getCurrentUser();
             }
             catch (error) {
                 console.error("Login failed:", error);
@@ -53,6 +54,7 @@ class AuthModel {
                     const userDocRef = (0, firestore_1.doc)(firebaseConfig_1.firestore, "users", firebaseConfig_1.auth.currentUser.uid);
                     yield (0, firestore_1.setDoc)(userDocRef, userDataWithoutPassword);
                 }
+                return this.getCurrentUser();
             }
             catch (error) {
                 console.error("Registration failed:", error);
@@ -92,11 +94,27 @@ class AuthModel {
             }
         });
     }
+    getCurrentUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!firebaseConfig_1.auth.currentUser)
+                return null;
+            const userDocRef = (0, firestore_1.doc)(firebaseConfig_1.firestore, "users", firebaseConfig_1.auth.currentUser.uid);
+            const userDoc = yield (0, firestore_1.getDoc)(userDocRef);
+            if (userDoc.exists()) {
+                return userDoc.data();
+            }
+            else {
+                return null;
+            }
+        });
+    }
 }
 exports.AuthModel = AuthModel;
 const authModelInstance = AuthModel.getInstance();
-exports.signIn = authModelInstance.signIn.bind(authModelInstance);
-exports.signUp = authModelInstance.signUp.bind(authModelInstance);
+const signIn = (email, password) => authModelInstance.signIn(email, password);
+exports.signIn = signIn;
+const signUp = (user) => authModelInstance.signUp(user);
+exports.signUp = signUp;
 // // Google Authentication
 // const googleProvider = new firebase.auth.GoogleAuthProvider();
 // function signInWithGoogle(): Promise<{ user: firebase.User | null, token: string | undefined }> {

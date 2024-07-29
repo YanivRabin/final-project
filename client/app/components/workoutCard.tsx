@@ -1,23 +1,35 @@
 import React from "react";
-import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Box,
+  Button,
+} from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
 import "../../styles/workoutCard.css"; // Assuming you have a separate CSS file for WorkoutCard styling
 
-interface WorkoutExercise {
-  muscleGroup: string;
-  duration: string;
+interface Exercise {
   name: string;
   description: string;
   reps: string;
   sets: string;
 }
 
-interface WorkoutCardProps {
-  day: string;
-  exercise: WorkoutExercise;
+interface WorkoutDetails {
+  muscleGroup: string;
+  duration: string;
+  exercise: Exercise[];
 }
 
-const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercise }) => {
+interface WorkoutCardProps {
+  day: string;
+  exercises: WorkoutDetails;
+}
+
+const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
   const backgroundImage = require(`../images/workout/next-workout.png`);
 
   return (
@@ -35,18 +47,32 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercise }) => {
         </Typography>
       </CardContent>
       <Grid container className="workoutCardFooter">
-        <Grid item display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Grid
+          item
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Typography className="exercise-description" variant="h4">
             Mucsles Group
           </Typography>
           <Typography className="exercise-description" variant="h6">
-            {exercise.muscleGroup}
+            {exercises.muscleGroup}
           </Typography>
           <br />
           <Typography className="exercise-description" variant="h5">
-            {exercise.duration}
+            {exercises.duration}
           </Typography>
-          <Button>Start</Button>
+          <Link
+            href={{
+              pathname: "/workoutDetail",
+              query: { workout: JSON.stringify(exercises) },
+            }}
+            passHref
+          >
+            <Button>Start</Button>
+          </Link>
         </Grid>
       </Grid>
     </Card>

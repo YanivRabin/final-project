@@ -17,19 +17,21 @@ const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
 // The Gemini 1.5 models are versatile and work with most use cases
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(profile);
+    console.log("daietry ", profile.dietaryRestrictions);
     const prompt = `
         Create a detailed workout and nutrition plan for a user with the following profile:
         Age: ${profile.age}
         Height: ${profile.height}
         Weight: ${profile.weight}
-        Workout Goal: ${profile.workoutGoal}
-        Allergies: ${profile.allergies.join(', ')}
-        Training Frequency: ${profile.trainingFrequency}
-        Biological Sex: ${profile.biologicalSex}
+        Workout Goal: ${profile.workoutGoals}
+    Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
+        Training Frequency: ${profile.daysPerWeek}
+        Biological Sex: ${profile.gender}
         Workout Location: ${profile.workoutLocation}
         Minutes Per Workout: ${profile.minutesPerWorkout}
         Include Warmup: ${profile.includeWarmup}
-        Include Stretching: ${profile.includeStretching}
+        Include Stretching: ${profile.includeStreching}
 
         Please provide the following details:
         1. A detailed weekly workout schedule including daily workouts:
@@ -218,17 +220,19 @@ const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, funct
     // const workoutPlan: WorkoutPlan = new WorkoutPlan(result);
     // // Extract and clean the JSON string from the result
     const jsonString = result.response.candidates[0].content.parts[0].text;
-    const jsonStart = jsonString.indexOf('{');
-    const jsonEnd = jsonString.lastIndexOf('}') + 1;
-    const cleanJsonString = jsonString.slice(jsonStart, jsonEnd).replace(/\\n/g, '');
+    const jsonStart = jsonString.indexOf("{");
+    const jsonEnd = jsonString.lastIndexOf("}") + 1;
+    const cleanJsonString = jsonString
+        .slice(jsonStart, jsonEnd)
+        .replace(/\\n/g, "");
     // Parse the JSON string into an object
     const workoutPlan = JSON.parse(cleanJsonString);
     // Log the entire workout plan object
     console.log("Received Workout Plan:");
     console.log("Weekly Workout Schedule:");
-    Object.keys(workoutPlan.weeklyWorkout).forEach(day => {
+    Object.keys(workoutPlan.weeklyWorkout).forEach((day) => {
         console.log(day.charAt(0).toUpperCase() + day.slice(1) + ":");
-        workoutPlan.weeklyWorkout[day].forEach(exercise => {
+        workoutPlan.weeklyWorkout[day].forEach((exercise) => {
             console.log(`  - ${exercise.name}: ${exercise.sets} sets x ${exercise.reps} reps`);
             console.log(`    Description: ${exercise.description}`);
         });
