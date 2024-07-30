@@ -21,7 +21,6 @@ export default function Main() {
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
             title="man_traning"
           />
-          {/* <video src="https://vimeo.com/991923914" autoPlay muted loop /> */}
           <div className="overlay-text">
             <h1>
               Welcome to the world
@@ -175,7 +174,7 @@ export default function Main() {
         <p className="MuiTypography-root MuiTypography-body2 MuiTypography-alignCenter css-1jm6nq8">
           Copyright ©{" "}
           <a className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1i1yl23">
-            FITNESS
+            TRAINER
           </a>{" "}
           2024.
         </p>
