@@ -71,7 +71,6 @@ export const handleNutritionalTipRequest = async (req: Request, res: Response) =
     }
   };
   
-
 export const tryGemini = async (req: Request, res: Response) => {
     console.log("Request received at /try-gemini");
     try {

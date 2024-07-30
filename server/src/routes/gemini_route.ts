@@ -610,7 +610,6 @@ router.get('/try-gemini', tryGemini);
 router.post('/get-recipe', getRecipe);
 // #endregion
 
-
 // #region GetNutritionalTip GET request
 /**
  * @swagger

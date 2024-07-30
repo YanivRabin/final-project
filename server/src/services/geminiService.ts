@@ -6,8 +6,6 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // Access your API key as an environment variable (see "Set up your API key" above)
 const genAI = new GoogleGenerativeAI("AIzaSyDg-m-XGj7-woIcJ_yy-NSnVM83XnQ6Ric");
 
-// ...
-
 // The Gemini 1.5 models are versatile and work with most use cases
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -35,7 +33,7 @@ export const generateWorkoutPlan = async (profile: User) => {
 
         Please provide the following details:
         1. A detailed weekly workout schedule including daily workouts:
-           For each day, list the exercises, how many times they should be done, and a brief description of each exercise.
+           For each day, list the exercises, how many times they should be done, and a brief description of each exercise and what muscle does the exercise work on, add emojis in the description.
            Example:
            Sunday:
            - Exercise 1: 3 sets of 10 reps, description of Exercise 1
@@ -303,7 +301,6 @@ export const generateWorkoutPlan = async (profile: User) => {
   return workoutPlan;
 };
 
-
 export const changeWorkoutPlan = async (workoutPlan: WorkoutPlan, changes: Partial<WorkoutPlan>) => {
   // Combine the existing workout plan with the requested changes
   const updatedWorkoutPlan = { ...workoutPlan, ...changes };
@@ -417,17 +414,6 @@ export const getRecipeFromGemini = async (mealJson) => {
   return response;
 };
 
-export const getResponseFromGemini = async () => {
-  console.log("Generating content from Gemini API");
-  const prompt = "Write a story about a magic backpack.";
-  const result = await model.generateContent(prompt);
-  console.log("Content generated from Gemini API" + result);
-  const response = await result.response;
-  const text = response.text();
-  console.log(text);
-  return text;
-};
-
 export const fetchNutritionalTip = async () => {
   console.log("Fetching nutritional tip from Gemini API");
   const prompt = "Provide a daily nutritional or fitness tip and include some emojis for visual appeal.";
@@ -437,4 +423,15 @@ export const fetchNutritionalTip = async () => {
   const text = await response.text();
   console.log(text);
   return response;
+};
+
+export const getResponseFromGemini = async () => {
+  console.log("Generating content from Gemini API");
+  const prompt = "Write a story about a magic backpack.";
+  const result = await model.generateContent(prompt);
+  console.log("Content generated from Gemini API" + result);
+  const response = await result.response;
+  const text = response.text();
+  console.log(text);
+  return text;
 };
