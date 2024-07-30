@@ -91,6 +91,19 @@ const workoutData = {
         reps: "5",
         sets: "3",
       },
+      {
+        name: "Rows",
+        description:
+          "Hold a dumbbell in each hand, hinge at the hips, then pull the weights up to your sides, keeping your elbows close to your body.",
+        reps: "12",
+        sets: "3",
+      },
+      {
+        name: "Reverse Flys",
+        description: "Bend forward at the hips, then raise the weights out to the sides, squeezing your shoulder blades together.",
+        reps: "15",
+        sets: "3",
+      }
     ],
   },
   Wednesday: {

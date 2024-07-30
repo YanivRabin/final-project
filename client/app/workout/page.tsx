@@ -148,13 +148,23 @@ const Workout: React.FC = () => {
       sx={{
         height: "100vh",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <CssBaseline />
+      <Typography
+        variant="h2"
+        sx={{
+          marginBottom: "4rem",
+          color: "#4e2a84",
+          position: "relative",
+        }}
+      >
+        WEEKLY PLAN
+      </Typography>
       <Grid container alignItems="center" justifyContent="center">
-        {/* Workout card */}
         <Grid item>
           <Grid
             container

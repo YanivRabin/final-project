@@ -7,19 +7,21 @@ import "../styles/main.css";
 import Link from "next/link";
 
 export default function Main() {
-
   return (
     <Box display="flex" flexDirection="column">
       <CssBaseline />
       {/* video */}
       <Grid className="video-container">
         <div className="video-wrapper">
-          <video
-            src={require("./images/main/man_traning.mp4")}
-            autoPlay
-            muted
-            loop
+          <iframe
+             src="https://player.vimeo.com/video/991923914?autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0"
+            width="2072"
+            height="1108"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+            title="man_traning"
           />
+          {/* <video src="https://vimeo.com/991923914" autoPlay muted loop /> */}
           <div className="overlay-text">
             <h1>
               Welcome to the world
