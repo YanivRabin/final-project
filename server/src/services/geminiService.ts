@@ -303,16 +303,6 @@ export const generateWorkoutPlan = async (profile: User) => {
   return workoutPlan;
 };
 
-export const getResponseFromGemini = async () => {
-  console.log("Generating content from Gemini API");
-  const prompt = "Write a story about a magic backpack.";
-  const result = await model.generateContent(prompt);
-  console.log("Content generated from Gemini API" + result);
-  const response = await result.response;
-  const text = response.text();
-  console.log(text);
-  return text;
-};
 
 export const changeWorkoutPlan = async (workoutPlan: WorkoutPlan, changes: Partial<WorkoutPlan>) => {
   // Combine the existing workout plan with the requested changes
@@ -427,3 +417,24 @@ export const getRecipeFromGemini = async (mealJson) => {
   return response;
 };
 
+export const getResponseFromGemini = async () => {
+  console.log("Generating content from Gemini API");
+  const prompt = "Write a story about a magic backpack.";
+  const result = await model.generateContent(prompt);
+  console.log("Content generated from Gemini API" + result);
+  const response = await result.response;
+  const text = response.text();
+  console.log(text);
+  return text;
+};
+
+export const fetchNutritionalTip = async () => {
+  console.log("Fetching nutritional tip from Gemini API");
+  const prompt = "Provide a daily nutritional or fitness tip and include some emojis for visual appeal.";
+  const result = await model.generateContent(prompt);
+  console.log("Nutritional tip received from Gemini API: " + result);
+  const response = await result.response;
+  const text = await response.text();
+  console.log(text);
+  return response;
+};

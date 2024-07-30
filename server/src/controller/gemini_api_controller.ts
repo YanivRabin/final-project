@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { generateWorkoutPlan, getResponseFromGemini, changeWorkoutPlan, getRecipeFromGemini} from '../services/geminiService';
+import { generateWorkoutPlan, getResponseFromGemini, changeWorkoutPlan, fetchNutritionalTip, getRecipeFromGemini} from '../services/geminiService';
 import { User } from '../model/AuthModel';
 
 export const createWorkoutPlan = async (req: Request, res: Response) => {
@@ -58,6 +58,19 @@ export const getRecipe = async (req: Request, res: Response) => {
     }
 };
 
+export const handleNutritionalTipRequest = async (req: Request, res: Response) => {
+    console.log("Request made to /get-nutritional-tip");
+    try {
+      console.log("Processing request to Gemini API for nutritional tip");
+      const tip = await fetchNutritionalTip();
+      const text = await tip.text(); // Get the text from the response
+      res.status(200).json({ text });
+    } catch (error) {
+      console.error("Error fetching nutritional tip from Gemini:", error);
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 export const tryGemini = async (req: Request, res: Response) => {
     console.log("Request received at /try-gemini");

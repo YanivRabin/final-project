@@ -1,5 +1,5 @@
 import express from 'express';
-import { createWorkoutPlan, updateWorkoutPlan, getRecipe,tryGemini } from '../controller/gemini_api_controller';
+import { createWorkoutPlan, updateWorkoutPlan, getRecipe, handleNutritionalTipRequest, tryGemini } from '../controller/gemini_api_controller';
 const router = express.Router();
 
 console.log("Registering routes");
@@ -608,6 +608,25 @@ router.get('/try-gemini', tryGemini);
  *         description: Internal server error
  */
 router.post('/get-recipe', getRecipe);
+// #endregion
+
+
+// #region GetNutritionalTip GET request
+/**
+ * @swagger
+ * /api/gemini/get-nutritional-tip:
+ *   get:
+ *     summary: Get a daily nutritional or fitness tip
+ *     tags: [Tips]
+ *     description: Retrieve a daily nutritional or fitness tip from Gemini API
+ *     responses:
+ *       200:
+ *         description: Successful response with a tip
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/get-nutritional-tip', handleNutritionalTipRequest);
+// #endregion
 
 
 export default router;
