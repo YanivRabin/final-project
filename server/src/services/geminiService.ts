@@ -408,3 +408,22 @@ export const changeWorkoutPlan = async (workoutPlan: WorkoutPlan, changes: Parti
   return newWorkoutPlan;
 };
 
+export const getRecipeFromGemini = async (mealJson) => {
+  console.log("Generating recipe from Gemini API");
+  const prompt = `
+    Create a recipe for the following meal using only the ingredients and quantities specified. Do not add any additional ingredients.
+    Meal: ${mealJson.name}
+    Ingredients:
+    ${mealJson.ingredients.map(ingredient => `
+      - ${ingredient.name}: ${ingredient.amount} (Carbs: ${ingredient.carbohydrates}g, Fats: ${ingredient.fats}g, Proteins: ${ingredient.proteins}g)
+    `).join('')}
+    Please return the recipe as an ordered list with emojis for steps.
+  `;
+  const result = await model.generateContent(prompt);
+  console.log("Content generated from Gemini API" + result);
+  const response = await result.response;
+  const text = await response.text();
+  console.log(text);
+  return response;
+};
+

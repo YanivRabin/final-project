@@ -1,5 +1,5 @@
 import express from 'express';
-import { createWorkoutPlan, updateWorkoutPlan, tryGemini } from '../controller/gemini_api_controller';
+import { createWorkoutPlan, updateWorkoutPlan, getRecipe,tryGemini } from '../controller/gemini_api_controller';
 const router = express.Router();
 
 console.log("Registering routes");
@@ -516,7 +516,6 @@ router.post('/create-workout', createWorkoutPlan);
 router.post('/update-workout-plan', updateWorkoutPlan);
 // #endregion
 
-
 // #region TryGemini GET request
 /**
  * @swagger
@@ -534,6 +533,81 @@ router.post('/update-workout-plan', updateWorkoutPlan);
 
 router.get('/try-gemini', tryGemini);
 // #endregion
+
+// #region GetRecipeFromGemini POST request
+/**
+ * @swagger
+ * /api/gemini/get-recipe:
+ *   post:
+ *     summary: Generate a recipe from Gemini API
+ *     tags: [Recipe API]
+ *     description: Generate a recipe for a meal based on the provided ingredients and quantities using Gemini API.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - ingredients
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Oatmeal with Berries and Protein Powder"
+ *               ingredients:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       example: "Rolled Oats"
+ *                     carbohydrates:
+ *                       type: string
+ *                       example: "66"
+ *                     fats:
+ *                       type: string
+ *                       example: "6"
+ *                     proteins:
+ *                       type: string
+ *                       example: "13"
+ *                     amount:
+ *                       type: string
+ *                       example: "50g"
+ *                 example:
+ *                   - name: "Rolled Oats"
+ *                     carbohydrates: "66"
+ *                     fats: "6"
+ *                     proteins: "13"
+ *                     amount: "50g"
+ *                   - name: "Blueberries"
+ *                     carbohydrates: "14"
+ *                     fats: "0"
+ *                     proteins: "0"
+ *                     amount: "100g"
+ *                   - name: "Strawberries"
+ *                     carbohydrates: "7"
+ *                     fats: "0"
+ *                     proteins: "1"
+ *                     amount: "100g"
+ *                   - name: "Whey Protein Powder"
+ *                     carbohydrates: "5"
+ *                     fats: "1"
+ *                     proteins: "25"
+ *                     amount: "30g"
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *               example: "1. 🥣 Cook 50g of Rolled Oats. \n2. 🫐 Add 100g of Blueberries. \n3. 🍓 Add 100g of Strawberries. \n4. 💪 Mix in 30g of Whey Protein Powder. \n5. Enjoy your Oatmeal with Berries and Protein Powder!"
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/get-recipe', getRecipe);
 
 
 export default router;
