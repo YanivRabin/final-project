@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { generateWorkoutPlan, getResponseFromGemini, changeWorkoutPlan, fetchNutritionalTip, getRecipeFromGemini} from '../services/geminiService';
-import { User } from '../model/AuthModel';
+import { User } from '../model/user_model'; // Import the UserModel interface
 
 export const createWorkoutPlan = async (req: Request, res: Response) => {
     try {
-        const userProfile: User = req.body;
+        const userProfile: User = req.body; // Use the UserModel interface instead of typeof User
         const workoutPlanData = await generateWorkoutPlan(userProfile);
         
         // Save the workout plan to the database

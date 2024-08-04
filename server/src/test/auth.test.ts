@@ -1,34 +1,30 @@
-import { AuthModel } from '../model/AuthModel';
+import request from 'supertest';
+import initApp from '../app';
+import mongoose from 'mongoose';
+import User from '../model/user_model';
+import express from 'express';
 
-describe('AuthModel', () => {
-  let authModel: AuthModel;
+let app: express.Application;
+let accessToken: string = "";
+let refreshToken: string = "";
 
-  beforeEach(() => {
-    authModel = AuthModel.getInstance();
-  });
-
-  afterEach(() => {
-    // Clear user authentication state after each test
-    authModel.logout();
-  });
-
-  it('should sign up a user successfully', async () => {
-    const testUser = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john6@example.com',
-      password: 'password123',
-      gender: 'male',
-      age: 25,
-      height: 180,
-      weight: 75,
-      workoutGoals: 'Build muscle',
-      daysPerWeek: 3,
-      minutesPerWorkout: 60,
-      workoutLocation: 'Gym',
-      includeWarmup: true,
-      includeStreching: true,
-      dietaryRestrictions: {
+// Updated user object with all required fields
+const user = {
+    firstName: "Yaniv",
+    lastName: "Rabin",
+    email: "yaniv@rabin.com",
+    password: "yanivrabin",
+    gender: "Male",
+    age: 30,
+    height: 180,
+    weight: 75,
+    workoutGoals: "Build Muscle",
+    daysPerWeek: 4,
+    minutesPerWorkout: 60,
+    workoutLocation: "Gym",
+    includeWarmup: true,
+    includeStreching: true,
+    dietaryRestrictions: {
         vegan: false,
         vegetarian: false,
         pescatarian: false,
@@ -42,26 +38,129 @@ describe('AuthModel', () => {
         kosher: false,
         halal: false,
         other: ''
-      }
-    };
+    },
+    tokens: []
+};
 
-    // Sign up the user
-    await authModel.signUp(testUser);
+beforeAll(async () => {
+  jest.setTimeout(10000); // Set timeout to 10 seconds for this hook
+  console.log("beforeAll");
+  app = await initApp();
+  await User.deleteMany();
+});
 
-    // Ensure the user is signed up
-    expect(authModel.isUserLoggedIn()).toBe(true);
-  });
+afterAll((done) => {
+    mongoose.connection.close()
+    done();
+});
 
-  it('should sign in a user successfully', async () => {
-    const testUser = {
-      email: 'john@example.com',
-      password: 'password123',
-    };
+describe("-- Auth tests --", () => {
 
-    // Sign in the user
-    await authModel.signIn(testUser.email, testUser.password);
+    test("test register - success", async () => {
+        const res = await request(app)
+            .post("/auth/register")
+            .send(user);
+        expect(res.statusCode).toBe(201);
+    });
 
-    // Ensure the user is signed in
-    expect(authModel.isUserLoggedIn()).toBe(true);
-  });
+    test("test register - exist email", async () => {
+        await request(app)
+            .post("/auth/register")
+            .send(user);
+        const res = await request(app)
+            .post("/auth/register")
+            .send(user);
+        expect(res.statusCode).toBe(406);
+    });
+
+    test("test register - missing required fields", async () => {
+        const response = await request(app)
+            .post("/auth/register")
+            .send({ email: "test@fail.com" });
+        expect(response.statusCode).toBe(400);
+    });
+
+    test("test login - success", async () => {
+        await request(app).post("/auth/register").send(user);
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ email: user.email, password: user.password });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.accessToken).not.toBe(null);
+        expect(res.body.refreshToken).not.toBe(null);
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+    });
+
+    test("test login - missing password", async () => {
+        await request(app).post("/auth/register").send(user);
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ email: user.email });
+        expect(res.statusCode).toBe(400);
+    });
+
+    test("test login - wrong password", async () => {
+        await request(app).post("/auth/register").send(user);
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ email: user.email, password: "wrongpassword" });
+        expect(res.statusCode).toBe(401);
+    });
+
+    test("test token - forbidden access without token", async () => {
+        const res = await request(app).get("/posts/getAllPosts");
+        expect(res.statusCode).toBe(401);
+    });
+
+    test("test token - success", async () => {
+        const res = await request(app)
+            .get("/posts/getAllPosts")
+            .set("Authorization", "Bearer " + accessToken);
+        expect(res.statusCode).toBe(200);
+    });
+
+    test("test token - invalid token", async () => {
+        const res = await request(app)
+            .get("/posts/getAllPosts")
+            .set("Authorization", "Bearer " + accessToken + "1");
+        expect(res.statusCode).toBe(401);
+    });
+
+    // Uncomment and adjust if necessary for token expiration
+    // test("test token - expired token", async () => {
+    //     await new Promise(resolve => setTimeout(resolve, 4000));
+    //     const res = await request(app)
+    //         .get("/posts/getAllPosts")
+    //         .set("Authorization", "Bearer " + accessToken);
+    //     expect(res.statusCode).toBe(401);
+    // });
+
+    test("test refresh token - success", async () => {
+        const res = await request(app)
+            .get("/auth/refreshToken")
+            .set("Authorization", "Bearer " + refreshToken)
+            .send();
+        expect(res.statusCode).toBe(200);
+        expect(res.body.accessToken).not.toBe(null);
+        expect(res.body.refreshToken).not.toBe(null);
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+        const res2 = await request(app)
+            .get("/posts/getAllPosts")
+            .set("Authorization", "Bearer " + accessToken);
+        expect(res2.statusCode).toBe(200);
+    });
+
+    test("test logout - success", async () => {
+        const res = await request(app)
+            .get("/auth/logout")
+            .set("Authorization", "Bearer " + accessToken);
+        expect(res.statusCode).toBe(200);
+        const res2 = await request(app)
+            .get("/auth/refreshToken")
+            .set("Authorization", "Bearer " + refreshToken)
+            .send();
+        expect(res2.statusCode).toBe(403);
+    });
 });
