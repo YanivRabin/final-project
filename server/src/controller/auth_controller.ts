@@ -6,27 +6,36 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const register = async (req: Request, res: Response) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  if (!email || !password) {
-    return res.status(400).send("Missing email or password");
+  const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions } = req.body;
+  if (!email || !password || !firstName || !lastName || !gender || !age || !height || !weight || !workoutGoals || !daysPerWeek || !minutesPerWorkout || !workoutLocation || includeWarmup === undefined || includeStreching === undefined || !dietaryRestrictions) {
+    return res.status(400).send("Missing required fields");
   }
   try {
-    // Check if user exists
-    const existUser = await User.findOne({ email: email });
+    const existUser = await User.findOne({ email });
     if (existUser != null) {
       return res.status(406).send("Email already exists");
     }
 
-    // Encrypt password and save user
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
     const user = await User.create({
-      email: email,
+      email,
       password: encryptedPassword,
+      firstName,
+      lastName,
+      gender,
+      age,
+      height,
+      weight,
+      workoutGoals,
+      daysPerWeek,
+      minutesPerWorkout,
+      workoutLocation,
+      includeWarmup,
+      includeStreching,
+      dietaryRestrictions,
     });
 
-    // Create tokens
     const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
     });
@@ -35,15 +44,13 @@ const register = async (req: Request, res: Response) => {
       process.env.JWT_REFRESH_SECRET
     );
 
-    // Save refresh token in db
     user.tokens = [refreshToken];
     await user.save();
 
-    // Send tokens to client
     return res.status(201).send({
-      user: user,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      user,
+      accessToken,
+      refreshToken,
     });
   } catch (err) {
     console.log("error: " + err.message);

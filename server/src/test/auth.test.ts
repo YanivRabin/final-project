@@ -43,16 +43,17 @@ describe('Authentication Endpoints', () => {
       expect(response.body.user).toHaveProperty('email', 'test@example.com');
     });
 
-    it('should return 400 if email or password is missing', async () => {
+    it('should return 400 if required fields are missing', async () => {
       const response = await request(app)
         .post('/api/auth/register')
         .send({ email: 'test@example.com' }); // Missing other required fields
 
       expect(response.status).toBe(400);
-      expect(response.text).toBe('Missing email or password');
+      expect(response.text).toBe('Missing required fields'); // Updated expected message
     });
 
     it('should return 406 if email already exists', async () => {
+      // First registration
       await request(app)
         .post('/api/auth/register')
         .send({
@@ -73,6 +74,7 @@ describe('Authentication Endpoints', () => {
           dietaryRestrictions: {}
         });
 
+      // Attempt to register with the same email
       const response = await request(app)
         .post('/api/auth/register')
         .send({
@@ -100,6 +102,7 @@ describe('Authentication Endpoints', () => {
 
   describe('POST /api/auth/login', () => {
     it('should login a user and return tokens', async () => {
+      // Register a user for login testing
       await request(app)
         .post('/api/auth/register')
         .send({
@@ -120,6 +123,7 @@ describe('Authentication Endpoints', () => {
           dietaryRestrictions: {}
         });
 
+      // Login with the registered user credentials
       const response = await request(app)
         .post('/api/auth/login')
         .send({
@@ -133,6 +137,7 @@ describe('Authentication Endpoints', () => {
     });
 
     it('should return 401 if email or password is incorrect', async () => {
+      // Register a user for login testing
       await request(app)
         .post('/api/auth/register')
         .send({
@@ -153,6 +158,7 @@ describe('Authentication Endpoints', () => {
           dietaryRestrictions: {}
         });
 
+      // Attempt to login with incorrect password
       const response = await request(app)
         .post('/api/auth/login')
         .send({

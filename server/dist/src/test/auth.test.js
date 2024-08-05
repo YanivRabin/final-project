@@ -50,14 +50,15 @@ describe('Authentication Endpoints', () => {
             expect(response.body).toHaveProperty('refreshToken');
             expect(response.body.user).toHaveProperty('email', 'test@example.com');
         }));
-        it('should return 400 if email or password is missing', () => __awaiter(void 0, void 0, void 0, function* () {
+        it('should return 400 if required fields are missing', () => __awaiter(void 0, void 0, void 0, function* () {
             const response = yield (0, supertest_1.default)(app)
                 .post('/api/auth/register')
                 .send({ email: 'test@example.com' }); // Missing other required fields
             expect(response.status).toBe(400);
-            expect(response.text).toBe('Missing email or password');
+            expect(response.text).toBe('Missing required fields'); // Updated expected message
         }));
         it('should return 406 if email already exists', () => __awaiter(void 0, void 0, void 0, function* () {
+            // First registration
             yield (0, supertest_1.default)(app)
                 .post('/api/auth/register')
                 .send({
@@ -77,6 +78,7 @@ describe('Authentication Endpoints', () => {
                 includeStreching: true,
                 dietaryRestrictions: {}
             });
+            // Attempt to register with the same email
             const response = yield (0, supertest_1.default)(app)
                 .post('/api/auth/register')
                 .send({
@@ -102,6 +104,7 @@ describe('Authentication Endpoints', () => {
     });
     describe('POST /api/auth/login', () => {
         it('should login a user and return tokens', () => __awaiter(void 0, void 0, void 0, function* () {
+            // Register a user for login testing
             yield (0, supertest_1.default)(app)
                 .post('/api/auth/register')
                 .send({
@@ -121,6 +124,7 @@ describe('Authentication Endpoints', () => {
                 includeStreching: true,
                 dietaryRestrictions: {}
             });
+            // Login with the registered user credentials
             const response = yield (0, supertest_1.default)(app)
                 .post('/api/auth/login')
                 .send({
@@ -132,6 +136,7 @@ describe('Authentication Endpoints', () => {
             expect(response.body).toHaveProperty('refreshToken');
         }));
         it('should return 401 if email or password is incorrect', () => __awaiter(void 0, void 0, void 0, function* () {
+            // Register a user for login testing
             yield (0, supertest_1.default)(app)
                 .post('/api/auth/register')
                 .send({
@@ -151,6 +156,7 @@ describe('Authentication Endpoints', () => {
                 includeStreching: true,
                 dietaryRestrictions: {}
             });
+            // Attempt to login with incorrect password
             const response = yield (0, supertest_1.default)(app)
                 .post('/api/auth/login')
                 .send({

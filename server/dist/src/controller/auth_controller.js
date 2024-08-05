@@ -17,37 +17,44 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const email = req.body.email;
-    const password = req.body.password;
-    if (!email || !password) {
-        return res.status(400).send("Missing email or password");
+    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions } = req.body;
+    if (!email || !password || !firstName || !lastName || !gender || !age || !height || !weight || !workoutGoals || !daysPerWeek || !minutesPerWorkout || !workoutLocation || includeWarmup === undefined || includeStreching === undefined || !dietaryRestrictions) {
+        return res.status(400).send("Missing required fields");
     }
     try {
-        // Check if user exists
-        const existUser = yield user_model_1.default.findOne({ email: email });
+        const existUser = yield user_model_1.default.findOne({ email });
         if (existUser != null) {
             return res.status(406).send("Email already exists");
         }
-        // Encrypt password and save user
         const salt = yield bcrypt_1.default.genSalt(10);
         const encryptedPassword = yield bcrypt_1.default.hash(password, salt);
         const user = yield user_model_1.default.create({
-            email: email,
+            email,
             password: encryptedPassword,
+            firstName,
+            lastName,
+            gender,
+            age,
+            height,
+            weight,
+            workoutGoals,
+            daysPerWeek,
+            minutesPerWorkout,
+            workoutLocation,
+            includeWarmup,
+            includeStreching,
+            dietaryRestrictions,
         });
-        // Create tokens
         const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRATION,
         });
         const refreshToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET);
-        // Save refresh token in db
         user.tokens = [refreshToken];
         yield user.save();
-        // Send tokens to client
         return res.status(201).send({
-            user: user,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+            user,
+            accessToken,
+            refreshToken,
         });
     }
     catch (err) {
