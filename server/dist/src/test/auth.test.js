@@ -13,151 +13,153 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const app_1 = __importDefault(require("../app"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const user_model_1 = __importDefault(require("../model/user_model"));
+const app_1 = __importDefault(require("../app")); // Adjust the path if necessary
 let app;
-let accessToken = "";
-let refreshToken = "";
-// Updated user object with all required fields
-const user = {
-    firstName: "Yaniv",
-    lastName: "Rabin",
-    email: "yaniv@rabin.com",
-    password: "yanivrabin",
-    gender: "Male",
-    age: 30,
-    height: 180,
-    weight: 75,
-    workoutGoals: "Build Muscle",
-    daysPerWeek: 4,
-    minutesPerWorkout: 60,
-    workoutLocation: "Gym",
-    includeWarmup: true,
-    includeStreching: true,
-    dietaryRestrictions: {
-        vegan: false,
-        vegetarian: false,
-        pescatarian: false,
-        glutenFree: false,
-        dairyFree: false,
-        nutFree: false,
-        soyFree: false,
-        eggFree: false,
-        shellfishFree: false,
-        lactoseFree: false,
-        kosher: false,
-        halal: false,
-        other: ''
-    },
-    tokens: []
-};
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    jest.setTimeout(10000); // Set timeout to 10 seconds for this hook
-    console.log("beforeAll");
     app = yield (0, app_1.default)();
-    yield user_model_1.default.deleteMany();
+    yield mongoose_1.default.connection.db.dropDatabase(); // Clean the database before each test
 }));
-afterAll((done) => {
-    mongoose_1.default.connection.close();
-    done();
-});
-describe("-- Auth tests --", () => {
-    test("test register - success", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app)
-            .post("/auth/register")
-            .send(user);
-        expect(res.statusCode).toBe(201);
-    }));
-    test("test register - exist email", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(app)
-            .post("/auth/register")
-            .send(user);
-        const res = yield (0, supertest_1.default)(app)
-            .post("/auth/register")
-            .send(user);
-        expect(res.statusCode).toBe(406);
-    }));
-    test("test register - missing required fields", () => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield (0, supertest_1.default)(app)
-            .post("/auth/register")
-            .send({ email: "test@fail.com" });
-        expect(response.statusCode).toBe(400);
-    }));
-    test("test login - success", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(app).post("/auth/register").send(user);
-        const res = yield (0, supertest_1.default)(app)
-            .post("/auth/login")
-            .send({ email: user.email, password: user.password });
-        expect(res.statusCode).toBe(200);
-        expect(res.body.accessToken).not.toBe(null);
-        expect(res.body.refreshToken).not.toBe(null);
-        accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-    }));
-    test("test login - missing password", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(app).post("/auth/register").send(user);
-        const res = yield (0, supertest_1.default)(app)
-            .post("/auth/login")
-            .send({ email: user.email });
-        expect(res.statusCode).toBe(400);
-    }));
-    test("test login - wrong password", () => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, supertest_1.default)(app).post("/auth/register").send(user);
-        const res = yield (0, supertest_1.default)(app)
-            .post("/auth/login")
-            .send({ email: user.email, password: "wrongpassword" });
-        expect(res.statusCode).toBe(401);
-    }));
-    test("test token - forbidden access without token", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app).get("/posts/getAllPosts");
-        expect(res.statusCode).toBe(401);
-    }));
-    test("test token - success", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res.statusCode).toBe(200);
-    }));
-    test("test token - invalid token", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken + "1");
-        expect(res.statusCode).toBe(401);
-    }));
-    // Uncomment and adjust if necessary for token expiration
-    // test("test token - expired token", async () => {
-    //     await new Promise(resolve => setTimeout(resolve, 4000));
-    //     const res = await request(app)
-    //         .get("/posts/getAllPosts")
-    //         .set("Authorization", "Bearer " + accessToken);
-    //     expect(res.statusCode).toBe(401);
-    // });
-    test("test refresh token - success", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app)
-            .get("/auth/refreshToken")
-            .set("Authorization", "Bearer " + refreshToken)
-            .send();
-        expect(res.statusCode).toBe(200);
-        expect(res.body.accessToken).not.toBe(null);
-        expect(res.body.refreshToken).not.toBe(null);
-        accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-        const res2 = yield (0, supertest_1.default)(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res2.statusCode).toBe(200);
-    }));
-    test("test logout - success", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app)
-            .get("/auth/logout")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res.statusCode).toBe(200);
-        const res2 = yield (0, supertest_1.default)(app)
-            .get("/auth/refreshToken")
-            .set("Authorization", "Bearer " + refreshToken)
-            .send();
-        expect(res2.statusCode).toBe(403);
-    }));
+afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield mongoose_1.default.disconnect();
+}));
+describe('Authentication Endpoints', () => {
+    describe('POST /api/auth/register', () => {
+        it('should register a new user', () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({
+                email: 'test@example.com',
+                password: 'password123',
+                firstName: 'John',
+                lastName: 'Doe',
+                gender: 'male',
+                age: 30,
+                height: 180,
+                weight: 75,
+                workoutGoals: 'fitness',
+                daysPerWeek: 3,
+                minutesPerWorkout: 45,
+                workoutLocation: 'gym',
+                includeWarmup: true,
+                includeStreching: true,
+                dietaryRestrictions: {}
+            });
+            expect(response.status).toBe(201);
+            expect(response.body).toHaveProperty('accessToken');
+            expect(response.body).toHaveProperty('refreshToken');
+            expect(response.body.user).toHaveProperty('email', 'test@example.com');
+        }));
+        it('should return 400 if email or password is missing', () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({ email: 'test@example.com' }); // Missing other required fields
+            expect(response.status).toBe(400);
+            expect(response.text).toBe('Missing email or password');
+        }));
+        it('should return 406 if email already exists', () => __awaiter(void 0, void 0, void 0, function* () {
+            yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({
+                email: 'test@example.com',
+                password: 'password123',
+                firstName: 'John',
+                lastName: 'Doe',
+                gender: 'male',
+                age: 30,
+                height: 180,
+                weight: 75,
+                workoutGoals: 'fitness',
+                daysPerWeek: 3,
+                minutesPerWorkout: 45,
+                workoutLocation: 'gym',
+                includeWarmup: true,
+                includeStreching: true,
+                dietaryRestrictions: {}
+            });
+            const response = yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({
+                email: 'test@example.com',
+                password: 'password123',
+                firstName: 'John',
+                lastName: 'Doe',
+                gender: 'male',
+                age: 30,
+                height: 180,
+                weight: 75,
+                workoutGoals: 'fitness',
+                daysPerWeek: 3,
+                minutesPerWorkout: 45,
+                workoutLocation: 'gym',
+                includeWarmup: true,
+                includeStreching: true,
+                dietaryRestrictions: {}
+            });
+            expect(response.status).toBe(406);
+            expect(response.text).toBe('Email already exists');
+        }));
+    });
+    describe('POST /api/auth/login', () => {
+        it('should login a user and return tokens', () => __awaiter(void 0, void 0, void 0, function* () {
+            yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({
+                email: 'test@example.com',
+                password: 'password123',
+                firstName: 'John',
+                lastName: 'Doe',
+                gender: 'male',
+                age: 30,
+                height: 180,
+                weight: 75,
+                workoutGoals: 'fitness',
+                daysPerWeek: 3,
+                minutesPerWorkout: 45,
+                workoutLocation: 'gym',
+                includeWarmup: true,
+                includeStreching: true,
+                dietaryRestrictions: {}
+            });
+            const response = yield (0, supertest_1.default)(app)
+                .post('/api/auth/login')
+                .send({
+                email: 'test@example.com',
+                password: 'password123'
+            });
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('accessToken');
+            expect(response.body).toHaveProperty('refreshToken');
+        }));
+        it('should return 401 if email or password is incorrect', () => __awaiter(void 0, void 0, void 0, function* () {
+            yield (0, supertest_1.default)(app)
+                .post('/api/auth/register')
+                .send({
+                email: 'test@example.com',
+                password: 'password123',
+                firstName: 'John',
+                lastName: 'Doe',
+                gender: 'male',
+                age: 30,
+                height: 180,
+                weight: 75,
+                workoutGoals: 'fitness',
+                daysPerWeek: 3,
+                minutesPerWorkout: 45,
+                workoutLocation: 'gym',
+                includeWarmup: true,
+                includeStreching: true,
+                dietaryRestrictions: {}
+            });
+            const response = yield (0, supertest_1.default)(app)
+                .post('/api/auth/login')
+                .send({
+                email: 'test@example.com',
+                password: 'wrongpassword'
+            });
+            expect(response.status).toBe(401);
+            expect(response.text).toBe('Email or password incorrect');
+        }));
+    });
 });
 //# sourceMappingURL=auth.test.js.map

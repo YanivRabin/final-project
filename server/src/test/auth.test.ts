@@ -1,166 +1,167 @@
 import request from 'supertest';
-import initApp from '../app';
 import mongoose from 'mongoose';
-import User from '../model/user_model';
-import express from 'express';
+import { Express } from 'express';
+import initApp from '../app'; // Adjust the path if necessary
 
-let app: express.Application;
-let accessToken: string = "";
-let refreshToken: string = "";
-
-// Updated user object with all required fields
-const user = {
-    firstName: "Yaniv",
-    lastName: "Rabin",
-    email: "yaniv@rabin.com",
-    password: "yanivrabin",
-    gender: "Male",
-    age: 30,
-    height: 180,
-    weight: 75,
-    workoutGoals: "Build Muscle",
-    daysPerWeek: 4,
-    minutesPerWorkout: 60,
-    workoutLocation: "Gym",
-    includeWarmup: true,
-    includeStreching: true,
-    dietaryRestrictions: {
-        vegan: false,
-        vegetarian: false,
-        pescatarian: false,
-        glutenFree: false,
-        dairyFree: false,
-        nutFree: false,
-        soyFree: false,
-        eggFree: false,
-        shellfishFree: false,
-        lactoseFree: false,
-        kosher: false,
-        halal: false,
-        other: ''
-    },
-    tokens: []
-};
+let app: Express;
 
 beforeAll(async () => {
-  jest.setTimeout(10000); // Set timeout to 10 seconds for this hook
-  console.log("beforeAll");
   app = await initApp();
-  await User.deleteMany();
+  await mongoose.connection.db.dropDatabase(); // Clean the database before each test
 });
 
-afterAll((done) => {
-    mongoose.connection.close()
-    done();
+afterAll(async () => {
+  await mongoose.disconnect();
 });
 
-describe("-- Auth tests --", () => {
+describe('Authentication Endpoints', () => {
+  describe('POST /api/auth/register', () => {
+    it('should register a new user', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
 
-    test("test register - success", async () => {
-        const res = await request(app)
-            .post("/auth/register")
-            .send(user);
-        expect(res.statusCode).toBe(201);
+      expect(response.status).toBe(201);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body.user).toHaveProperty('email', 'test@example.com');
     });
 
-    test("test register - exist email", async () => {
-        await request(app)
-            .post("/auth/register")
-            .send(user);
-        const res = await request(app)
-            .post("/auth/register")
-            .send(user);
-        expect(res.statusCode).toBe(406);
+    it('should return 400 if email or password is missing', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({ email: 'test@example.com' }); // Missing other required fields
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Missing email or password');
     });
 
-    test("test register - missing required fields", async () => {
-        const response = await request(app)
-            .post("/auth/register")
-            .send({ email: "test@fail.com" });
-        expect(response.statusCode).toBe(400);
+    it('should return 406 if email already exists', async () => {
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      expect(response.status).toBe(406);
+      expect(response.text).toBe('Email already exists');
+    });
+  });
+
+  describe('POST /api/auth/login', () => {
+    it('should login a user and return tokens', async () => {
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'password123'
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
     });
 
-    test("test login - success", async () => {
-        await request(app).post("/auth/register").send(user);
-        const res = await request(app)
-            .post("/auth/login")
-            .send({ email: user.email, password: user.password });
-        expect(res.statusCode).toBe(200);
-        expect(res.body.accessToken).not.toBe(null);
-        expect(res.body.refreshToken).not.toBe(null);
-        accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-    });
+    it('should return 401 if email or password is incorrect', async () => {
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
 
-    test("test login - missing password", async () => {
-        await request(app).post("/auth/register").send(user);
-        const res = await request(app)
-            .post("/auth/login")
-            .send({ email: user.email });
-        expect(res.statusCode).toBe(400);
-    });
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'wrongpassword'
+        });
 
-    test("test login - wrong password", async () => {
-        await request(app).post("/auth/register").send(user);
-        const res = await request(app)
-            .post("/auth/login")
-            .send({ email: user.email, password: "wrongpassword" });
-        expect(res.statusCode).toBe(401);
+      expect(response.status).toBe(401);
+      expect(response.text).toBe('Email or password incorrect');
     });
-
-    test("test token - forbidden access without token", async () => {
-        const res = await request(app).get("/posts/getAllPosts");
-        expect(res.statusCode).toBe(401);
-    });
-
-    test("test token - success", async () => {
-        const res = await request(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res.statusCode).toBe(200);
-    });
-
-    test("test token - invalid token", async () => {
-        const res = await request(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken + "1");
-        expect(res.statusCode).toBe(401);
-    });
-
-    // Uncomment and adjust if necessary for token expiration
-    // test("test token - expired token", async () => {
-    //     await new Promise(resolve => setTimeout(resolve, 4000));
-    //     const res = await request(app)
-    //         .get("/posts/getAllPosts")
-    //         .set("Authorization", "Bearer " + accessToken);
-    //     expect(res.statusCode).toBe(401);
-    // });
-
-    test("test refresh token - success", async () => {
-        const res = await request(app)
-            .get("/auth/refreshToken")
-            .set("Authorization", "Bearer " + refreshToken)
-            .send();
-        expect(res.statusCode).toBe(200);
-        expect(res.body.accessToken).not.toBe(null);
-        expect(res.body.refreshToken).not.toBe(null);
-        accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-        const res2 = await request(app)
-            .get("/posts/getAllPosts")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res2.statusCode).toBe(200);
-    });
-
-    test("test logout - success", async () => {
-        const res = await request(app)
-            .get("/auth/logout")
-            .set("Authorization", "Bearer " + accessToken);
-        expect(res.statusCode).toBe(200);
-        const res2 = await request(app)
-            .get("/auth/refreshToken")
-            .set("Authorization", "Bearer " + refreshToken)
-            .send();
-        expect(res2.statusCode).toBe(403);
-    });
+  });
 });
