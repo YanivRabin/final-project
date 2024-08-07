@@ -24,11 +24,7 @@ const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, funct
         Height: ${profile.height}
         Weight: ${profile.weight}
         Workout Goal: ${profile.workoutGoals}
-<<<<<<< HEAD
-    Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
-=======
         Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
->>>>>>> origin/Server_Roy
         Training Frequency: ${profile.daysPerWeek}
         Biological Sex: ${profile.gender}
         Workout Location: ${profile.workoutLocation}

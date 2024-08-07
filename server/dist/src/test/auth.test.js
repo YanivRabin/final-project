@@ -167,55 +167,5 @@ describe('Authentication Endpoints', () => {
             expect(response.text).toBe('Email or password incorrect');
         }));
     });
-<<<<<<< HEAD
-    it('should sign up a user successfully', () => __awaiter(void 0, void 0, void 0, function* () {
-        const testUser = {
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'john6@example.com',
-            password: 'password123',
-            gender: 'male',
-            age: 25,
-            height: 180,
-            weight: 75,
-            workoutGoals: 'Build muscle',
-            daysPerWeek: 3,
-            minutesPerWorkout: 60,
-            workoutLocation: 'Gym',
-            includeWarmup: true,
-            includeStreching: true,
-            dietaryRestrictions: {
-                vegan: false,
-                vegetarian: false,
-                pescatarian: false,
-                glutenFree: false,
-                dairyFree: false,
-                nutFree: false,
-                soyFree: false,
-                eggFree: false,
-                shellfishFree: false,
-                lactoseFree: false,
-                kosher: false,
-                halal: false,
-                other: ''
-            }
-        };
-        // Sign up the user
-        yield authModel.signUp(testUser);
-        // Ensure the user is signed up
-        expect(authModel.isUserLoggedIn()).toBe(true);
-    }));
-    it('should sign in a user successfully', () => __awaiter(void 0, void 0, void 0, function* () {
-        const testUser = {
-            email: 'john@example.com',
-            password: 'password123',
-        };
-        // Sign in the user
-        yield authModel.signIn(testUser.email, testUser.password);
-        // Ensure the user is signed in
-        expect(authModel.isUserLoggedIn()).toBe(true);
-    }));
-=======
->>>>>>> origin/Server_Roy
 });
 //# sourceMappingURL=auth.test.js.map
