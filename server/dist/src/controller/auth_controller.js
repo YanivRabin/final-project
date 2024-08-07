@@ -210,6 +210,21 @@ const findOrCreateGoogleUser = (req, res) => __awaiter(void 0, void 0, void 0, f
         return res.status(500).send("Server error");
     }
 });
+/**
+ * Finds a user by email from the database.
+ * @param email - The email of the user to find.
+ * @returns The full user data if found, otherwise null.
+ */
+const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.default.findOne({ email });
+        return user;
+    }
+    catch (error) {
+        console.error("Error finding user by email:", error);
+        throw new Error("Error finding user by email");
+    }
+});
 module.exports = {
     login,
     register,
@@ -217,5 +232,6 @@ module.exports = {
     refreshToken,
     userInfo,
     findOrCreateGoogleUser,
+    findUserByEmail
 };
 //# sourceMappingURL=auth_controller.js.map

@@ -41,7 +41,8 @@ const workoutSchema = new mongoose_1.Schema({
         lunch: [{ name: String, ingredients: [{ name: String, carbohydrates: String, fats: String, proteins: String, amount: String }] }],
         dinner: [{ name: String, ingredients: [{ name: String, carbohydrates: String, fats: String, proteins: String, amount: String }] }],
         snacks: [{ name: String, ingredients: [{ name: String, carbohydrates: String, fats: String, proteins: String, amount: String }] }],
-    }
+    },
+    email: { type: String, required: true } // Added email field
 });
 exports.default = mongoose_1.default.model('Workout', workoutSchema);
 //# sourceMappingURL=workout_model.js.map

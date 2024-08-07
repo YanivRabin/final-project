@@ -22,10 +22,12 @@ exports.createWorkoutPlan = [
         try {
             console.log("Request received at /create-workout");
             const userProfile = req.body; // Use the User interface instead of typeof User
+            const email = userProfile.email;
             // Log the received user profile for debugging
             console.log("Received user profile:", userProfile);
             // Generate workout plan
             const workoutPlanData = yield (0, geminiService_1.generateWorkoutPlan)(userProfile);
+            workoutPlanData.email = email;
             // Log the generated workout plan data
             console.log("Generated workout plan data:", workoutPlanData);
             // Save the workout plan to the database
