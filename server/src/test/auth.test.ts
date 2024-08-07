@@ -1,7 +1,7 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 import { Express } from 'express';
-import initApp from '../app'; // Adjust the path if necessary
+import initApp from '../app'; 
 
 let app: Express;
 

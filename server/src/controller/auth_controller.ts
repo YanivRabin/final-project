@@ -97,6 +97,7 @@ const login = async (req: Request, res: Response) => {
       refreshToken: refreshToken,
     });
   } catch (err) {
+    console.error("error: " + err.message);
     return res.status(500).send("Server error");
   }
 };
@@ -240,6 +241,21 @@ const findOrCreateGoogleUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Finds a user by email from the database.
+ * @param email - The email of the user to find.
+ * @returns The full user data if found, otherwise null.
+ */
+const findUserByEmail = async (email: string) => {
+  try {
+    const user = await User.findOne({ email });
+    return user;
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    throw new Error("Error finding user by email");
+  }
+};
+
 export = {
   login,
   register,
@@ -247,4 +263,5 @@ export = {
   refreshToken,
   userInfo,
   findOrCreateGoogleUser,
+  findUserByEmail
 };

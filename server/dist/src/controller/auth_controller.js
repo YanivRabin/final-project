@@ -95,6 +95,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (err) {
+        console.error("error: " + err.message);
         return res.status(500).send("Server error");
     }
 });
