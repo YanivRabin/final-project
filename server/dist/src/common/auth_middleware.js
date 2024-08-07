@@ -8,11 +8,11 @@ const authenticate = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
     if (!token) {
-        return res.sendStatus(401);
+        return res.status(401).send('No token provided');
     }
     jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.sendStatus(401);
+            return res.status(401).send('Invalid token');
         }
         req.user = user;
         next();

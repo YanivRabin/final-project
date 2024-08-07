@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const express_1 = __importDefault(require("express"));
+<<<<<<< HEAD
 const AuthModel_1 = require("../model/AuthModel");
 const router = express_1.default.Router();
 router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -33,5 +34,16 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(400).json({ message: error.message });
     }
 }));
+=======
+const router = express_1.default.Router();
+const auth_controller_1 = __importDefault(require("../controller/auth_controller"));
+const auth_middleware_1 = __importDefault(require("../common/auth_middleware"));
+router.post('/register', auth_controller_1.default.register);
+router.post('/login', auth_controller_1.default.login);
+router.post('/googleLogin', auth_controller_1.default.findOrCreateGoogleUser);
+router.get('/logout', auth_controller_1.default.logout);
+router.get('/refreshToken', auth_controller_1.default.refreshToken);
+router.get('/userInfo', auth_middleware_1.default, auth_controller_1.default.userInfo);
+>>>>>>> origin/Server_Roy
 module.exports = router;
 //# sourceMappingURL=auth_route.js.map

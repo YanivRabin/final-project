@@ -1,25 +1,18 @@
-import express from "express";
-import { signIn, signUp } from "../model/AuthModel"; 
-
+import express from 'express';
 const router = express.Router();
+import AuthController from '../controller/auth_controller';
+import authenticate from '../common/auth_middleware';
 
-router.post("/signin", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await signIn(email, password);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+router.post('/register', AuthController.register);
 
-router.post("/signup", async (req, res) => {
-  try {
-    const user = await signUp(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+router.post('/login', AuthController.login);
+
+router.post('/googleLogin', AuthController.findOrCreateGoogleUser);
+
+router.get('/logout', AuthController.logout);
+
+router.get('/refreshToken', AuthController.refreshToken);
+
+router.get('/userInfo', authenticate, AuthController.userInfo);
 
 export = router;

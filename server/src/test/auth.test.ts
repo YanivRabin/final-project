@@ -1,67 +1,173 @@
-import { AuthModel } from '../model/AuthModel';
+import request from 'supertest';
+import mongoose from 'mongoose';
+import { Express } from 'express';
+import initApp from '../app'; 
 
-describe('AuthModel', () => {
-  let authModel: AuthModel;
+let app: Express;
 
-  beforeEach(() => {
-    authModel = AuthModel.getInstance();
+beforeAll(async () => {
+  app = await initApp();
+  await mongoose.connection.db.dropDatabase(); // Clean the database before each test
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+});
+
+describe('Authentication Endpoints', () => {
+  describe('POST /api/auth/register', () => {
+    it('should register a new user', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      expect(response.status).toBe(201);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+      expect(response.body.user).toHaveProperty('email', 'test@example.com');
+    });
+
+    it('should return 400 if required fields are missing', async () => {
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({ email: 'test@example.com' }); // Missing other required fields
+
+      expect(response.status).toBe(400);
+      expect(response.text).toBe('Missing required fields'); // Updated expected message
+    });
+
+    it('should return 406 if email already exists', async () => {
+      // First registration
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      // Attempt to register with the same email
+      const response = await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
+
+      expect(response.status).toBe(406);
+      expect(response.text).toBe('Email already exists');
+    });
   });
 
-  afterEach(() => {
-    // Clear user authentication state after each test
-    authModel.logout();
-  });
+  describe('POST /api/auth/login', () => {
+    it('should login a user and return tokens', async () => {
+      // Register a user for login testing
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
 
-  it('should sign up a user successfully', async () => {
-    const testUser = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john6@example.com',
-      password: 'password123',
-      gender: 'male',
-      age: 25,
-      height: 180,
-      weight: 75,
-      workoutGoals: 'Build muscle',
-      daysPerWeek: 3,
-      minutesPerWorkout: 60,
-      workoutLocation: 'Gym',
-      includeWarmup: true,
-      includeStreching: true,
-      dietaryRestrictions: {
-        vegan: false,
-        vegetarian: false,
-        pescatarian: false,
-        glutenFree: false,
-        dairyFree: false,
-        nutFree: false,
-        soyFree: false,
-        eggFree: false,
-        shellfishFree: false,
-        lactoseFree: false,
-        kosher: false,
-        halal: false,
-        other: ''
-      }
-    };
+      // Login with the registered user credentials
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'password123'
+        });
 
-    // Sign up the user
-    await authModel.signUp(testUser);
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('accessToken');
+      expect(response.body).toHaveProperty('refreshToken');
+    });
 
-    // Ensure the user is signed up
-    expect(authModel.isUserLoggedIn()).toBe(true);
-  });
+    it('should return 401 if email or password is incorrect', async () => {
+      // Register a user for login testing
+      await request(app)
+        .post('/api/auth/register')
+        .send({
+          email: 'test@example.com',
+          password: 'password123',
+          firstName: 'John',
+          lastName: 'Doe',
+          gender: 'male',
+          age: 30,
+          height: 180,
+          weight: 75,
+          workoutGoals: 'fitness',
+          daysPerWeek: 3,
+          minutesPerWorkout: 45,
+          workoutLocation: 'gym',
+          includeWarmup: true,
+          includeStreching: true,
+          dietaryRestrictions: {}
+        });
 
-  it('should sign in a user successfully', async () => {
-    const testUser = {
-      email: 'john@example.com',
-      password: 'password123',
-    };
+      // Attempt to login with incorrect password
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'test@example.com',
+          password: 'wrongpassword'
+        });
 
-    // Sign in the user
-    await authModel.signIn(testUser.email, testUser.password);
-
-    // Ensure the user is signed in
-    expect(authModel.isUserLoggedIn()).toBe(true);
+      expect(response.status).toBe(401);
+      expect(response.text).toBe('Email or password incorrect');
+    });
   });
 });

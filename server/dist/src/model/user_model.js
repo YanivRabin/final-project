@@ -1,45 +1,40 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importStar(require("mongoose"));
-const userSchema = new mongoose_1.Schema({
+const mongoose_1 = __importDefault(require("mongoose"));
+const userSchema = new mongoose_1.default.Schema({
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    name: { type: String, required: true, unique: true },
-    photo: { type: String, default: null },
+    gender: { type: String, required: true },
     age: { type: Number, required: true },
     height: { type: Number, required: true },
     weight: { type: Number, required: true },
-    workoutGoal: { type: String, required: true },
-    allergies: { type: [String], required: true },
-    trainingFrequency: { type: Number, required: true },
-    biologicalSex: { type: String, required: true },
-    workoutLocation: { type: String, required: true },
+    workoutGoals: { type: String, required: true },
+    daysPerWeek: { type: Number, required: true },
     minutesPerWorkout: { type: Number, required: true },
+    workoutLocation: { type: String, required: true },
     includeWarmup: { type: Boolean, required: true },
-    includeStretching: { type: Boolean, required: true },
+    includeStreching: { type: Boolean, required: true },
+    dietaryRestrictions: {
+        vegan: { type: Boolean, default: false },
+        vegetarian: { type: Boolean, default: false },
+        pescatarian: { type: Boolean, default: false },
+        glutenFree: { type: Boolean, default: false },
+        dairyFree: { type: Boolean, default: false },
+        nutFree: { type: Boolean, default: false },
+        soyFree: { type: Boolean, default: false },
+        eggFree: { type: Boolean, default: false },
+        shellfishFree: { type: Boolean, default: false },
+        lactoseFree: { type: Boolean, default: false },
+        kosher: { type: Boolean, default: false },
+        halal: { type: Boolean, default: false },
+        other: { type: String, default: '' }
+    },
+    tokens: { type: [String] }
 });
 exports.default = mongoose_1.default.model('User', userSchema);
 //# sourceMappingURL=user_model.js.map

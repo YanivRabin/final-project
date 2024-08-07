@@ -1,4 +1,4 @@
-import { User } from "../model/AuthModel";
+import  {User} from "../model/user_model";
 import { WorkoutPlan } from "../model/workout_model";
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");

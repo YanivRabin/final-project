@@ -15,25 +15,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
 const app_1 = __importDefault(require("../app"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let app;
+let token;
 const user = {
-    "age": 20,
-    "height": 180,
-    "weight": 75.5,
-    "workoutGoal": "gain muscles",
-    "allergies": [
-        "Tomato", "berries"
-    ],
-    "trainingFrequency": 3,
-    "biologicalSex": "male",
-    "workoutLocation": "home",
-    "minutesPerWorkout": 60,
-    "includeWarmup": true,
-    "includeStretching": true
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    password: "securePassword123",
+    gender: "male",
+    age: 20,
+    height: 180,
+    weight: 75.5,
+    workoutGoals: "gain muscles",
+    daysPerWeek: 3,
+    minutesPerWorkout: 60,
+    workoutLocation: "home",
+    includeWarmup: true,
+    includeStreching: true,
+    dietaryRestrictions: {
+        vegan: false,
+        vegetarian: false,
+        pescatarian: false,
+        glutenFree: false,
+        dairyFree: false,
+        nutFree: false,
+        soyFree: false,
+        eggFree: false,
+        shellfishFree: false,
+        lactoseFree: false,
+        kosher: false,
+        halal: false,
+        other: ""
+    },
+    tokens: []
 };
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("brforeAll");
+    console.log("beforeAll");
     app = yield (0, app_1.default)();
+    // Generate a JWT token
+    token = jsonwebtoken_1.default.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }));
 afterAll((done) => {
     mongoose_1.default.connection.close();
@@ -51,6 +72,7 @@ describe('Create Workout Plan', () => {
     it('should create a workout plan for a user', () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield (0, supertest_1.default)(app)
             .post('/api/gemini/create-workout')
+            .set('Authorization', `Bearer ${token}`)
             .send(user);
         expect(res.status).toEqual(200);
         console.log(res.body);
