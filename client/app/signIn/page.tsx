@@ -31,6 +31,7 @@ export default function SignIn() {
         password,
       }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
+      // need to add the plan data to local storage (get from server)
       router.push("/home");
     } catch (error) {
       setError(
