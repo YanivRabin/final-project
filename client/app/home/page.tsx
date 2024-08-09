@@ -166,6 +166,8 @@ const Home: React.FC = () => {
   const currentDay = getCurrentDay();
   const currentWorkout = workoutData[currentDay];
 
+  console.log(JSON.parse(localStorage.getItem("workoutPlan") || "{}"));
+  
   return (
     <Box
       sx={{

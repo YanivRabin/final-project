@@ -20,15 +20,18 @@ import InputLabel from "@mui/material/InputLabel";
 import Slider from "@mui/material/Slider";
 import Input from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
-import { useSignUpMutation } from "../services/authApi";
 import CustomTextField from "../components/CustomTextField";
 import Image from "next/image";
 import StepLabel from "@mui/material/StepLabel";
+import { useRouter } from "next/navigation";
+import { useSignUpMutation } from "../services/authApi";
+import { useCreateWorkoutPlanMutation } from "../services/feedApi";
 import "../../styles/signUp.css";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function SignUp() {
+  const router = useRouter();
   const [activeStep, setActiveStep] = React.useState(0);
   const [password2, setPassword2] = React.useState("");
   const [formData, setFormData] = React.useState({
@@ -61,8 +64,12 @@ export default function SignUp() {
       halal: false,
       other: "",
     },
+    tokens: [],
   });
-  const [signUpUser, { isLoading, isError }] = useSignUpMutation();
+  const [signUpUser, { isLoading: signUpLoading, isError }] =
+    useSignUpMutation();
+  const [createWorkoutPlan, { isLoading: workoutLoading, data }] =
+    useCreateWorkoutPlanMutation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -97,9 +104,7 @@ export default function SignUp() {
     if (activeStep === steps.length) {
       // submit form
       try {
-        const { res } = await signUpUser(formData).unwrap();
-        localStorage.setItem("user", JSON.stringify(res));
-        window.location.href = "/feed";
+        handleSubmit();
       } catch (error) {
         console.error("Login error:", error);
         setActiveStep(0);
@@ -109,10 +114,25 @@ export default function SignUp() {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  const handleSubmit = async () => {
+    try {
+      const { user, accessToken } = await signUpUser(formData).unwrap();
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", accessToken);
+
+      const workoutPlan = await createWorkoutPlan(user).unwrap();
+      localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
+
+      window.location.href = "/home";
+    } catch (error) {
+      console.error("Sign up error:", error);
+      setActiveStep(0);
+    }
+  };
+
   const handleBack = () => {
     if (activeStep === 0) {
-      window.location.href = "/signIn";
-      return;
+      router.push("/home");
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -784,7 +804,7 @@ export default function SignUp() {
       case 4:
         return (
           <Typography sx={{ mt: 2, mb: 1, color: "black" }}>
-            {isLoading ? "Loading..." : isError ? "Error" : ""}
+            {workoutLoading ? "Loading..." : isError ? "Error" : ""}
           </Typography>
         );
     }
@@ -816,7 +836,11 @@ export default function SignUp() {
                 Back
               </Button>
               <Box flex="1 1 auto" />
-              <Button className="buttonNext" onClick={handleNext}>
+              <Button
+                className="buttonNext"
+                onClick={handleNext}
+                disabled={signUpLoading || workoutLoading}
+              >
                 {activeStep === steps.length - 1
                   ? "Finish"
                   : activeStep === steps.length
