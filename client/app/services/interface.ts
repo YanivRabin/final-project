@@ -15,3 +15,20 @@ export interface WorkoutCardProps {
   day: string;
   exercises: WorkoutDetails;
 }
+export interface Ingredient {
+  name: string;
+  carbohydrates: string;
+  fats: string;
+  proteins: string;
+  amount: string;
+}
+
+export interface Meal {
+  name: string;
+  ingredients: Ingredient[];
+}
+
+export interface MealCardProps {
+  mealType: string;
+  meals: Meal[];
+}
