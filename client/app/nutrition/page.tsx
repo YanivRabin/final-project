@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Box, Grid, Container, Card, CardContent, Button } from '@mui/material';
 import Image from 'next/image';
-import { Meal, MealCardProps } from '../services/interface'; // Adjust the import path as needed
+import { Meal } from '../services/interface';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'; // Import Recharts components
 
 // Image imports
 import breakfastImage from '../images/food/Breakfast.png';
@@ -16,11 +17,13 @@ const mealImages: Record<string, any> = {
     lunch: lunchImage,
     snacks: snacksImage,
     dinner: dinnerImage,
-  };
+};
 
 interface Meals {
   [key: string]: Meal[];
 }
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28']; // Colors for the pie chart
 
 const Nutrition: React.FC = () => {
   const [meals, setMeals] = useState<Meals>({});
@@ -33,41 +36,74 @@ const Nutrition: React.FC = () => {
     const workoutPlan = JSON.parse(localStorage.getItem('workoutPlan') || '{}');
     
     if (workoutPlan?.nutritionalInformation) {
-      setMeals(workoutPlan.nutritionalInformation);
-      setCalories(workoutPlan.totalCalories || 0);
-      setCarbs(workoutPlan.totalCarbs || 0);
-      setFats(workoutPlan.totalFats || 0);
-      setProteins(workoutPlan.totalProteins || 0);
+      const mealData = workoutPlan.nutritionalInformation;
+      setMeals(mealData);
+      
+      let totalCalories = 0;
+      let totalCarbs = 0;
+      let totalFats = 0;
+      let totalProteins = 0;
+
+      Object.keys(mealData).forEach(mealType => {
+        mealData[mealType].forEach((meal: Meal) => {
+          meal.ingredients.forEach(ingredient => {
+            const carbs = parseFloat(ingredient.carbohydrates) || 0;
+            const fats = parseFloat(ingredient.fats) || 0;
+            const proteins = parseFloat(ingredient.proteins) || 0;
+
+            totalCarbs += carbs;
+            totalFats += fats;
+            totalProteins += proteins;
+
+            // Calculate calories (4 calories per gram of carbs and proteins, 9 calories per gram of fat)
+            totalCalories += (carbs + proteins) * 4 + fats * 9;
+          });
+        });
+      });
+
+      setCalories(totalCalories);
+      setCarbs(totalCarbs);
+      setFats(totalFats);
+      setProteins(totalProteins);
     }
   }, []);
+
+  const pieData = [
+    { name: 'Carbs', value: carbs * 4 },
+    { name: 'Fats', value: fats * 9 },
+    { name: 'Proteins', value: proteins * 4 },
+  ];
 
   return (
     <Container maxWidth="xl" sx={{ }}>
       <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', color: '#4e2a84', mb: 2 }}>
         DAILY MENU
       </Typography>
-      <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-        For each meal you get two options to choose from
-      </Typography>
+
 
       <Grid container justifyContent="center" alignItems="center" spacing={2}>
         <Grid item xs={12} md={4}>
           <Typography variant="h6" align="center">
-            {calories} Calories
+            Total : {calories} Calories
           </Typography>
-          <Box display="flex" justifyContent="space-around" sx={{ mb: 4 }}>
-            <Box>
-              <Typography variant="body2" color="textSecondary">{Math.round((carbs / (carbs + fats + proteins)) * 100)}%</Typography>
-              <Typography variant="body2">{carbs} g Carbs</Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" color="textSecondary">{Math.round((fats / (carbs + fats + proteins)) * 100)}%</Typography>
-              <Typography variant="body2">{fats} g Fats</Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" color="textSecondary">{Math.round((proteins / (carbs + fats + proteins)) * 100)}%</Typography>
-              <Typography variant="body2">{proteins} g Proteins</Typography>
-            </Box>
+          <Box display="flex" justifyContent="center" sx={{ mb: 4 }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </Box>
         </Grid>
       </Grid>
