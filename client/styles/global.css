@@ -4,5 +4,13 @@ body {
 }
 
 .content {
-  padding-top: 64px; /* Adjust this value to the height of your AppBar */
+  padding-top: 64px; /* Default padding for larger screens */
 }
+
+/* Media query for phones */
+@media (max-width: 768px) {
+  .content {
+    padding-top: 60vh; /* Adjust this value for mobile AppBar height */
+  }
+}
+

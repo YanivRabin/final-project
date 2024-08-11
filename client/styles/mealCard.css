@@ -1,5 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
 
+.mealCard {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
+  width: 100%;
+  max-width: 400px;
+  height: 600px;
+  margin: 20px auto; /* Center with even margins */
+}
+
 .mealCardImage {
   position: absolute;
   top: 0;
@@ -17,7 +29,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  z-index: 2; /* Make sure the overlay is above the image */
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,17 +38,7 @@
 
 .mealCardContent {
   position: relative;
-  z-index: 3; /* Ensure content is above the overlay */
-}
-
-.mealCard {
-  position: relative;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow: hidden;
-  width: 400px;
-  height: 600px;
+  z-index: 3;
 }
 
 .mealCardTitle {
@@ -57,7 +59,7 @@
   justify-content: space-around;
   align-items: center;
   padding: 8px;
-  z-index: 3; /* Ensure footer is above the overlay */
+  z-index: 3;
   opacity: 0.7;
 }
 
@@ -75,4 +77,27 @@
 
 .mealCardFooter button:hover {
   background-color: #dddddd;
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+  .mealCard {
+    height: 80vh; /* Set height to 80% of the viewport height */
+    max-width: 90%; /* Allow the card to be wider on smaller screens */
+  }
+
+  .mealCardTitle {
+    font-size: 32px; /* Adjust font size for smaller screens */
+  }
+
+  .mealCardFooter {
+    height: auto;
+    padding: 16px;
+    flex-direction: column;
+  }
+
+  .mealCardFooter button {
+    font-size: 20px; /* Adjust button size for smaller screens */
+    width: 100%;
+  }
 }
