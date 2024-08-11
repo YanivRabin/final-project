@@ -11,7 +11,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -67,6 +66,7 @@ function ResponsiveAppBar() {
               alt="logo"
               width={100}
               height={20}
+              priority
             />
           </Link>
           {/* show sign in button on the main page */}

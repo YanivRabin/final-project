@@ -43,8 +43,12 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
       <Image
         src={backgroundImage}
         alt={day}
-        layout="fill"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Add sizes prop for better performance
+
         className="workoutCardImage"
+       
+
       />
       <Box className="workoutCardOverlay" />
       <CardContent className="workoutCardContent">

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
@@ -29,8 +28,10 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
         <Image
           src={backgroundImage}
           alt={mealType}
-          layout="fill"
+          fill
           className="mealCardImage"
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Adjust this based on your layout
         />
       )}
       <Box className="mealCardOverlay" />
@@ -38,21 +39,6 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
         <Typography variant="h5" className="mealCardTitle">
           {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
         </Typography>
-        {/* <Grid container direction="column" spacing={2}>
-          {meals.map((meal, index) => (
-            <Grid item key={index}>
-              <Typography variant="h6">{meal.name}</Typography>
-              <Typography variant="body2">Ingredients:</Typography>
-              <ul>
-                {meal.ingredients.map((ingredient, idx) => (
-                  <li key={idx}>
-                    {ingredient.name}: {ingredient.amount}, Carbs: {ingredient.carbohydrates}g, Fats: {ingredient.fats}g, Proteins: {ingredient.proteins}g
-                  </li>
-                ))}
-              </ul>
-            </Grid>
-          ))}
-        </Grid> */}
       </CardContent>
       <Grid container className="mealCardFooter">
         {meals.map((meal, index) => (
