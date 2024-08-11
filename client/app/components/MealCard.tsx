@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
-import "../../styles/mealCard.css";
 import { MealCardProps } from "../services/interface";
 
 // Import all possible images statically
@@ -18,32 +17,102 @@ const mealImages: Record<string, any> = {
 };
 
 const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
-  console.log("MealCard - meals:", meals);  // Check the meals data
-
   const backgroundImage = mealImages[mealType.toLowerCase()];
 
   return (
-    <Card className="mealCard">
+    <Card
+      sx={{
+        position: "relative",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        overflow: "hidden",
+        width: "100%",
+        maxWidth: "400px",
+        height: "600px",
+        margin: "20px auto",
+      }}
+    >
       {backgroundImage && (
         <Image
           src={backgroundImage}
           alt={mealType}
           fill
-          className="mealCardImage"
+          style={{ objectFit: "cover", zIndex: 1 }}
           priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Adjust this based on your layout
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       )}
-      <Box className="mealCardOverlay" />
-      <CardContent className="mealCardContent">
-        <Typography variant="h5" className="mealCardTitle">
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          zIndex: 2,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      />
+      <CardContent
+        sx={{
+          position: "relative",
+          zIndex: 3,
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontFamily: "'Inika', serif",
+            color: "#ffffff",
+            fontSize: "48px",
+            fontWeight: "bold",
+            margin: "16px",
+          }}
+        >
           {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
         </Typography>
       </CardContent>
-      <Grid container className="mealCardFooter">
+      <Grid
+        container
+        sx={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          height: "50%",
+          backgroundColor: "#000000",
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          padding: "8px",
+          zIndex: 3,
+          opacity: 0.7,
+        }}
+      >
         {meals.map((meal, index) => (
           <Grid item key={index}>
-            <Button>{meal.name}</Button>
+            <Button
+              sx={{
+                backgroundColor: "rgba(255, 255, 255)",
+                color: "#4e2a84",
+                border: "3px solid #4e2a84",
+                padding: "8px 16px",
+                borderRadius: "10px",
+                cursor: "pointer",
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "250px",
+                "&:hover": {
+                  backgroundColor: "#dddddd",
+                },
+              }}
+            >
+              {meal.name}
+            </Button>
           </Grid>
         ))}
       </Grid>
