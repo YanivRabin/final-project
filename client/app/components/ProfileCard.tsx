@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Card, Grid, Typography, TextField, Button, Avatar, Badge } from '@mui/material';
+import {
+  Card,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  Avatar,
+  Badge,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from '@mui/material';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 const styles = {
@@ -23,6 +34,7 @@ interface ProfileCardProps {
     height: number;
     weight: number;
   };
+  onSave: (updatedGeneral: { gender: string; age: number; height: number; weight: number }) => void;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = (props) => {
@@ -41,9 +53,17 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
     });
   };
 
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setGeneral({
+      ...general,
+      [name]: value,
+    });
+  };
+
   const handleSaveClick = () => {
     setEditMode(false);
-    console.log('Saved data:', general);
+    props.onSave(general);
   };
 
   return (
@@ -85,14 +105,18 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
           <Grid item xs={6} sx={{ textAlign: 'end' }}>
             {editMode ? (
               <>
-                <TextField
+                <Select
                   name="gender"
                   value={general.gender}
-                  onChange={handleChange}
+                  onChange={handleSelectChange}
                   size="small"
                   variant="outlined"
                   style={styles.value}
-                />
+                  fullWidth
+                >
+                  <MenuItem value="male">Male</MenuItem>
+                  <MenuItem value="female">Female</MenuItem>
+                </Select>
                 <TextField
                   name="age"
                   value={general.age}
@@ -100,6 +124,7 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
                   size="small"
                   variant="outlined"
                   style={styles.value}
+                  fullWidth
                 />
                 <TextField
                   name="height"
@@ -108,6 +133,7 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
                   size="small"
                   variant="outlined"
                   style={styles.value}
+                  fullWidth
                 />
                 <TextField
                   name="weight"
@@ -116,6 +142,7 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
                   size="small"
                   variant="outlined"
                   style={styles.value}
+                  fullWidth
                 />
               </>
             ) : (

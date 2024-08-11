@@ -10,17 +10,18 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
-import { Grid } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import { textFieldStyle } from "../../styles/textField";
-import CustomInput from "./CustomInput";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import { DietaryRestrictions } from "../services/interface";
+import CustomInput from "./CustomInput";
+import { textFieldStyle } from "../../styles/textField";
 
 const genderOptions = [
   { value: "male", label: "Male" },
@@ -59,7 +60,23 @@ const workoutLocationOptions = [
   { value: "outdoor", label: "Outdoor" },
 ];
 
-export default function SettingsCard(props: any) {
+interface SettingsCardProps {
+  firstName: string;
+  lastName: string;
+  gender: string;
+  phone: string;
+  email: string;
+  pass: string;
+  workoutGoals: string;
+  daysPerWeek: number;
+  minutesPerWorkout: number;
+  workoutLocation: string;
+  includeWarmup: boolean;
+  includeStretching: boolean;
+  dietary: DietaryRestrictions;
+}
+
+export default function SettingsCard(props: SettingsCardProps) {
   const [value, setValue] = useState("one");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -117,6 +134,19 @@ export default function SettingsCard(props: any) {
     setUser((prev) => ({ ...prev, showPassword: !prev.showPassword }));
   };
 
+  const handleDietaryChange = (
+    restriction: keyof DietaryRestrictions,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setUser((prevState) => ({
+      ...prevState,
+      dietary: {
+        ...prevState.dietary,
+        [restriction]: e.target.checked,
+      },
+    }));
+  };
+
   return (
     <Card
       variant="outlined"
@@ -143,18 +173,12 @@ export default function SettingsCard(props: any) {
       <CardContent
         sx={{
           p: 3,
-          maxHeight: { md: "40vh" },
           textAlign: { xs: "center", md: "start" },
         }}
       >
         {value === "one" && (
           <FormControl fullWidth>
-            <Grid
-              container
-              direction={{ xs: "column", md: "row" }}
-              columnSpacing={3}
-              rowSpacing={2}
-            >
+            <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <CustomInput
                   id="firstName"
@@ -177,30 +201,7 @@ export default function SettingsCard(props: any) {
                   req={edit.required}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel id="gender-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
-                    Gender
-                  </InputLabel>
-                  <Select
-                    labelId="gender-label"
-                    id="gender"
-                    name="gender"
-                    value={user.gender}
-                    onChange={changeSelectField}
-                    label="Gender"
-                    disabled={edit.disabled}
-                    required={edit.required}
-                    sx={textFieldStyle}
-                  >
-                    {genderOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+             
               <Grid item xs={12} md={6}>
                 <CustomInput
                   id="phone"
@@ -247,44 +248,41 @@ export default function SettingsCard(props: any) {
                           edge="end"
                           disabled={edit.disabled}
                         >
-                          {user.showPassword ? <VisibilityOff /> : <Visibility />}
+                          {user.showPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
                   }}
                 />
               </Grid>
-              <Grid container justifyContent="flex-end" item xs={12} md={6}>
-                <Button
-                  sx={{
-                    p: "1rem 2rem",
-                    my: 2,
-                    height: "3rem",
-                    backgroundColor: "#ff4081",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#ff79b0",
-                    },
-                  }}
-                  component="button"
-                  size="large"
-                  variant="contained"
-                  onClick={changeButton}
-                >
-                  {edit.isEdit ? "EDIT" : "UPDATE"}
-                </Button>
-              </Grid>
             </Grid>
+            <Box textAlign="right" mt={3}>
+              <Button
+                sx={{
+                  p: "1rem 2rem",
+                  height: "3rem",
+                  backgroundColor: "#ff4081",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#ff79b0",
+                  },
+                }}
+                size="large"
+                variant="contained"
+                onClick={changeButton}
+              >
+                {edit.isEdit ? "EDIT" : "UPDATE"}
+              </Button>
+            </Box>
           </FormControl>
         )}
         {value === "two" && (
           <FormControl fullWidth>
-            <Grid
-              container
-              direction={{ xs: "column", md: "row" }}
-              columnSpacing={3}
-              rowSpacing={2}
-            >
+            <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <InputLabel id="workoutGoals-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
@@ -318,7 +316,7 @@ export default function SettingsCard(props: any) {
                     labelId="daysPerWeek-label"
                     id="daysPerWeek"
                     name="daysPerWeek"
-                    value={user.daysPerWeek}
+                    value={String(user.daysPerWeek)} // Convert to string
                     onChange={changeSelectField}
                     label="Days per Week"
                     disabled={edit.disabled}
@@ -326,7 +324,7 @@ export default function SettingsCard(props: any) {
                     sx={textFieldStyle}
                   >
                     {daysPerWeekOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
+                      <MenuItem key={option.value} value={String(option.value)}>
                         {option.label}
                       </MenuItem>
                     ))}
@@ -342,7 +340,7 @@ export default function SettingsCard(props: any) {
                     labelId="minutesPerWorkout-label"
                     id="minutesPerWorkout"
                     name="minutesPerWorkout"
-                    value={user.minutesPerWorkout}
+                    value={String(user.minutesPerWorkout)} // Convert to string
                     onChange={changeSelectField}
                     label="Minutes per Workout"
                     disabled={edit.disabled}
@@ -350,7 +348,7 @@ export default function SettingsCard(props: any) {
                     sx={textFieldStyle}
                   >
                     {minutesPerWorkoutOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
+                      <MenuItem key={option.value} value={String(option.value)}>
                         {option.label}
                       </MenuItem>
                     ))}
@@ -410,17 +408,30 @@ export default function SettingsCard(props: any) {
                 />
               </Grid>
             </Grid>
+            <Box textAlign="right" mt={3}>
+              <Button
+                sx={{
+                  p: "1rem 2rem",
+                  height: "3rem",
+                  backgroundColor: "#ff4081",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#ff79b0",
+                  },
+                }}
+                size="large"
+                variant="contained"
+                onClick={changeButton}
+              >
+                {edit.isEdit ? "EDIT" : "UPDATE"}
+              </Button>
+            </Box>
           </FormControl>
         )}
         {value === "three" && (
           <Box sx={{ maxHeight: "50vh", overflow: "auto" }}>
             <FormControl fullWidth>
-              <Grid
-                container
-                direction="column"
-                columnSpacing={3}
-                rowSpacing={2}
-              >
+              <Grid container direction="column" spacing={2}>
                 {[
                   "vegan",
                   "vegetarian",
@@ -435,30 +446,30 @@ export default function SettingsCard(props: any) {
                   "kosher",
                   "halal",
                 ].map((restriction) => (
-                  <Grid item xs={12} key={restriction}>
+                  <Grid item key={restriction}>
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={user.dietary[restriction]}
-                          onChange={(e) => {
-                            setUser({
-                              ...user,
-                              dietary: {
-                                ...user.dietary,
-                                [restriction]: e.target.checked,
-                              },
-                            });
-                          }}
+                          checked={!!user.dietary[restriction as keyof DietaryRestrictions]} // Convert to boolean
+                          onChange={(e) =>
+                            handleDietaryChange(
+                              restriction as keyof DietaryRestrictions,
+                              e
+                            )
+                          }
                           name={restriction}
                           color="primary"
                         />
                       }
-                      label={restriction.charAt(0).toUpperCase() + restriction.slice(1)}
+                      label={
+                        restriction.charAt(0).toUpperCase() + restriction.slice(1)
+                      }
                       disabled={edit.disabled}
                     />
                   </Grid>
                 ))}
-                <Grid item xs={12}>
+
+                <Grid item>
                   <CustomInput
                     id="other"
                     name="other"
@@ -469,12 +480,7 @@ export default function SettingsCard(props: any) {
                     req={edit.required}
                   />
                 </Grid>
-                <Grid
-                  container
-                  justifyContent="flex-end"
-                  item
-                  xs={12}
-                >
+                <Grid container justifyContent="flex-end" item xs={12}>
                   <Button
                     sx={{
                       p: "1rem 2rem",
@@ -486,7 +492,6 @@ export default function SettingsCard(props: any) {
                         backgroundColor: "#ff79b0",
                       },
                     }}
-                    component="button"
                     size="large"
                     variant="contained"
                     onClick={changeButton}
