@@ -148,10 +148,11 @@ const Nutrition: React.FC = () => {
                                 src={mealImages[mealType.toLowerCase()]}
                                 alt={mealType}
                                 fill
-                                objectFit="cover"
+                                
                                 className="mealCardImage"
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 style={{ filter: "brightness(0.7)" }}
+                                priority
                             />
                             <CardContent
                                 sx={{ position: "absolute", bottom: 0, color: "white" }}

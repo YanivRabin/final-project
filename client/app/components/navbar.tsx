@@ -18,7 +18,6 @@ import { CssBaseline } from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
 const settings = ["Profile", "Logout"];
-const combined = [...pages, ...settings];
 
 function ResponsiveAppBar() {
   const pathname = usePathname();
@@ -60,7 +59,7 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* logo */}
-          <Link href="/">
+          <Link href="/" passHref>
             <Image
               src={require("../images/navber/logo.png")}
               alt="logo"
@@ -78,7 +77,7 @@ function ResponsiveAppBar() {
                 justifyContent: "flex-end",
               }}
             >
-              <Link href="/signIn">
+              <Link href="/signIn" passHref>
                 <Button
                   sx={{
                     my: 2,
@@ -103,7 +102,7 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <Link href={`/${page.toLowerCase()}`} key={page}>
+                <Link href={`/${page.toLowerCase()}`} key={page} passHref>
                   <Button
                     sx={{
                       my: 2,
@@ -157,9 +156,9 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {combined.map((page) => (
-                  <Link key={page} href={`/${page.toLowerCase()}`}>
-                    <MenuItem>
+                {pages.map((page) => (
+                  <Link key={page} href={`/${page.toLowerCase()}`} passHref>
+                    <MenuItem onClick={handleCloseNavMenu}>
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
                   </Link>
@@ -192,7 +191,12 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <MenuItem
+                    key={setting}
+                    onClick={handleCloseUserMenu}
+                    component={Link}
+                    href={`/${setting.toLowerCase()}`}
+                  >
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}
