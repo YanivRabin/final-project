@@ -12,8 +12,31 @@ import Link from "next/link";
 import { WorkoutCardProps } from "../services/interface";
 import "../../styles/workoutCard.css";
 
+const formatMinutesStringToHHMM = (minutesString: string): string => {
+  // Parse the string into an integer
+  const totalMinutes = parseInt(minutesString, 10);
+  
+  // Handle invalid input
+  if (isNaN(totalMinutes) || totalMinutes < 0) {
+    return "Invalid input";
+  }
+
+  // Calculate hours and minutes
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  // Pad hours and minutes with leading zeros if necessary
+  const paddedHours = String(hours).padStart(2, '0');
+  const paddedMinutes = String(minutes).padStart(2, '0');
+
+  // Return the formatted time
+  return `${paddedHours}:${paddedMinutes}`;
+};
+
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
   const backgroundImage = require(`../images/workout/next-workout.png`);
+  console.log("exercises", exercises);
+  
 
   return (
     <Card className="workoutCard">
@@ -42,20 +65,19 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
             alignItems="center"
             justifyContent="center"
           >
-            {/* <Typography className="exercise-description" variant="h4">
+            <Typography className="exercise-description" variant="h4">
               Mucsles Group
             </Typography>
             <Typography className="exercise-description" variant="h6">
-              {exercises.muscleGroup}
-            </Typography> */}
+              Full Body
+            </Typography>
             <br />
             <Typography className="exercise-description" variant="h4">
               Duration
             </Typography>
             <Typography className="exercise-description" variant="h5">
-              {exercises.duration} minutes
+              {formatMinutesStringToHHMM(exercises.duration)}
             </Typography>
-            <br />
             <Link
               href={{
                 pathname: "/workoutDetail",

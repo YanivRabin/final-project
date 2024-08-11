@@ -15,19 +15,9 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 import InfoIcon from "@mui/icons-material/Info";
 import { useSearchParams } from "next/navigation";
-
-interface Exercise {
-  name: string;
-  muscleGroup: string;
-  duration: string;
-  description: string;
-  reps: string;
-  sets: string;
-}
+import { Exercise } from "../services/interface";
 
 interface WorkoutExercise {
-  muscleGroup: string;
-  duration: string;
   exercise: Exercise[];
 }
 
@@ -101,22 +91,27 @@ const styles = {
 const WorkoutDetailPage: React.FC = () => {
   const searchParams = useSearchParams();
   const workout = searchParams.get("workout");
+  const parsedWorkout = JSON.parse(workout as string);
+  const workoutData = parsedWorkout.exercise? parsedWorkout.exercise : parsedWorkout;
+  console.log("workoutData", workoutData);
 
-  const [workoutData, setWorkoutData] = useState<WorkoutExercise | null>(null);
+
+  // const [workoutData, setWorkoutData] = useState<WorkoutExercise>();
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogContent, setDialogContent] = useState<string>("");
 
-  useEffect(() => {
-    if (workout) {
-      try {
-        const parsedWorkout = JSON.parse(workout as string) as WorkoutExercise;
-        setWorkoutData(parsedWorkout);
-      } catch (error) {
-        console.error("Failed to parse workout data:", error);
-      }
-    }
-  }, [workout]);
+  // useEffect(() => {
+  //   if (workout) {
+  //     try {
+  //       const parsedWorkout = JSON.parse(workout as string) as WorkoutExercise;
+  //       setWorkoutData(parsedWorkout);
+  //     } catch (error) {
+  //       console.error("Failed to parse workout data:", error);
+  //     }
+  //   }
+  // }, [workout]);
+
 
   const handleOpenDialog = (description: string) => {
     setDialogContent(description);
@@ -131,7 +126,7 @@ const WorkoutDetailPage: React.FC = () => {
   const handleNextExercise = () => {
     if (workoutData) {
       const nextIndex = selectedExerciseIndex + 1;
-      if (nextIndex < workoutData.exercise.length + 1) {
+      if (nextIndex < workoutData.length + 1) {
         setSelectedExerciseIndex(nextIndex);
       } else {
         // Navigate to /home after completing all exercises
@@ -140,7 +135,7 @@ const WorkoutDetailPage: React.FC = () => {
     }
   };
 
-  if (!workoutData) return <div>Loading...</div>;
+  if (workoutData === undefined) return <div>Loading...</div>;
 
   return (
     <Box sx={styles.container}>
@@ -161,10 +156,13 @@ const WorkoutDetailPage: React.FC = () => {
             </Typography>
           </Paper>
         </Grid>
-        {workoutData.exercise.map((exercise, index) => (
+        {workoutData.map((exercise: any, index: number) => (
           <Grid item xs={12} key={exercise.name}>
             <Paper
-              sx={styles.exercisePaper(index < selectedExerciseIndex, index === selectedExerciseIndex)}
+              sx={styles.exercisePaper(
+                index < selectedExerciseIndex,
+                index === selectedExerciseIndex
+              )}
               onClick={() =>
                 index === selectedExerciseIndex &&
                 handleOpenDialog(exercise.description)
@@ -207,11 +205,9 @@ const WorkoutDetailPage: React.FC = () => {
         variant="contained"
         sx={styles.button}
         onClick={handleNextExercise}
-        disabled={selectedExerciseIndex > workoutData.exercise.length}
+        disabled={selectedExerciseIndex > workoutData.length}
       >
-        {selectedExerciseIndex < workoutData.exercise.length 
-          ? "Next"
-          : "Done"}
+        {selectedExerciseIndex < workoutData.length ? "Next" : "Done"}
       </Button>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Exercise Description</DialogTitle>

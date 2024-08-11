@@ -1,6 +1,12 @@
 import React from "react";
 import { Card, Grid, Typography, Box, Button } from "@mui/material";
 import Link from "next/link";
+import { Exercise } from "../services/interface";
+
+interface WorkoutCardProps {
+  day: string;
+  exercises: Exercise[];
+}
 
 const styles = {
   workoutCardOverlay: {
@@ -50,25 +56,33 @@ const styles = {
   },
 };
 
-interface Exercise {
-  name: string;
-  description: string;
-  reps: string;
-  sets: string;
-}
+const formatMinutesStringToHHMM = (minutesString: string): string => {
+  // Parse the string into an integer
+  const totalMinutes = parseInt(minutesString, 10);
+  
+  // Handle invalid input
+  if (isNaN(totalMinutes) || totalMinutes < 0) {
+    return "Invalid input";
+  }
 
-interface WorkoutExercise {
-  muscleGroup: string;
-  duration: string;
-  exercise: Exercise[];
-}
+  // Calculate hours and minutes
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
 
-interface WorkoutCardProps {
-  day: string;
-  exercises: WorkoutExercise;
-}
+  // Pad hours and minutes with leading zeros if necessary
+  const paddedHours = String(hours).padStart(2, '0');
+  const paddedMinutes = String(minutes).padStart(2, '0');
+
+  // Return the formatted time
+  return `${paddedHours}:${paddedMinutes}`;
+};
+
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const duration: string = user.user.minutesPerWorkout;
 
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
+  console.log("exercises", exercises);
+
   return (
     <Card sx={styles.workoutCard}>
       <Box sx={styles.workoutCardOverlay} />
@@ -81,24 +95,39 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
           justifyContent="center"
         >
           <Typography variant="h5" sx={styles.workoutCardTitle}>
-            {day}
+            {day.charAt(0).toUpperCase() + day.slice(1)}
           </Typography>
-          <Typography sx={styles.muscleGroup} variant="h6">
-            {exercises.muscleGroup}
-          </Typography>
-          <br />
-          <Typography sx={styles.duration} variant="h5">
-            {exercises.duration}
-          </Typography>
-          <Link
-            href={{
-              pathname: "/workoutDetail",
-              query: { workout: JSON.stringify(exercises) },
-            }}
-            passHref
-          >
-            <Button sx={styles.startButton}>Start</Button>
-          </Link>
+          {exercises[0].name === "Rest" ? (
+            <>
+              <Typography sx={styles.muscleGroup} variant="h6">
+                Rest Day
+              </Typography>
+              <br />
+              <Typography sx={styles.duration} variant="h5">
+                00:00
+              </Typography>
+              <Button disabled></Button>
+            </>
+          ) : (
+            <>
+              <Typography sx={styles.muscleGroup} variant="h6">
+                Full Body
+              </Typography>
+              <br />
+              <Typography sx={styles.duration} variant="h5">
+                {formatMinutesStringToHHMM(duration)}
+              </Typography>
+              <Link
+                href={{
+                  pathname: "/workoutDetail",
+                  query: { workout: JSON.stringify(exercises) },
+                }}
+                passHref
+              >
+                <Button sx={styles.startButton}>Start</Button>
+              </Link>
+            </>
+          )}
         </Grid>
       </Grid>
     </Card>
