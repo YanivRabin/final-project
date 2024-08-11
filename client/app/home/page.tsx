@@ -1,27 +1,32 @@
-"use client";  
-import React, { useEffect, useState } from "react";
+"use client";
+
+import React from "react";
 import { Box, Grid, Typography, CssBaseline } from "@mui/material";
 import MealCard from "../components/MealCard";
-import WorkoutCard from "../components/workoutCard";
-import { Meal, WorkoutDetails } from "../services/interface";
-import "../../styles/global.css";
+import WorkoutCard from "../components/WorkoutCard";
+import { Exercise, WorkoutDetails } from "../services/interface";
+import "../../styles/home.css";
 
-
-// Function to get the current time zone
+// meal
 const getCurrentTimeZone = () => {
   const currentHour = new Date().getHours();
   if (currentHour >= 6 && currentHour < 11) {
-    return "breakfast";
+    return "Breakfast";
   } else if (currentHour >= 11 && currentHour < 15) {
-    return "lunch";
+    return "Lunch";
   } else if (currentHour >= 15 && currentHour < 18) {
-    return "snacks";
+    return "Snacks";
   } else {
-    return "dinner";
+    return "Dinner";
   }
 };
-
-// Function to get the current day
+const meals = {
+  Breakfast: ["Oatmeal with Berries and Nuts", "Scrambled Eggs with Avocado"],
+  Lunch: ["Grilled Chicken Salad", "Quinoa and Black Bean Bowl"],
+  Snacks: ["Yogurt with Honey and Nuts", "Apple Slices with Peanut Butter"],
+  Dinner: ["Salmon with Quinoa and Vegetables", "Pasta with Tomato Sauce"],
+};
+// workout
 const getCurrentDay = () => {
   const days = [
     "sunday",
@@ -36,34 +41,24 @@ const getCurrentDay = () => {
   return days[currentDayIndex];
 };
 
+const currentDay = getCurrentDay();
+const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
+const exercises: Exercise[] = workoutPlan.weeklyWorkout[currentDay];
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const duration: string = user.user.minutesPerWorkout;
+const workoutData: WorkoutDetails = {
+  muscleGroup: "Full Body",
+  duration: duration,
+  exercise: exercises,
+};
+
+console.log("workoutData", workoutData);
+
+
 const Home: React.FC = () => {
-  const [meals, setMeals] = useState<{ [key: string]: Meal[] }>({});
-  const [workoutData, setWorkoutData] = useState<WorkoutDetails | null>(null);
-  
-  useEffect(() => {
-    const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
-    const nutritionalInformation = workoutPlan.nutritionalInformation || {};
-    console.log("Fetched nutritionalInformation:", nutritionalInformation);  
-
-    setMeals(nutritionalInformation);
-
-    const currentDay = getCurrentDay();
-    const exercises = workoutPlan.weeklyWorkout[currentDay] || [];
-    const duration: string = workoutPlan.minutesPerWorkout || "0";
-
-    setWorkoutData({
-      muscleGroup: "Full Body",
-      duration: duration,
-      exercise: exercises,
-    });
-  }, []);
-
   const currentMealType = getCurrentTimeZone();
-  const currentMeals = meals[currentMealType] || [];
-
-  if (!workoutData) {
-    return <div>Loading...</div>;
-  }
+  const currentMeals = meals[currentMealType];
+  const currentWorkout = workoutData;
 
   return (
     <Box
@@ -72,19 +67,12 @@ const Home: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        p: 2,
       }}
     >
       <CssBaseline />
-      <Grid 
-        container 
-        alignItems="center" 
-        justifyContent="center" 
-        spacing={2} 
-        sx={{ width: '100%', maxWidth: 1200 }}
-      >
+      <Grid container alignItems="center" justifyContent="center">
         {/* Meal card */}
-        <Grid item xs={12} sm={6} md={5}>
+        <Grid item>
           <Grid
             container
             direction="column"
@@ -96,14 +84,21 @@ const Home: React.FC = () => {
               <Typography variant="h2" className="title">
                 Your Next Meal
               </Typography>
+              <Typography className="subtitle">
+                There are two options to choose from
+              </Typography>
             </Grid>
             <Grid item>
               <MealCard mealType={currentMealType} meals={currentMeals} />
             </Grid>
           </Grid>
         </Grid>
+        {/* Vertical line */}
+        <Grid item>
+          <hr className="vertical-line" />
+        </Grid>
         {/* Workout card */}
-        <Grid item xs={12} sm={6} md={5}>
+        <Grid item>
           <Grid
             container
             direction="column"
@@ -117,7 +112,7 @@ const Home: React.FC = () => {
               </Typography>
             </Grid>
             <Grid item>
-              <WorkoutCard day={getCurrentDay()} exercises={workoutData} />
+              <WorkoutCard day={currentDay} exercises={currentWorkout} />
             </Grid>
           </Grid>
         </Grid>
