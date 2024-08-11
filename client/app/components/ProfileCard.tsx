@@ -10,18 +10,20 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Box,
 } from '@mui/material';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 
 const styles = {
-  details: {
-    padding: '1rem',
-    borderTop: '1px solid #e1e1e1',
+  label: {
+    padding: '0.5rem 0',
+    color: '#899499',
+    textAlign: 'left',
   },
   value: {
-    padding: '1rem 2rem',
-    borderTop: '1px solid #e1e1e1',
+    padding: '0.5rem 0',
     color: '#899499',
+    textAlign: 'right',
   },
 };
 
@@ -95,77 +97,99 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
           <Typography color="text.secondary">{props.sub}</Typography>
         </Grid>
 
-        <Grid container>
+        <Grid container spacing={2} sx={{ width: '100%', padding: '0 1rem' }}>
           <Grid item xs={6}>
-            <Typography style={styles.details}>Gender</Typography>
-            <Typography style={styles.details}>Age</Typography>
-            <Typography style={styles.details}>Height</Typography>
-            <Typography style={styles.details}>Weight</Typography>
+            <Typography sx={styles.label}>Gender</Typography>
           </Grid>
-          <Grid item xs={6} sx={{ textAlign: 'end' }}>
+          <Grid item xs={6}>
             {editMode ? (
-              <>
-                <Select
-                  name="gender"
-                  value={general.gender}
-                  onChange={handleSelectChange}
-                  size="small"
-                  variant="outlined"
-                  style={styles.value}
-                  fullWidth
-                >
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                </Select>
-                <TextField
-                  name="age"
-                  value={general.age}
-                  onChange={handleChange}
-                  size="small"
-                  variant="outlined"
-                  style={styles.value}
-                  fullWidth
-                />
-                <TextField
-                  name="height"
-                  value={general.height}
-                  onChange={handleChange}
-                  size="small"
-                  variant="outlined"
-                  style={styles.value}
-                  fullWidth
-                />
-                <TextField
-                  name="weight"
-                  value={general.weight}
-                  onChange={handleChange}
-                  size="small"
-                  variant="outlined"
-                  style={styles.value}
-                  fullWidth
-                />
-              </>
+              <Select
+                name="gender"
+                value={general.gender}
+                onChange={handleSelectChange}
+                size="small"
+                variant="outlined"
+                fullWidth
+              >
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
+              </Select>
             ) : (
-              <>
-                <Typography style={styles.value}>{general.gender}</Typography>
-                <Typography style={styles.value}>{general.age}</Typography>
-                <Typography style={styles.value}>{general.height}</Typography>
-                <Typography style={styles.value}>{general.weight}</Typography>
-              </>
+              <Typography sx={styles.value}>{general.gender}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography sx={styles.label}>Age</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            {editMode ? (
+              <TextField
+                name="age"
+                value={general.age}
+                onChange={handleChange}
+                size="small"
+                variant="outlined"
+                type="number"
+                inputProps={{ min: 0 }}
+                fullWidth
+              />
+            ) : (
+              <Typography sx={styles.value}>{general.age}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography sx={styles.label}>Height</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            {editMode ? (
+              <TextField
+                name="height"
+                value={general.height}
+                onChange={handleChange}
+                size="small"
+                variant="outlined"
+                type="number"
+                inputProps={{ min: 0 }}
+                fullWidth
+              />
+            ) : (
+              <Typography sx={styles.value}>{general.height}</Typography>
+            )}
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography sx={styles.label}>Weight</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            {editMode ? (
+              <TextField
+                name="weight"
+                value={general.weight}
+                onChange={handleChange}
+                size="small"
+                variant="outlined"
+                type="number"
+                inputProps={{ min: 0 }}
+                fullWidth
+              />
+            ) : (
+              <Typography sx={styles.value}>{general.weight}</Typography>
             )}
           </Grid>
         </Grid>
 
-        <Grid item style={styles.details} sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', p: '1rem', textAlign: 'center' }}>
           <Button
             variant="contained"
             color="secondary"
-            sx={{ width: '99%', p: 1, my: 2 }}
+            sx={{ width: '50%', p: 1 }}
             onClick={editMode ? handleSaveClick : handleEditClick}
           >
             {editMode ? 'Save' : 'Edit'}
           </Button>
-        </Grid>
+        </Box>
       </Grid>
     </Card>
   );
