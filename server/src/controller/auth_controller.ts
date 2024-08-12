@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../model/user_model";
+import Workout from "../model/workout_model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -255,6 +256,36 @@ const findUserByEmail = async (email: string) => {
     throw new Error("Error finding user by email");
   }
 };
+const getWorkoutForUser = async (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+  
+  if (!token) {
+      return res.status(401).send("Unauthorized");
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err: any, user: { _id: string, email: string }) => {
+      if (err) {
+          return res.status(403).send("Forbidden");
+      }
+
+      try {
+          // Find the workout plan associated with the user's email
+          const workoutPlan = await Workout.findOne({ email: user.email });
+          
+          if (!workoutPlan) {
+              return res.status(404).send("Workout plan not found");
+          }
+
+          return res.status(200).json(workoutPlan);
+      } catch (err) {
+          console.error("Error fetching workout plan:", err.message);
+          return res.status(500).send("Server error");
+      }
+  });
+};
+
+
 
 export = {
   login,
@@ -263,5 +294,6 @@ export = {
   refreshToken,
   userInfo,
   findOrCreateGoogleUser,
-  findUserByEmail
+  findUserByEmail,
+  getWorkoutForUser
 };

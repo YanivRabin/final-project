@@ -15,4 +15,7 @@ router.get('/refreshToken', AuthController.refreshToken);
 
 router.get('/userInfo', authenticate, AuthController.userInfo);
 
+router.get('/workout', AuthController.getWorkoutForUser);
+
+
 export = router;
