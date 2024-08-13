@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Grid, Typography, Box, Button } from "@mui/material";
 import Link from "next/link";
 import { Exercise } from "../services/interface";
@@ -57,31 +57,29 @@ const styles = {
 };
 
 const formatMinutesStringToHHMM = (minutesString: string): string => {
-  // Parse the string into an integer
   const totalMinutes = parseInt(minutesString, 10);
-  
-  // Handle invalid input
+
   if (isNaN(totalMinutes) || totalMinutes < 0) {
     return "Invalid input";
   }
 
-  // Calculate hours and minutes
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  // Pad hours and minutes with leading zeros if necessary
   const paddedHours = String(hours).padStart(2, '0');
   const paddedMinutes = String(minutes).padStart(2, '0');
 
-  // Return the formatted time
   return `${paddedHours}:${paddedMinutes}`;
 };
 
-const user = JSON.parse(localStorage.getItem("user") || "{}");
-const duration: string = user.user.minutesPerWorkout;
-
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
-  console.log("exercises", exercises);
+  const [duration, setDuration] = useState("0");
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const userDuration = user?.user?.minutesPerWorkout || "0";
+    setDuration(userDuration);
+  }, []);
 
   return (
     <Card sx={styles.workoutCard}>

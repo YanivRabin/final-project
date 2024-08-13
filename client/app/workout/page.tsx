@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography, CssBaseline } from "@mui/material";
 import WeeklyWotkoutCard from "../components/WeeklyWorkoutCard";
 import { Exercise } from "../services/interface";
@@ -8,14 +8,26 @@ import "../../styles/home.css";
 
 interface WorkoutDetails {
   exercise: Exercise[];
-  [key: string]: any; // Add index signature
+  [key: string]: any;
 }
 
-const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
-const workoutData: WorkoutDetails = workoutPlan.weeklyWorkout;
+// const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
+// const workoutData: WorkoutDetails = workoutPlan.weeklyWorkout;
 
 
 const Workout: React.FC = () => {
+
+  const [workoutData, setWorkoutData] = useState<WorkoutDetails | null>(null);
+
+  useEffect(() => {
+    const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
+    setWorkoutData(workoutPlan.weeklyWorkout);
+  }, []);
+
+  if (!workoutData) {
+    return null; // or a loading indicator
+  }
+
   return (
     <Box
       sx={{
