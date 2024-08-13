@@ -101,18 +101,6 @@ const WorkoutDetailPage: React.FC = () => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogContent, setDialogContent] = useState<string>("");
 
-  // useEffect(() => {
-  //   if (workout) {
-  //     try {
-  //       const parsedWorkout = JSON.parse(workout as string) as WorkoutExercise;
-  //       setWorkoutData(parsedWorkout);
-  //     } catch (error) {
-  //       console.error("Failed to parse workout data:", error);
-  //     }
-  //   }
-  // }, [workout]);
-
-
   const handleOpenDialog = (description: string) => {
     setDialogContent(description);
     setOpenDialog(true);

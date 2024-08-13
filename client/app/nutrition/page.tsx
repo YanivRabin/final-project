@@ -18,7 +18,7 @@ import { Meal } from "../services/interface";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 // Image imports
-import breakfastImage from "../images/food/Breakfast.png";
+import breakfastImage from "../images/food/Breakfast.png"
 import lunchImage from "../images/food/Lunch.png";
 import dinnerImage from "../images/food/Dinner.png";
 import snacksImage from "../images/food/Snacks.png";
@@ -100,9 +100,13 @@ const Nutrition: React.FC = () => {
     return (
         <Container maxWidth="xl" sx={{ mt: 8 }}>
             <Typography
-                variant="h4"
-                align="center"
-                sx={{ fontWeight: "bold", color: "#4e2a84", mb: 2 }}
+                sx={{
+                    marginBottom: "2rem",
+                    color: "#4e2a84",
+                    position: "relative",
+                  }}
+                  variant="h2"
+                  align="center"
             >
                 DAILY MENU
             </Typography>

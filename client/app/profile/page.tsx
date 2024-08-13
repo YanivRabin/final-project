@@ -54,19 +54,6 @@ const Profile: React.FC = () => {
       </Head>
       <CssBaseline />
       <Grid container direction="column" sx={{ overflowX: "hidden" }}>
-        <Grid item xs={12} md={6}>
-          <img
-            alt="avatar"
-            style={{
-              width: "100vw",
-              objectFit: "cover",
-              objectPosition: "50% 50%",
-              position: "relative",
-            }}
-            src="https://247fitness.co/public/images/select-gym-bg.jpg"
-          />
-        </Grid>
-
         <Grid
           container
           direction={{ xs: "column", md: "row" }}

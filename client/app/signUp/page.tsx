@@ -123,7 +123,7 @@ export default function SignUp() {
       const workoutPlan = await createWorkoutPlan(user).unwrap();
       localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
 
-      window.location.href = "/home";
+      router.push("/home");
     } catch (error) {
       console.error("Sign up error:", error);
       setActiveStep(0);
@@ -776,7 +776,7 @@ export default function SignUp() {
                 />
               </Grid>
               {/* other */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <CustomTextField
                   label="Other"
                   value={formData.dietaryRestrictions.other}
@@ -790,7 +790,7 @@ export default function SignUp() {
                     });
                   }}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         );
@@ -832,7 +832,11 @@ export default function SignUp() {
               {getStepContent(activeStep)}
             </Box>
             <Box display="flex" flexDirection="row" pt={2}>
-              <Button className="buttonBack" onClick={handleBack}>
+              <Button
+                className="buttonBack"
+                onClick={handleBack}
+                disabled={signUpLoading || workoutLoading}
+              >
                 Back
               </Button>
               <Box flex="1 1 auto" />

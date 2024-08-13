@@ -1,11 +1,10 @@
-"use client";  // Add this at the top to indicate a client component
+"use client"; // Add this at the top to indicate a client component
 
 import React, { useEffect, useState } from "react";
 import { Box, Grid, Typography, CssBaseline } from "@mui/material";
 import MealCard from "../components/MealCard";
 import WorkoutCard from "../components/workoutCard";
 import { Meal, WorkoutDetails } from "../services/interface";
-import "../../styles/global.css";
 
 // Function to get the current time zone
 const getCurrentTimeZone = () => {
@@ -46,7 +45,7 @@ const Home: React.FC = () => {
     if (workoutPlan?.weeklyWorkout) {
       const currentDay = getCurrentDay();
       const nutritionalInformation = workoutPlan.nutritionalInformation || {};
-      console.log("Fetched nutritionalInformation:", nutritionalInformation);  
+      console.log("Fetched nutritionalInformation:", nutritionalInformation);
       setMeals(nutritionalInformation);
 
       const exercises = workoutPlan.weeklyWorkout[currentDay] || [];
@@ -78,35 +77,63 @@ const Home: React.FC = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
-        p: 2,
-        bgcolor: "background.default",
+        padding: "2rem",
       }}
     >
       <CssBaseline />
-      <Grid 
-        container 
-        alignItems="stretch" 
-        justifyContent="center" 
-        spacing={4} 
-        sx={{ width: '100%', maxWidth: 1200 }}
+      <Grid
+        container
+        alignItems="stretch"
+        justifyContent="center"
+        spacing={4}
+        sx={{ width: "100%", maxWidth: 1200 }}
       >
         <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
-          <Typography variant="h4" className="title" align="center" gutterBottom>
+          <Typography
+            sx={{
+              marginBottom: "2rem",
+              color: "#4e2a84",
+              position: "relative",
+            }}
+            variant="h2"
+            align="center"
+          >
             Your Next Meal
           </Typography>
-          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <MealCard mealType={currentMealType} meals={currentMeals} />
           </Box>
         </Grid>
         <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
-          <Typography variant="h4" className="title" align="center" gutterBottom>
-            Your Next Workout
+          <Typography
+            sx={{
+              marginBottom: "2rem",
+              color: "#4e2a84",
+              position: "relative",
+            }}
+            variant="h2"
+            align="center"
+          >
+            Your Next Day
           </Typography>
-          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <WorkoutCard day={getCurrentDay()} exercises={workoutData} />
           </Box>
         </Grid>

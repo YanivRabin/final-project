@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import { Provider } from "react-redux";
 import { store } from "@/app/store";
 import Navbar from "./components/navbar";
-import "@/styles/global.css"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,12 +12,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navbarStyle = {
+    margin: '100px', // Adjust the margin as needed
+  };
+
   return (
     <html lang="en">
-      <title>Fitness</title>
+      <title>TrAIner</title>
       <body className={inter.className}>
         <Provider store={store}>
-          <Navbar />
+          <div style={navbarStyle}>
+            <Navbar />
+          </div>
           <div className="content">{children}</div>
         </Provider>
       </body>
