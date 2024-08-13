@@ -77,7 +77,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const userDuration = user?.user?.minutesPerWorkout || "0";
+    const userDuration = user?.minutesPerWorkout || "0";
     setDuration(userDuration);
   }, []);
 

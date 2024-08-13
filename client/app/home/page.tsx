@@ -50,7 +50,8 @@ const Home: React.FC = () => {
       setMeals(nutritionalInformation);
 
       const exercises = workoutPlan.weeklyWorkout[currentDay] || [];
-      const duration: string = workoutPlan.minutesPerWorkout || "0";
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const duration: string = user.minutesPerWorkout || "0";
 
       setWorkoutData({
         muscleGroup: "Full Body",
