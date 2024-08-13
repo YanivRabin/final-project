@@ -12,8 +12,64 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useLoginMutation } from "@/app/services/authApi";
 import Link from "next/link";
-import "../../styles/signIn.css";
 import CustomTextField from "../components/CustomTextField";
+
+const styles = {
+  title: {
+    fontFamily: "'Inria Sans', sans-serif",
+    color: "#3d2d69",
+    fontSize: "52px",
+  },
+  signInForm: {
+    border: "3px solid #4e2a84",
+    padding: "20px 0",
+    borderRadius: "8px",
+    width: "350px",
+    height: "510px",
+  },
+  signInButton: {
+    backgroundColor: "#4e2a84",
+    color: "white",
+    borderRadius: "8px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    margin: "15px 0",
+    "&:hover": {
+      backgroundColor: "#7158b6",
+    },
+  },
+  orDivider: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "10px 0",
+  },
+  orLine: {
+    flex: 1,
+    border: "none",
+    borderTop: "1px solid #ccc",
+  },
+  orText: {
+    margin: "0 10px",
+    color: "#666",
+    fontSize: "14px",
+    fontWeight: "bold",
+    textTransform: "uppercase" as "uppercase",
+  },
+  googleButton: {
+    backgroundColor: "#4285f4",
+    color: "white",
+    borderRadius: "8px",
+    fontSize: "16px",
+    margin: "10px 0 20px 0",
+  },
+  signUpLink: {
+    color: "#4e2a84",
+    fontSize: "16px",
+    fontWeight: "bold",
+    textDecoration: "none",
+  },
+};
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -57,8 +113,8 @@ export default function SignIn() {
           display: {
             xs: "none",
             sm: "none",
-            md: "block"
-          }
+            md: "block",
+          },
         }}
       >
         <Image
@@ -84,8 +140,8 @@ export default function SignIn() {
         sx={{ height: "100vh", backgroundColor: "white" }}
       >
         <Box
-          className="signInForm"
           sx={{
+            ...styles.signInForm,
             my: 8,
             mx: 4,
             display: "flex",
@@ -93,7 +149,7 @@ export default function SignIn() {
             alignItems: "center",
           }}
         >
-          <Typography className="title">Sign in</Typography>
+          <Typography sx={styles.title}>Sign in</Typography>
           <Box
             component="form"
             noValidate
@@ -114,7 +170,7 @@ export default function SignIn() {
               type="password"
             />
             <Button
-              className="signInButton"
+              sx={styles.signInButton}
               type="submit"
               fullWidth
               variant="contained"
@@ -122,17 +178,17 @@ export default function SignIn() {
             >
               {isLoading ? <CircularProgress size={24} /> : "Sign In"}
             </Button>
-            <div className="orDivider">
-              <hr className="orLine" />
-              <span className="orText">OR</span>
-              <hr className="orLine" />
+            <div style={styles.orDivider}>
+              <hr style={styles.orLine} />
+              <span style={styles.orText}>OR</span>
+              <hr style={styles.orLine} />
             </div>
-            <Button className="googleButton" fullWidth variant="contained">
+            <Button sx={styles.googleButton} fullWidth variant="contained">
               Sign in with Google
             </Button>
             <Typography>
               Don&apos;t have an account?
-              <Link className="signUpLink" href="/signUp">
+              <Link href="/signUp" style={styles.signUpLink}>
                 {" Sign Up"}
               </Link>
             </Typography>

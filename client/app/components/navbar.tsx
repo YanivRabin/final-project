@@ -14,12 +14,23 @@ import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { CssBaseline } from "@mui/material";
+import { useRouter } from "next/router";
+import {
+  CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
 const settings = ["Profile", "Logout"];
 
+const pagesAndSettings = [...pages, ...settings];
+
 function ResponsiveAppBar() {
+  // const router = useRouter();
   const pathname = usePathname();
   const [isHomePage, setIsHomePage] = React.useState<boolean>(false);
   const [isSignPage, setIsSignPage] = React.useState<boolean>(false);
@@ -29,6 +40,9 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const [openLogoutDialog, setOpenLogoutDialog] =
+    React.useState<boolean>(false);
+  const user = localStorage.getItem("user");
 
   // Check if the current page is the home page or signIn/signUp page
   React.useEffect(() => {
@@ -51,6 +65,25 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    setOpenLogoutDialog(false);
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("workoutPlan");
+    // router.push("/");
+
+    // Redirect to the home page
+    window.location.href = "/";
+  };
+
+  const handleOpenLogoutDialog = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  const handleCloseLogoutDialog = () => {
+    setOpenLogoutDialog(false);
   };
 
   return (
@@ -77,19 +110,35 @@ function ResponsiveAppBar() {
                 justifyContent: "flex-end",
               }}
             >
-              <Link href="/signIn" passHref>
-                <Button
-                  sx={{
-                    my: 2,
-                    color: "#4e2a84",
-                    display: "block",
-                    margin: "0 10px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Sign In
-                </Button>
-              </Link>
+              {user ? (
+                <Link href="/home" passHref>
+                  <Button
+                    sx={{
+                      my: 2,
+                      color: "#4e2a84",
+                      display: "block",
+                      margin: "0 10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Home
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/signIn" passHref>
+                  <Button
+                    sx={{
+                      my: 2,
+                      color: "#4e2a84",
+                      display: "block",
+                      margin: "0 10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </Box>
           )}
           {/* Desktop menu */}
@@ -156,17 +205,26 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <Link key={page} href={`/${page.toLowerCase()}`} passHref>
-                    <MenuItem onClick={handleCloseNavMenu}>
+                {pagesAndSettings.map((page) =>
+                  page === "Logout" ? (
+                    <MenuItem key={page} onClick={handleOpenLogoutDialog}>
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
-                  </Link>
-                ))}
+                  ) : (
+                    <MenuItem
+                      key={page}
+                      onClick={handleCloseUserMenu}
+                      component={Link}
+                      href={`/${page.toLowerCase()}`}
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  )
+                )}
               </Menu>
             </Box>
           )}
-          {/* User menu display only in desktop */}
+          {/* User menu avatar display only in desktop */}
           {!isHomePage && !isSignPage && (
             <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
               <Tooltip title="Open settings">
@@ -190,21 +248,46 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={handleCloseUserMenu}
-                    component={Link}
-                    href={`/${setting.toLowerCase()}`}
-                  >
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                {settings.map((setting) =>
+                  setting === "Logout" ? (
+                    <MenuItem key={setting} onClick={handleOpenLogoutDialog}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem
+                      key={setting}
+                      onClick={handleCloseUserMenu}
+                      component={Link}
+                      href={`/${setting.toLowerCase()}`}
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  )
+                )}
               </Menu>
             </Box>
           )}
         </Toolbar>
       </Container>
+      <Dialog
+        open={openLogoutDialog}
+        onClose={handleCloseLogoutDialog}
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description"
+      >
+        <DialogTitle id="logout-dialog-title">
+          {"Are you sure you want to logout?"}
+        </DialogTitle>
+
+        <DialogActions sx={{ justifyContent: "space-between" }}>
+          <Button onClick={handleCloseLogoutDialog} sx={{ color: "grey" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleLogout} sx={{ color: "red" }} autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AppBar>
   );
 }
