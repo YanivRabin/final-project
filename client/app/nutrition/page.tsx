@@ -5,39 +5,20 @@ import {
     Box,
     Typography,
     Grid,
-    Card,
-    CardContent,
-    Button,
     Dialog,
     DialogTitle,
     DialogContent,
     Container,
+    Button,
 } from "@mui/material";
-import Image from "next/image";
 import { Meal } from "../services/interface";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-
-// Image imports
-import breakfastImage from "../images/food/Breakfast.png"
-import lunchImage from "../images/food/Lunch.png";
-import dinnerImage from "../images/food/Dinner.png";
-import snacksImage from "../images/food/Snacks.png";
-
-const mealImages: Record<string, any> = {
-    breakfast: breakfastImage,
-    lunch: lunchImage,
-    snacks: snacksImage,
-    dinner: dinnerImage,
-};
-
-interface Meals {
-    [key: string]: Meal[];
-}
+import MealCard from "../components/MealCard"; // Import the MealCard component
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 const Nutrition: React.FC = () => {
-    const [meals, setMeals] = useState<Meals>({});
+    const [meals, setMeals] = useState<Record<string, Meal[]>>({});
     const [calories, setCalories] = useState(0);
     const [carbs, setCarbs] = useState(0);
     const [fats, setFats] = useState(0);
@@ -104,9 +85,9 @@ const Nutrition: React.FC = () => {
                     marginBottom: "2rem",
                     color: "#4e2a84",
                     position: "relative",
-                  }}
-                  variant="h2"
-                  align="center"
+                }}
+                variant="h2"
+                align="center"
             >
                 DAILY MENU
             </Typography>
@@ -147,35 +128,11 @@ const Nutrition: React.FC = () => {
             <Grid container spacing={4}>
                 {Object.keys(meals).map((mealType) => (
                     <Grid item xs={12} md={3} key={mealType}>
-                        <Card sx={{ position: "relative", height: 400 }}>
-                            <Image
-                                src={mealImages[mealType.toLowerCase()]}
-                                alt={mealType}
-                                fill
-                                
-                                className="mealCardImage"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                style={{ filter: "brightness(0.7)" }}
-                                priority
-                            />
-                            <CardContent
-                                sx={{ position: "absolute", bottom: 0, color: "white" }}
-                            >
-                                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                                    {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-                                </Typography>
-                                {meals[mealType].map((option, index) => (
-                                    <Button
-                                        key={index}
-                                        variant="contained"
-                                        sx={{ mt: 1, backgroundColor: "#4e2a84", width: "100%" }}
-                                        onClick={() => handleOpenDialog(option)}
-                                    >
-                                        {option.name}
-                                    </Button>
-                                ))}
-                            </CardContent>
-                        </Card>
+                        <MealCard
+                            mealType={mealType}
+                            meals={meals[mealType]}
+                            onClick={handleOpenDialog} // Pass the handleOpenDialog function to MealCard
+                        />
                     </Grid>
                 ))}
             </Grid>
