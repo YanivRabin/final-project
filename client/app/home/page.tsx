@@ -1,7 +1,7 @@
-"use client"; // Add this at the top to indicate a client component
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Typography, CssBaseline } from "@mui/material";
+import { Box, Grid, Typography, CssBaseline, Dialog, DialogTitle, DialogContent, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from "@mui/material";
 import MealCard from "../components/MealCard";
 import WorkoutCard from "../components/workoutCard";
 import { Meal, WorkoutDetails } from "../services/interface";
@@ -38,6 +38,8 @@ const getCurrentDay = () => {
 const Home: React.FC = () => {
   const [meals, setMeals] = useState<{ [key: string]: Meal[] }>({});
   const [workoutData, setWorkoutData] = useState<WorkoutDetails | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<Meal | null>(null);
 
   useEffect(() => {
     const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
@@ -45,7 +47,6 @@ const Home: React.FC = () => {
     if (workoutPlan?.weeklyWorkout) {
       const currentDay = getCurrentDay();
       const nutritionalInformation = workoutPlan.nutritionalInformation || {};
-      console.log("Fetched nutritionalInformation:", nutritionalInformation);
       setMeals(nutritionalInformation);
 
       const exercises = workoutPlan.weeklyWorkout[currentDay] || [];
@@ -69,6 +70,16 @@ const Home: React.FC = () => {
 
   const currentMealType = getCurrentTimeZone();
   const currentMeals = meals[currentMealType] || [];
+
+  const handleOpenDialog = (meal: Meal) => {
+    setDialogContent(meal);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setDialogContent(null);
+  };
 
   if (!workoutData) {
     return <div>Loading...</div>;
@@ -111,7 +122,7 @@ const Home: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            <MealCard mealType={currentMealType} meals={currentMeals} />
+            <MealCard mealType={currentMealType} meals={currentMeals} onClick={handleOpenDialog} />
           </Box>
         </Grid>
         <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
@@ -138,6 +149,47 @@ const Home: React.FC = () => {
           </Box>
         </Grid>
       </Grid>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{dialogContent?.name}</DialogTitle>
+        <DialogContent>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Ingredient</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Carbs (g)</TableCell>
+                  <TableCell align="right">Fats (g)</TableCell>
+                  <TableCell align="right">Proteins (g)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {dialogContent?.ingredients.map((ingredient, index) => (
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      {ingredient.name}
+                    </TableCell>
+                    <TableCell align="right">{ingredient.amount}</TableCell>
+                    <TableCell align="right">
+                      {ingredient.carbohydrates}
+                    </TableCell>
+                    <TableCell align="right">{ingredient.fats}</TableCell>
+                    <TableCell align="right">{ingredient.proteins}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button
+            variant="contained"
+            sx={{ mt: 2, backgroundColor: "#4e2a84" }}
+            onClick={handleCloseDialog}
+          >
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
