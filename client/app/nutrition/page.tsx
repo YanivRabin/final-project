@@ -17,12 +17,18 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
+  Avatar,
 } from "@mui/material";
 import { Meal } from "../services/interface";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import MealCard from "../components/MealCard"; // Import the MealCard component
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import MealCard from "../components/MealCard";
+import BreakfastIcon from '@mui/icons-material/FreeBreakfast';
+import LunchIcon from '@mui/icons-material/LunchDining';
+import DinnerIcon from '@mui/icons-material/DinnerDining';
+import SnackIcon from '@mui/icons-material/Fastfood';
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Nutrition: React.FC = () => {
   const [meals, setMeals] = useState<Record<string, Meal[]>>({});
@@ -85,26 +91,45 @@ const Nutrition: React.FC = () => {
     { name: "Proteins", value: proteins * 4 },
   ];
 
+  const mealIcons: Record<string, JSX.Element> = {
+    Breakfast: <BreakfastIcon sx={{ fontSize: 40, color: "#ff9800" }} />,
+    Lunch: <LunchIcon sx={{ fontSize: 40, color: "#4caf50" }} />,
+    Dinner: <DinnerIcon sx={{ fontSize: 40, color: "#f44336" }} />,
+    Snack: <SnackIcon sx={{ fontSize: 40, color: "#3f51b5" }} />,
+  };
+
   return (
     <Container maxWidth="xl" sx={{ mt: 8 }}>
-      <Typography
+      <Box
         sx={{
+          background: "linear-gradient(to right, #6a11cb, #2575fc)",
+          borderRadius: "12px",
+          padding: "2rem",
+          boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
           marginBottom: "2rem",
-          color: "#4e2a84",
-          position: "relative",
+          position: 'relative'
         }}
-        variant="h2"
-        align="center"
       >
-        DAILY MENU
-      </Typography>
-      <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-        For each meal you get two options to choose from
-      </Typography>
+        <Typography
+          variant="h2"
+          align="center"
+          sx={{
+            fontFamily: "'Roboto', sans-serif",
+            fontWeight: 700,
+            color: "white",
+            marginBottom: "1rem",
+          }}
+        >
+          DAILY MENU
+        </Typography>
+        <Typography variant="body1" align="center" sx={{ color: "white" }}>
+          For each meal you get two options to choose from
+        </Typography>
+      </Box>
 
-      <Grid container justifyContent="center" alignItems="center" spacing={2}>
+      <Grid container justifyContent="center" alignItems="center" spacing={4}>
         <Grid item xs={12} md={4}>
-          <Typography variant="h6" align="center">
+          <Typography variant="h5" align="center" sx={{ fontWeight: 600 }}>
             {calories} Calories
           </Typography>
           <Box display="flex" justifyContent="center" sx={{ mb: 4 }}>
@@ -115,17 +140,23 @@ const Nutrition: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
+                  innerRadius={50}
                   label={({ name, value }) => `${name}: ${value}`}
                   dataKey="value"
+                  isAnimationActive={true}
+                  animationDuration={800}
                 >
                   {pieData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
+                      stroke="#ffffff"
+                      strokeWidth={2}
                     />
                   ))}
                 </Pie>
                 <Tooltip />
+                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </Box>
@@ -133,19 +164,43 @@ const Nutrition: React.FC = () => {
       </Grid>
 
       <Grid container spacing={4}>
-        {Object.keys(meals).map((mealType) => (
-          <Grid item xs={12} md={3} key={mealType}>
-            <MealCard
-              mealType={mealType}
-              meals={meals[mealType]}
-              onClick={handleOpenDialog} // Pass the handleOpenDialog function to MealCard
-            />
-          </Grid>
-        ))}
-      </Grid>
+  {Object.keys(meals).map((mealType) => (
+    <Grid item xs={12} md={3} key={mealType}>
+      <Box
+        sx={{
+          boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+          transition: "transform 0.3s",
+          "&:hover": {
+            transform: "scale(1.05)",
+          },
+          borderRadius: "12px",
+          textAlign: "center",
+          padding: 2, // Add padding or other styles as needed
+        }}
+      >
+        <MealCard
+          mealType={mealType}
+          meals={meals[mealType]}
+          onClick={handleOpenDialog}
+        />
+      </Box>
+    </Grid>
+  ))}
+</Grid>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{dialogContent?.name}</DialogTitle>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        PaperProps={{
+          sx: {
+            padding: "2rem",
+            borderRadius: "12px",
+            boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 700 }}>{dialogContent?.name}</DialogTitle>
         <DialogContent>
           <TableContainer component={Paper}>
             <Table>
@@ -165,9 +220,7 @@ const Nutrition: React.FC = () => {
                       {ingredient.name}
                     </TableCell>
                     <TableCell align="right">{ingredient.amount}</TableCell>
-                    <TableCell align="right">
-                      {ingredient.carbohydrates}
-                    </TableCell>
+                    <TableCell align="right">{ingredient.carbohydrates}</TableCell>
                     <TableCell align="right">{ingredient.fats}</TableCell>
                     <TableCell align="right">{ingredient.proteins}</TableCell>
                   </TableRow>
@@ -177,7 +230,13 @@ const Nutrition: React.FC = () => {
           </TableContainer>
           <Button
             variant="contained"
-            sx={{ mt: 2, backgroundColor: "#4e2a84" }}
+            sx={{
+              mt: 2,
+              backgroundColor: "#4e2a84",
+              "&:hover": {
+                backgroundColor: "#6a11cb",
+              },
+            }}
             onClick={handleCloseDialog}
           >
             Close
