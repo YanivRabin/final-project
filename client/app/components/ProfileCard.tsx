@@ -13,6 +13,7 @@ import {
   Box,
 } from '@mui/material';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 const styles = {
   label: {
@@ -75,23 +76,24 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
           <Badge
             overlap="circular"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            badgeContent={
-              <PhotoCameraIcon
-                sx={{
-                  border: '5px solid white',
-                  backgroundColor: '#ff558f',
-                  borderRadius: '50%',
-                  padding: '.2rem',
-                  width: 35,
-                  height: 35,
-                }}
-              />
-            }
+            // badgeContent={
+            //   <PhotoCameraIcon
+            //     sx={{
+            //       border: '5px solid white',
+            //       backgroundColor: '#ff558f',
+            //       borderRadius: '50%',
+            //       padding: '.2rem',
+            //       width: 35,
+            //       height: 35,
+            //     }}
+            //   />
+            // }
           >
             <Avatar
               sx={{ width: 100, height: 100, mb: 1.5 }}
               src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-            />
+              />
+ 
           </Badge>
           <Typography variant="h6">{props.name}</Typography>
           <Typography color="text.secondary">{props.sub}</Typography>
