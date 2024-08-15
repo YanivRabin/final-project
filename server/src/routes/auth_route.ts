@@ -7,7 +7,7 @@ router.post('/register', AuthController.register);
 
 router.post('/login', AuthController.login);
 
-router.post('/googleLogin', AuthController.findOrCreateGoogleUser);
+router.post('/google', AuthController.googleAuthCallback);
 
 router.get('/logout', AuthController.logout);
 
@@ -16,6 +16,8 @@ router.get('/refreshToken', AuthController.refreshToken);
 router.get('/userInfo', authenticate, AuthController.userInfo);
 
 router.get('/workout', AuthController.getWorkoutForUser);
+
+router.get('/updateUser',authenticate, AuthController.updateUser)
 
 
 export = router;
