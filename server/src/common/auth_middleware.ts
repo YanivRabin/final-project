@@ -5,7 +5,7 @@ export interface AuthRequest extends Request {
     user?: { _id: string };
 }
 
-const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
+const authenticate = /*async*/(req: AuthRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
     if (!token) {
