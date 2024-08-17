@@ -4,7 +4,16 @@ const baseUrl = "http://localhost:3001";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: (headers, { getState }) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
@@ -20,9 +29,14 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+    getWorkoutForUser: builder.query({
+      query: () => "/api/auth/workout",
+    }),
   }),
 });
 
-
-
-export const { useLoginMutation, useSignUpMutation } = authApi;
+export const {
+  useLoginMutation,
+  useSignUpMutation,
+  useGetWorkoutForUserQuery,
+} = authApi;

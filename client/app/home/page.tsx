@@ -94,11 +94,10 @@ const Home: React.FC = () => {
         <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
           <Typography
             sx={{
-              marginBottom: "2rem",
               color: "#4e2a84",
               position: "relative",
             }}
-            variant="h2"
+            variant="h4"
             align="center"
           >
             Your Next Meal
@@ -117,11 +116,10 @@ const Home: React.FC = () => {
         <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
           <Typography
             sx={{
-              marginBottom: "2rem",
               color: "#4e2a84",
               position: "relative",
             }}
-            variant="h2"
+            variant="h4"
             align="center"
           >
             Your Next Day

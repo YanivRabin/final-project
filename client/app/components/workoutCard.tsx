@@ -15,7 +15,7 @@ import "../../styles/workoutCard.css";
 const formatMinutesStringToHHMM = (minutesString: string): string => {
   // Parse the string into an integer
   const totalMinutes = parseInt(minutesString, 10);
-  
+
   // Handle invalid input
   if (isNaN(totalMinutes) || totalMinutes < 0) {
     return "Invalid input";
@@ -26,8 +26,8 @@ const formatMinutesStringToHHMM = (minutesString: string): string => {
   const minutes = totalMinutes % 60;
 
   // Pad hours and minutes with leading zeros if necessary
-  const paddedHours = String(hours).padStart(2, '0');
-  const paddedMinutes = String(minutes).padStart(2, '0');
+  const paddedHours = String(hours).padStart(2, "0");
+  const paddedMinutes = String(minutes).padStart(2, "0");
 
   // Return the formatted time
   return `${paddedHours}:${paddedMinutes}`;
@@ -36,23 +36,35 @@ const formatMinutesStringToHHMM = (minutesString: string): string => {
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
   const backgroundImage = require(`../images/workout/next-workout.png`);
   console.log("exercises", exercises);
-  
 
   return (
-    <Card className="workoutCard">
+    <Card sx={{
+      position: "relative",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        overflow: "hidden",
+        width: "100%",
+        maxWidth: "400px",
+        height: "500px",
+        margin: "20px auto",
+    }}>
       <Image
         src={backgroundImage}
         alt={day}
         fill
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Add sizes prop for better performance
-
         className="workoutCardImage"
-       
-
       />
       <Box className="workoutCardOverlay" />
       <CardContent className="workoutCardContent">
-        <Typography variant="h5" className="workoutCardTitle">
+        <Typography sx={{
+            fontFamily: "'Inika', serif",
+            color: "#ffffff",
+            fontSize: "2rem",
+            fontWeight: "bold",
+            margin: "2px",
+          }}>
           {day.charAt(0).toUpperCase() + day.slice(1)}
         </Typography>
       </CardContent>

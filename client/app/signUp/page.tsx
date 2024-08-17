@@ -23,6 +23,7 @@ import Checkbox from "@mui/material/Checkbox";
 import CustomTextField from "../components/CustomTextField";
 import Image from "next/image";
 import StepLabel from "@mui/material/StepLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import { useSignUpMutation } from "../services/authApi";
 import { useCreateWorkoutPlanMutation } from "../services/feedApi";
@@ -80,6 +81,14 @@ export default function SignUp() {
       alert("Passwords do not match");
       return;
     }
+    if (activeStep === 0 && formData.password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+    if (activeStep === 0 && formData.email.indexOf("@") === -1) {
+      alert("Invalid email");
+      return;
+    }
     if (
       activeStep === 0 &&
       (formData.firstName === "" ||
@@ -132,7 +141,7 @@ export default function SignUp() {
 
   const handleBack = () => {
     if (activeStep === 0) {
-      router.push("/home");
+      router.push("/");
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -803,9 +812,25 @@ export default function SignUp() {
         );
       case 4:
         return (
-          <Typography sx={{ mt: 2, mb: 1, color: "black" }}>
-            {workoutLoading ? "Loading..." : isError ? "Error" : ""}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center", // Center vertically
+              alignItems: "center", // Center horizontally
+              height: "100%", // Full viewport height
+              width: "100%", // Full width
+              textAlign: "center", // Center text if necessary
+            }}
+          >
+            {workoutLoading ? (
+              <CircularProgress size={50} />
+            ) : isError ? (
+              "Error"
+            ) : (
+              ""
+            )}
+          </Box>
         );
     }
   };
@@ -815,7 +840,6 @@ export default function SignUp() {
       <CssBaseline />
       <Container component="main" maxWidth="xs">
         <Box className="outerBox">
-          <Typography className="title">Sign Up</Typography>
           <Stepper
             className="stepper"
             activeStep={activeStep}
@@ -836,6 +860,15 @@ export default function SignUp() {
                 className="buttonBack"
                 onClick={handleBack}
                 disabled={signUpLoading || workoutLoading}
+                sx={{
+                  marginTop: "3px",
+                  marginBottom: "2px",
+                  backgroundColor: "#d1d1d1",
+                  color: "black",
+                  "&:hover": {
+                    backgroundColor: "#e1e1e1",
+                  },
+                }}
               >
                 Back
               </Button>
@@ -844,6 +877,15 @@ export default function SignUp() {
                 className="buttonNext"
                 onClick={handleNext}
                 disabled={signUpLoading || workoutLoading}
+                sx={{
+                  marginTop: "3px",
+                  marginBottom: "2px",
+                  backgroundColor: "#4e2a84",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#645394",
+                  },
+                }}
               >
                 {activeStep === steps.length - 1
                   ? "Finish"

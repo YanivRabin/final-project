@@ -33,11 +33,12 @@ const Workout: React.FC = () => {
     >
       <CssBaseline />
       <Typography
-        variant="h2"
+        variant="h4"
         sx={{
-          marginBottom: "4rem",
+          marginTop: "2rem",
+          marginBottom: "2rem",
           color: "#4e2a84",
-          position: "relative",
+          alignItems: "center",
         }}
       >
         WEEKLY PLAN

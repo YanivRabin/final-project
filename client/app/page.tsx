@@ -11,13 +11,11 @@ const styles: { [key: string]: CSSProperties } = {
   videoContainer: {
     position: "relative" as "relative",
     width: "100%",
-    height: "100vh",
+    height: "30vh",
     overflow: "hidden",
   },
   videoWrapper: {
     position: "absolute" as "absolute",
-    top: 0,
-    left: 0,
     width: "100%",
     height: "100%",
   },
@@ -33,25 +31,46 @@ const styles: { [key: string]: CSSProperties } = {
     transform: "translate(-50%, -50%)",
     color: "white",
     textAlign: "center",
-    fontSize: "2vw",
+    fontSize: "2.3vw",
     fontFamily: "'Inria Sans', sans-serif",
   },
   title: {
     color: "#3d2d69",
     textAlign: "center",
-    fontSize: "3vw",
+    fontSize: "5vw",
     fontWeight: "bold",
   },
   text: {
-    padding: "20px",
     textAlign: "center",
-    fontSize: "1.2vw",
+    fontSize: "3.5vw",
+  },
+  imageContainer: {
+    position: "relative" as "relative",
+    width: "80%",
+    height: "auto",
+    overflow: "hidden",
   },
   image: {
-    width: "30vw",
+    width: "100%",
     height: "auto",
-    maxWidth: "600px",
-    maxHeight: "600px",
+    display: "block",
+    border: "none",
+  },
+  textOverlay: {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    color: "white",
+    textAlign: "center",
+    padding: "20px",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   button: {
     backgroundColor: "#3d2d69",
@@ -59,25 +78,27 @@ const styles: { [key: string]: CSSProperties } = {
     padding: "10px 20px",
     borderRadius: "30px",
     width: "fit-content",
-    fontSize: "1.5vw",
+    fontSize: "5vw",
     fontWeight: "bold",
+    margin: "40px 0",
   },
   horizontalLine: {
     border: "none",
     height: "1px",
     backgroundColor: "#ccc",
-    margin: "1px 0",
   },
   footer: {
-    margin: "30px",
+    margin: "0 10px",
   },
 };
 
 export default function Main() {
+  const user = localStorage.getItem("user");
+
   return (
     <Box display="flex" flexDirection="column">
       <CssBaseline />
-      {/* video */}
+      {/* Video */}
       <Grid sx={styles.videoContainer}>
         <div style={styles.videoWrapper}>
           <iframe
@@ -86,7 +107,7 @@ export default function Main() {
             height="1108"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
-            title="man_traning"
+            title="man_training"
             style={styles.video}
           />
           <div style={styles.overlayText}>
@@ -98,19 +119,16 @@ export default function Main() {
           </div>
         </div>
       </Grid>
-      {/* text 1 */}
+      {/* Text 1 */}
       <Grid
         container
-        sx={styles.margin}
-        direction="row"
         justifyContent="center"
         alignItems="center"
+        style={{ marginTop: 40 }}
       >
         <Grid item>
           <Typography sx={styles.title}>
-            The new way for
-            <br />
-            workout & nutrition
+            The new way for workout & nutrition
           </Typography>
         </Grid>
         <Grid item>
@@ -123,123 +141,84 @@ export default function Main() {
           </Typography>
         </Grid>
       </Grid>
-      {/* text 2 */}
+      {/* Text 2 on Blurred Image */}
       <Grid
         container
-        sx={styles.margin}
-        direction="row"
         justifyContent="center"
         alignItems="center"
+        style={{ marginTop: 40 }}
       >
-        <Grid item>
+        <Typography sx={styles.title}>No matter who, what or where</Typography>
+        <Grid item sx={styles.imageContainer}>
           <Image
             style={styles.image}
             src={require("./images/main/workout.png")}
             alt="workout"
           />
-        </Grid>
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Grid item>
-              <Typography sx={styles.title}>
-                No matter who
-                <br />
-                No matter what
-                <br />
-                No matter where
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography sx={styles.text}>
-                Whether you want to gain muscles,
-                <br />
-                lose fat or even just to stay in shape.
-                <br />
-                <br />
-                With a few simple steps we build a workout
-                <br />
-                that suits you, all you need to do is enter
-                <br />
-                your personal info and workout goals.
-              </Typography>
-            </Grid>
-          </Grid>
+          <div style={styles.textOverlay}>
+            <Typography sx={styles.text}>
+              Whether you want to gain muscles,
+              <br />
+              lose fat or even just to stay in shape.
+              <br />
+              <br />
+              With a few simple steps we build a workout
+              <br />
+              that suits you, all you need to do is enter
+              <br />
+              your personal info and workout goals.
+            </Typography>
+          </div>
         </Grid>
       </Grid>
-      {/* text 3 */}
+      {/* Text 3 on Blurred Image */}
       <Grid
         container
-        sx={styles.margin}
-        direction="row"
         justifyContent="center"
         alignItems="center"
+        style={{ marginTop: 40 }}
       >
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Grid item>
-              <Typography sx={styles.title}>
-                Menu that is
-                <br />
-                specific for you
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography sx={styles.text}>
-                You have allergies?
-                <br />
-                You are vegetarian or vegan?
-                <br />
-                You have personal preferences to avoid certain food?
-                <br />
-                <br />
-                No problems, we take care of you and build
-                <br />
-                a personal menu that will suit you.
-                <br />
-                <br />
-                The menu is made up of all the nutrients you need
-                <br />
-                and broken down into calories, protein, fat and more.
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item>
+        <Typography sx={styles.title}>Menu that is specific for you</Typography>
+        <Grid item sx={styles.imageContainer}>
           <Image
             style={styles.image}
             src={require("./images/main/food.png")}
             alt="food"
           />
+          <div style={styles.textOverlay}>
+            <Typography sx={styles.text}>
+              You have allergies?
+              <br />
+              You are vegetarian or vegan?
+              <br />
+              You have personal food preferences?
+              <br />
+              <br />
+              No problems, we take care of you and build
+              <br />
+              a personal menu that will suit you.
+              <br />
+              <br />
+              The menu is made up of all the nutrients you need and broken down
+              into calories, protein, fat and more.
+            </Typography>
+          </div>
         </Grid>
       </Grid>
-      {/* button */}
-      <Grid
-        container
-        sx={styles.margin}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Link href="/signUp">
-          <Button sx={styles.button}>Start now</Button>
-        </Link>
-      </Grid>
-      {/* footer */}
+      {/* Button */}
+      {/* If user is logged in, dont show button */}
+      {!user && (
+        <Grid container justifyContent="center" alignItems="center">
+          <Link href="/signUp">
+            <Button sx={styles.button}>Start now</Button>
+          </Link>
+        </Grid>
+      )}
+      {/* Footer */}
       <div style={styles.footer}>
         <hr style={styles.horizontalLine} />
         <p>
-          Copyright ©{" "}
-          <a href="#">TRAINER</a> 2024.
+          Copyright © <a href="#">TRAINER</a> 2024.
         </p>
       </div>
     </Box>

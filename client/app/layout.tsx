@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const navbarStyle = {
-    margin: '60px', // Adjust the margin as needed
+    margin: '50px', // Adjust the margin as needed
   };
 
   return (

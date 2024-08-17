@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useLoginMutation } from "@/app/services/authApi";
+import { useLoginMutation, useGetWorkoutForUserQuery } from "@/app/services/authApi";
 import Link from "next/link";
 import CustomTextField from "../components/CustomTextField";
 
@@ -72,32 +72,42 @@ const styles = {
 };
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
-
-  const [loginUser, { isLoading, isError }] = useLoginMutation();
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginUser] = useLoginMutation();
   const [error, setError] = useState("");
+
+  // Query hook for fetching workout data
+  const { data: workoutData, isLoading: isFetchingWorkout, isError: isFetchingWorkoutError } = useGetWorkoutForUserQuery(undefined, { skip: !loginSuccess });
+
+  useEffect(() => {
+    if (loginSuccess && !isFetchingWorkout && workoutData) {
+      localStorage.setItem("workoutPlan", JSON.stringify(workoutData));
+      setIsLoading(false);
+      router.push("/home");
+    }
+  }, [loginSuccess, isFetchingWorkout, workoutData, router]);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const user = await loginUser({
-        email,
-        password,
-      }).unwrap();
+      const { user, accessToken } = await loginUser({ email, password }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
-      // need to add the plan data to local storage (get from server)
-      router.push("/home");
+      localStorage.setItem("accessToken", accessToken);
+
+      // Trigger workout data fetch by setting loginSuccess to true
+      setLoginSuccess(true);
     } catch (error) {
-      setError(
-        "Failed to log in. Please check your credentials and try again."
-      );
+      setError("Failed to log in. Please check your credentials and try again.");
     }
   };
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
+    <Grid container component="main">
       <CssBaseline />
       {/* image */}
       <Grid
@@ -135,9 +145,11 @@ export default function SignIn() {
         elevation={6}
         square
         container
-        justifyContent="center"
-        alignItems="center"
-        sx={{ height: "100vh", backgroundColor: "white" }}
+        sx={{
+          height: "100vh", // This ensures the form container takes up the entire viewport height
+          backgroundColor: "white",
+          overflow: "hidden", // Prevents any overflow
+        }}
       >
         <Box
           sx={{

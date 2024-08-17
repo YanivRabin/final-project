@@ -29,7 +29,7 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
         overflow: "hidden",
         width: "100%",
         maxWidth: "400px",
-        height: "600px",
+        height: "500px",
         margin: "20px auto",
       }}
     >
@@ -65,13 +65,12 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
         }}
       >
         <Typography
-          variant="h5"
           sx={{
             fontFamily: "'Inika', serif",
             color: "#ffffff",
-            fontSize: "48px",
+            fontSize: "2rem",
             fontWeight: "bold",
-            margin: "16px",
+            margin: "2px",
           }}
         >
           {mealType.charAt(0).toUpperCase() + mealType.slice(1)}

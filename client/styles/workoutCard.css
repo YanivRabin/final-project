@@ -1,17 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
 
-.workoutCard {
-  position: relative;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow: hidden;
-  width: 100%;
-  max-width: 400px;
-  height: 600px;
-  margin: 20px auto; /* Center with even margins */
-}
-
 .workoutCardImage {
   position: absolute;
   top: 0;
@@ -41,13 +29,6 @@
   z-index: 3;
 }
 
-.workoutCardTitle {
-  font-family: "Inika", serif;
-  color: #ffffff;
-  font-size: 48px;
-  font-weight: bold;
-  margin: 16px;
-}
 
 .workoutCardFooter {
   position: absolute;

@@ -18,7 +18,7 @@ const styles = {
   },
   workoutCard: {
     position: "relative",
-    width: "100%",
+    width: "50vh",
     height: "100%",
     backgroundColor: "white",
     borderRadius: "10px",
@@ -26,33 +26,24 @@ const styles = {
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
     padding: "20px",
-    margin: "20px",
+    marginTop: "20px",
+    marginBottom: "20px",
   },
   workoutCardTitle: {
     fontFamily: "'Inika', serif",
-    fontSize: "2rem",
-    width: "180px",
-    marginRight: "100px",
+    fontSize: "1.5rem",
     fontWeight: "bold",
-  },
-  muscleGroup: {
-    fontSize: "1.2rem",
-    width: "100px",
-    marginRight: "100px",
-    textAlign: "center",
+    marginRight: "10px",
   },
   duration: {
-    fontSize: "1.5rem",
-    width: "80px",
-    marginRight: "100px",
+    fontSize: "1.2rem",
   },
   startButton: {
     color: "#4e2a84",
-    textDecoration: "underline",
     cursor: "pointer",
     fontSize: "1rem",
+    fontWeight: "bold",
   },
 };
 
@@ -66,8 +57,8 @@ const formatMinutesStringToHHMM = (minutesString: string): string => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
 
-  const paddedHours = String(hours).padStart(2, '0');
-  const paddedMinutes = String(minutes).padStart(2, '0');
+  const paddedHours = String(hours).padStart(2, "0");
+  const paddedMinutes = String(minutes).padStart(2, "0");
 
   return `${paddedHours}:${paddedMinutes}`;
 };
@@ -81,38 +72,35 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
     setDuration(userDuration);
   }, []);
 
+  const isRestDay = exercises[0].name === "Rest";
+
   return (
-    <Card sx={styles.workoutCard}>
+    <Card
+      sx={[
+        styles.workoutCard,
+        isRestDay ? { background: "#e1e1e1" } : { background: "#E6E6FA" },
+      ]}
+    >
       <Box sx={styles.workoutCardOverlay} />
-      <Grid container>
+      <Grid container alignItems="center">
         <Grid
           item
+          xs={12}
           display="flex"
           flexDirection="row"
           alignItems="center"
-          justifyContent="center"
+          justifyContent="space-between"
         >
-          <Typography variant="h5" sx={styles.workoutCardTitle}>
+          <Typography sx={styles.workoutCardTitle}>
             {day.charAt(0).toUpperCase() + day.slice(1)}
           </Typography>
-          {exercises[0].name === "Rest" ? (
+          {isRestDay ? (
             <>
-              <Typography sx={styles.muscleGroup} variant="h6">
-                Rest Day
-              </Typography>
-              <br />
-              <Typography sx={styles.duration} variant="h5">
-                00:00
-              </Typography>
-              <Button disabled></Button>
+              <Typography>Rest Day</Typography>
             </>
           ) : (
             <>
-              <Typography sx={styles.muscleGroup} variant="h6">
-                Full Body
-              </Typography>
-              <br />
-              <Typography sx={styles.duration} variant="h5">
+              <Typography sx={styles.duration}>
                 {formatMinutesStringToHHMM(duration)}
               </Typography>
               <Link

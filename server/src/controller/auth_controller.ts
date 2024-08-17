@@ -1,19 +1,51 @@
 import { Request, Response } from "express";
 import User from "../model/user_model";
 import Workout from "../model/workout_model";
-import authenticate from "../common/auth_middleware";
+import authenticate, { AuthRequest } from "../common/auth_middleware";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from 'dotenv';
-import { OAuth2Client } from 'google-auth-library';
+import dotenv from "dotenv";
+import { OAuth2Client } from "google-auth-library";
 
 dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const register = async (req: Request, res: Response) => {
-  const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions } = req.body;
-  if (!email || !password || !firstName || !lastName || !gender || !age || !height || !weight || !workoutGoals || !daysPerWeek || !minutesPerWorkout || !workoutLocation || includeWarmup === undefined || includeStreching === undefined || !dietaryRestrictions) {
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    gender,
+    age,
+    height,
+    weight,
+    workoutGoals,
+    daysPerWeek,
+    minutesPerWorkout,
+    workoutLocation,
+    includeWarmup,
+    includeStreching,
+    dietaryRestrictions,
+  } = req.body;
+  if (
+    !email ||
+    !password ||
+    !firstName ||
+    !lastName ||
+    !gender ||
+    !age ||
+    !height ||
+    !weight ||
+    !workoutGoals ||
+    !daysPerWeek ||
+    !minutesPerWorkout ||
+    !workoutLocation ||
+    includeWarmup === undefined ||
+    includeStreching === undefined ||
+    !dietaryRestrictions
+  ) {
     return res.status(400).send("Missing required fields");
   }
   try {
@@ -195,7 +227,10 @@ const refreshToken = async (req: Request, res: Response) => {
   );
 };
 
-const userInfo = async (req: Request & { user: { _id: string } }, res: Response) => {
+const userInfo = async (
+  req: Request & { user: { _id: string } },
+  res: Response
+) => {
   try {
     const user = await User.findById(req.user["_id"]);
     if (user === null) {
@@ -206,6 +241,7 @@ const userInfo = async (req: Request & { user: { _id: string } }, res: Response)
     return res.sendStatus(500);
   }
 };
+
 const googleAuthCallback = async (req: Request, res: Response) => {
   const { token } = req.body;
 
@@ -216,7 +252,7 @@ const googleAuthCallback = async (req: Request, res: Response) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    
+
     if (!payload) {
       return res.status(400).send("Invalid Google token");
     }
@@ -234,7 +270,10 @@ const googleAuthCallback = async (req: Request, res: Response) => {
     const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
     });
-    const refreshToken = jwt.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET);
+    const refreshToken = jwt.sign(
+      { _id: user._id },
+      process.env.JWT_REFRESH_SECRET
+    );
 
     user.tokens.push(refreshToken);
     await user.save();
@@ -304,17 +343,18 @@ const findUserByEmail = async (email: string) => {
     throw new Error("Error finding user by email");
   }
 };
- const getWorkoutForUser = [
+
+const getWorkoutForUser = [
   authenticate,
-  async (req: Request, res: Response) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       // Assuming the authenticate middleware attaches the decoded user to req.user
-      const user = req.body; // This will have the user's _id and email
+      const { _id } = req.user; // This will have the user's _id and email
+      const user = await User.findById(_id);
       const email = user.email;
 
       // Find the workout plan associated with the user's email
       const workoutPlan = await Workout.findOne({ email });
-
       if (!workoutPlan) {
         return res.status(404).send("Workout plan not found");
       }
@@ -324,11 +364,13 @@ const findUserByEmail = async (email: string) => {
       console.error("Error fetching workout plan:", err.message);
       return res.status(500).send("Server error");
     }
-  }
+  },
 ];
 
-
-const updateUser = async (req: Request & { user: { _id: string } }, res: Response) => {
+const updateUser = async (
+  req: Request & { user: { _id: string } },
+  res: Response
+) => {
   const userId = req.user["_id"];
   const {
     email,
@@ -378,7 +420,8 @@ const updateUser = async (req: Request & { user: { _id: string } }, res: Respons
     if (minutesPerWorkout) user.minutesPerWorkout = minutesPerWorkout;
     if (workoutLocation) user.workoutLocation = workoutLocation;
     if (includeWarmup !== undefined) user.includeWarmup = includeWarmup;
-    if (includeStreching !== undefined) user.includeStreching = includeStreching;
+    if (includeStreching !== undefined)
+      user.includeStreching = includeStreching;
     if (dietaryRestrictions) user.dietaryRestrictions = dietaryRestrictions;
 
     // Save the updated user
@@ -390,11 +433,6 @@ const updateUser = async (req: Request & { user: { _id: string } }, res: Respons
     return res.status(500).send("Server error");
   }
 };
-
-
-
-
-
 
 export = {
   login,

@@ -16,6 +16,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import InfoIcon from "@mui/icons-material/Info";
 import { useSearchParams } from "next/navigation";
 import { Exercise } from "../services/interface";
+import { Margin } from "@mui/icons-material";
 
 interface WorkoutExercise {
   exercise: Exercise[];
@@ -26,27 +27,25 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "2rem",
   },
   title: {
-    marginTop: "4rem",
-    marginBottom: "4rem",
+    marginTop: "2rem",
+    marginBottom: "2rem",
     color: "#4e2a84",
     position: "relative",
   },
   gridContainer: {
-    width: "60%",
+    width: "100%",
   },
   headerPaper: {
     display: "flex",
     justifyContent: "space-between",
     padding: "1rem",
-    paddingLeft: "4rem",
-    paddingRight: "3.3rem",
     backgroundColor: "#f5f5f5",
   },
   headerText: {
     width: "55%",
+    marginLeft: "2.5rem",
   },
   setsText: {
     width: "20%",
@@ -66,15 +65,12 @@ const styles = {
   }),
   exerciseName: (selected: boolean) => ({
     color: selected ? "#4e2a84" : "#000",
-    marginLeft: "1rem",
     fontFamily: "'Inika', serif",
-    fontSize: "1.5rem",
-    width: "180px",
-    marginRight: "100px",
     fontWeight: "bold",
   }),
   button: {
     marginTop: "2rem",
+    marginBottom: "2rem",
     backgroundColor: "#4e2a84",
     color: "#ffffff",
   },
@@ -92,9 +88,10 @@ const WorkoutDetailPage: React.FC = () => {
   const searchParams = useSearchParams();
   const workout = searchParams.get("workout");
   const parsedWorkout = JSON.parse(workout as string);
-  const workoutData = parsedWorkout.exercise? parsedWorkout.exercise : parsedWorkout;
+  const workoutData = parsedWorkout.exercise
+    ? parsedWorkout.exercise
+    : parsedWorkout;
   console.log("workoutData", workoutData);
-
 
   // const [workoutData, setWorkoutData] = useState<WorkoutExercise>();
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number>(0);
@@ -127,21 +124,15 @@ const WorkoutDetailPage: React.FC = () => {
 
   return (
     <Box sx={styles.container}>
-      <Typography variant="h2" sx={styles.title}>
+      <Typography variant="h4" sx={styles.title}>
         ROUTINE
       </Typography>
       <Grid container spacing={2} sx={styles.gridContainer}>
         <Grid item xs={12}>
           <Paper sx={styles.headerPaper}>
-            <Typography variant="h6" sx={styles.headerText}>
-              EXERCISE
-            </Typography>
-            <Typography variant="h6" sx={styles.setsText}>
-              SETS
-            </Typography>
-            <Typography variant="h6" sx={styles.setsText}>
-              REPS
-            </Typography>
+            <Typography sx={styles.headerText}>EXERCISE</Typography>
+            <Typography sx={styles.setsText}>SETS</Typography>
+            <Typography sx={styles.setsText}>REPS</Typography>
           </Paper>
         </Grid>
         {workoutData.map((exercise: any, index: number) => (
