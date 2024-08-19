@@ -67,24 +67,15 @@ const Profile: React.FC = () => {
           <Grid item md={3}>
             <ProfileCard
               name={fullName}
-              sub="User Profile"
-              general={{
-                gender: mainUser.gender,
-                age: mainUser.age,
-                height: mainUser.height,
-                weight: mainUser.weight,
-              }}
+              email={mainUser.email}
               onSave={handleProfileSave}
             />
           </Grid>
           <Grid item md={9}>
             <SettingsCard
-              firstName={mainUser.firstName}
-              lastName={mainUser.lastName}
-              gender={mainUser.gender}
-              phone=""
-              email={mainUser.email}
-              pass={mainUser.password || ""}
+              age={mainUser.age}
+              hieght={mainUser.height}
+              weight={mainUser.weight}
               workoutGoals={mainUser.workoutGoals}
               daysPerWeek={mainUser.daysPerWeek}
               minutesPerWorkout={mainUser.minutesPerWorkout}

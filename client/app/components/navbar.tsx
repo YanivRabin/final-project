@@ -14,12 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  CssBaseline,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-} from "@mui/material";
+import { CssBaseline, Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
 const settings = ["Profile", "Logout"];
@@ -42,7 +37,7 @@ function ResponsiveAppBar() {
 
   // Check if the current page is the home page or signIn/signUp page
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("user");
       setUser(storedUser);
     }
@@ -70,7 +65,7 @@ function ResponsiveAppBar() {
 
   const handleLogout = () => {
     setOpenLogoutDialog(false);
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("workoutPlan");
@@ -203,13 +198,21 @@ function ResponsiveAppBar() {
               >
                 {pagesAndSettings.map((page) =>
                   page === "Logout" ? (
-                    <MenuItem key={page} onClick={handleOpenLogoutDialog}>
+                    <MenuItem
+                      key={page}
+                      onClick={() => {
+                        handleOpenLogoutDialog();
+                        handleCloseNavMenu();
+                      }}
+                    >
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
                   ) : (
                     <MenuItem
                       key={page}
-                      onClick={handleCloseUserMenu}
+                      onClick={() => {
+                        handleCloseNavMenu();
+                      }}
                       component={Link}
                       href={`/${page.toLowerCase()}`}
                     >
@@ -245,18 +248,25 @@ function ResponsiveAppBar() {
               >
                 {settings.map((setting) =>
                   setting === "Logout" ? (
-                    <MenuItem key={setting} onClick={handleOpenLogoutDialog}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ) : (
                     <MenuItem
                       key={setting}
-                      onClick={handleCloseUserMenu}
-                      component={Link}
-                      href={`/${setting.toLowerCase()}`}
+                      onClick={() => {
+                        handleOpenLogoutDialog();
+                        handleCloseUserMenu();
+                      }}
                     >
                       <Typography textAlign="center">{setting}</Typography>
                     </MenuItem>
+                  ) : (
+                    <Link
+                      href={`/${setting.toLowerCase()}`}
+                      key={setting}
+                      passHref
+                    >
+                      <MenuItem onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center">{setting}</Typography>
+                      </MenuItem>
+                    </Link>
                   )
                 )}
               </Menu>
@@ -267,13 +277,12 @@ function ResponsiveAppBar() {
       <Dialog
         open={openLogoutDialog}
         onClose={handleCloseLogoutDialog}
-        aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description"
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="logout-dialog-title">
+        <DialogTitle id="alert-dialog-title" sx={{ textAlign: "center" }}>
           {"Are you sure you want to logout?"}
         </DialogTitle>
-
         <DialogActions sx={{ justifyContent: "space-between" }}>
           <Button onClick={handleCloseLogoutDialog} sx={{ color: "grey" }}>
             Cancel
@@ -286,4 +295,5 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;

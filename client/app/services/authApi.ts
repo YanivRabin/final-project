@@ -29,6 +29,13 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+    googleSignIn: builder.mutation({
+      query: (credentials) => ({
+        url: "/api/auth/google",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     getWorkoutForUser: builder.query({
       query: () => "/api/auth/workout",
     }),
@@ -38,5 +45,6 @@ export const authApi = createApi({
 export const {
   useLoginMutation,
   useSignUpMutation,
+  useGoogleSignInMutation,
   useGetWorkoutForUserQuery,
 } = authApi;

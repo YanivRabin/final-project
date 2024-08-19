@@ -173,13 +173,6 @@ const WorkoutDetailPage: React.FC = () => {
               >
                 <InfoIcon />
               </IconButton>
-              {exercise.name === "mountain-climbers" && index === selectedExerciseIndex && (
-                <img
-                  src={mountainClimbersGif.src}
-                  alt="Mountain Climbers"
-                  style={{ width: '100px', marginLeft: '10px' }}
-                />
-              )}
             </Paper>
           </Grid>
         ))}
@@ -188,20 +181,13 @@ const WorkoutDetailPage: React.FC = () => {
         variant="contained"
         sx={styles.button}
         onClick={handleNextExercise}
-        disabled={selectedExerciseIndex >= workoutData.length}
+        disabled={selectedExerciseIndex > workoutData.length}
       >
         {selectedExerciseIndex < workoutData.length ? "Next" : "Done"}
       </Button>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Exercise Description</DialogTitle>
         <DialogContent>
-          {dialogContent === "Mountain Climbers Description" && (
-            <img
-              src={mountainClimbersGif.src}
-              alt="Mountain Climbers"
-              style={{ width: '100%', marginBottom: '10px' }}
-            />
-          )}
           <Typography>{dialogContent}</Typography>
           <Button
             variant="contained"

@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useLoginMutation, useGetWorkoutForUserQuery } from "@/app/services/authApi";
+import { useLoginMutation, useGetWorkoutForUserQuery, useGoogleSignInMutation } from "@/app/services/authApi";
 import Link from "next/link";
 import CustomTextField from "../components/CustomTextField";
 
@@ -79,6 +79,7 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [loginUser] = useLoginMutation();
   const [error, setError] = useState("");
+  const [googleSignIn] = useGoogleSignInMutation();
 
   // Query hook for fetching workout data
   const { data: workoutData, isLoading: isFetchingWorkout, isError: isFetchingWorkoutError } = useGetWorkoutForUserQuery(undefined, { skip: !loginSuccess });
@@ -105,6 +106,20 @@ export default function SignIn() {
       setError("Failed to log in. Please check your credentials and try again.");
     }
   };
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const { user, accessToken } = await googleSignIn({}).unwrap();
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", accessToken);
+
+      // Trigger workout data fetch by setting loginSuccess to true
+      setLoginSuccess(true);
+    } catch (error) {
+      setError("Failed to log in. Please check your credentials and try again.");
+    }
+  }
 
   return (
     <Grid container component="main">
@@ -171,7 +186,7 @@ export default function SignIn() {
             <CustomTextField
               label="Email Address"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
               autoComplete="email"
             />
             <CustomTextField
@@ -195,7 +210,7 @@ export default function SignIn() {
               <span style={styles.orText}>OR</span>
               <hr style={styles.orLine} />
             </div>
-            <Button sx={styles.googleButton} fullWidth variant="contained">
+            <Button sx={styles.googleButton} fullWidth variant="contained" onClick={handleGoogleSignIn}>
               Sign in with Google
             </Button>
             <Typography>

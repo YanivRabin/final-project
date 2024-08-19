@@ -61,12 +61,9 @@ const workoutLocationOptions = [
 ];
 
 interface SettingsCardProps {
-  firstName: string;
-  lastName: string;
-  gender: string;
-  phone: string;
-  email: string;
-  pass: string;
+  age: number;
+  hieght: number;
+  weight: number;
   workoutGoals: string;
   daysPerWeek: number;
   minutesPerWorkout: number;
@@ -84,12 +81,9 @@ export default function SettingsCard(props: SettingsCardProps) {
   };
 
   const [user, setUser] = useState({
-    firstName: props.firstName,
-    lastName: props.lastName,
-    gender: props.gender,
-    phone: props.phone,
-    email: props.email,
-    pass: props.pass,
+    age: props.age,
+    hieght: props.hieght,
+    weight: props.weight,
     workoutGoals: props.workoutGoals,
     daysPerWeek: props.daysPerWeek,
     minutesPerWorkout: props.minutesPerWorkout,
@@ -165,7 +159,7 @@ export default function SettingsCard(props: SettingsCardProps) {
         indicatorColor="secondary"
         sx={{ borderBottom: 1, borderColor: "divider" }}
       >
-        <Tab value="one" label="Account" />
+        <Tab value="one" label="Personal Info" />
         <Tab value="two" label="Workout Info" />
         <Tab value="three" label="Dietary Restrictions" />
       </Tabs>
@@ -181,82 +175,36 @@ export default function SettingsCard(props: SettingsCardProps) {
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <CustomInput
-                  id="firstName"
-                  name="firstName"
-                  value={user.firstName}
+                  id="age"
+                  name="age"
+                  value={user.age}
                   onChange={changeField}
-                  title="First Name"
+                  title="Age"
                   dis={edit.disabled}
                   req={edit.required}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <CustomInput
-                  id="lastName"
-                  name="lastName"
-                  value={user.lastName}
+                  id="hieght"
+                  name="hieght"
+                  value={user.hieght}
                   onChange={changeField}
-                  title="Last Name"
+                  title="Hieght"
                   dis={edit.disabled}
                   req={edit.required}
                 />
               </Grid>
-             
+
               <Grid item xs={12} md={6}>
                 <CustomInput
-                  id="phone"
-                  name="phone"
-                  value={user.phone}
+                  id="weight"
+                  name="weight"
+                  value={user.weight}
                   onChange={changeField}
-                  title="Phone Number"
+                  title="Weight"
                   dis={edit.disabled}
                   req={edit.required}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">972+</InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomInput
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={user.email}
-                  onChange={changeField}
-                  title="Email Address"
-                  dis={edit.disabled}
-                  req={edit.required}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomInput
-                  id="pass"
-                  name="pass"
-                  value={user.pass}
-                  onChange={changeField}
-                  title="Password"
-                  dis={edit.disabled}
-                  req={edit.required}
-                  type={user.showPassword ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={handlePassword}
-                          edge="end"
-                          disabled={edit.disabled}
-                        >
-                          {user.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
                 />
               </Grid>
             </Grid>
@@ -285,7 +233,10 @@ export default function SettingsCard(props: SettingsCardProps) {
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="workoutGoals-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                  <InputLabel
+                    id="workoutGoals-label"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
                     Workout Goals
                   </InputLabel>
                   <Select
@@ -309,7 +260,10 @@ export default function SettingsCard(props: SettingsCardProps) {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="daysPerWeek-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                  <InputLabel
+                    id="daysPerWeek-label"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
                     Days per Week
                   </InputLabel>
                   <Select
@@ -333,7 +287,10 @@ export default function SettingsCard(props: SettingsCardProps) {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="minutesPerWorkout-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                  <InputLabel
+                    id="minutesPerWorkout-label"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
                     Minutes per Workout
                   </InputLabel>
                   <Select
@@ -357,7 +314,10 @@ export default function SettingsCard(props: SettingsCardProps) {
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="workoutLocation-label" style={textFieldStyle["& .MuiInputLabel-root"]}>
+                  <InputLabel
+                    id="workoutLocation-label"
+                    style={textFieldStyle["& .MuiInputLabel-root"]}
+                  >
                     Workout Location
                   </InputLabel>
                   <Select
@@ -450,7 +410,11 @@ export default function SettingsCard(props: SettingsCardProps) {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={!!user.dietary[restriction as keyof DietaryRestrictions]} // Convert to boolean
+                          checked={
+                            !!user.dietary[
+                              restriction as keyof DietaryRestrictions
+                            ]
+                          } // Convert to boolean
                           onChange={(e) =>
                             handleDietaryChange(
                               restriction as keyof DietaryRestrictions,
@@ -462,7 +426,8 @@ export default function SettingsCard(props: SettingsCardProps) {
                         />
                       }
                       label={
-                        restriction.charAt(0).toUpperCase() + restriction.slice(1)
+                        restriction.charAt(0).toUpperCase() +
+                        restriction.slice(1)
                       }
                       disabled={edit.disabled}
                     />
