@@ -10,17 +10,10 @@
   opacity: 0.3;
 }
 
-.title {
-  font-family: "Inria Sans", sans-serif;
-  color: #3d2d69;
-  font-size: 52px;
-  text-align: center;
-  margin-bottom: 20px;
-}
 
 /* Styling for the main container */
 .mainContainer {
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -31,55 +24,9 @@
 .outerBox {
   width: 100%;
   background-color: white;
+  margin: 50px 0;
   padding: 20px;
   position: relative;
   border: 3px solid #4e2a84; /* Purple rounded border */
   border-radius: 10px; /* Rounded corners */
-}
-
-/* Custom styles for the Stepper component */
-.stepLabel {
-  width: min-content;
-}
-
-/* Gender Radio Buttons */
-.MuiRadio-colorPrimary.Mui-checked {
-  color: #4e2a84; /* Purple color when checked */
-}
-
-/* Sliders */
-.MuiSlider-root {
-  color: #4e2a84; /* Track color */
-}
-
-.MuiSlider-thumb {
-  color: #4e2a84; /* Thumb color */
-}
-
-/* Checkboxes */
-.MuiCheckbox-colorPrimary.Mui-checked {
-  color: #4e2a84; /* Purple color when checked */
-}
-
-/* Styling for buttons */
-.buttonBack {
-  margin-top: 3px;
-  margin-bottom: 2px;
-  background-color: #d1d1d1;
-  color: black;
-}
-
-.buttonBack:hover {
-  background-color: #e1e1e1;
-}
-
-.buttonNext {
-  margin-top: 3px;
-  margin-bottom: 2px;
-  background-color: #4e2a84; /* Purple background */
-  color: white; /* White text */
-}
-
-.buttonNext:hover {
-  background-color: #645394; /* Darker purple on hover */
 }

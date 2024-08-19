@@ -9,71 +9,102 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import "../../styles/workoutCard.css"; // Assuming you have a separate CSS file for WorkoutCard styling
+import { WorkoutCardProps } from "../services/interface";
+import "../../styles/workoutCard.css";
 
-interface Exercise {
-  name: string;
-  description: string;
-  reps: string;
-  sets: string;
-}
+const formatMinutesStringToHHMM = (minutesString: string): string => {
+  // Parse the string into an integer
+  const totalMinutes = parseInt(minutesString, 10);
 
-interface WorkoutDetails {
-  muscleGroup: string;
-  duration: string;
-  exercise: Exercise[];
-}
+  // Handle invalid input
+  if (isNaN(totalMinutes) || totalMinutes < 0) {
+    return "Invalid input";
+  }
 
-interface WorkoutCardProps {
-  day: string;
-  exercises: WorkoutDetails;
-}
+  // Calculate hours and minutes
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  // Pad hours and minutes with leading zeros if necessary
+  const paddedHours = String(hours).padStart(2, "0");
+  const paddedMinutes = String(minutes).padStart(2, "0");
+
+  // Return the formatted time
+  return `${paddedHours}:${paddedMinutes}`;
+};
 
 const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
   const backgroundImage = require(`../images/workout/next-workout.png`);
+  console.log("exercises", exercises);
 
   return (
-    <Card className="workoutCard">
+    <Card sx={{
+      position: "relative",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        overflow: "hidden",
+        width: "100%",
+        maxWidth: "400px",
+        height: "500px",
+        margin: "20px auto",
+    }}>
       <Image
         src={backgroundImage}
         alt={day}
-        layout="fill"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Add sizes prop for better performance
         className="workoutCardImage"
       />
       <Box className="workoutCardOverlay" />
       <CardContent className="workoutCardContent">
-        <Typography variant="h5" className="workoutCardTitle">
-          {day}
+        <Typography sx={{
+            fontFamily: "'Inika', serif",
+            color: "#ffffff",
+            fontSize: "2rem",
+            fontWeight: "bold",
+            margin: "2px",
+          }}>
+          {day.charAt(0).toUpperCase() + day.slice(1)}
         </Typography>
       </CardContent>
       <Grid container className="workoutCardFooter">
-        <Grid
-          item
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Typography className="exercise-description" variant="h4">
-            Mucsles Group
+      {exercises.exercise && exercises.exercise[0] && exercises.exercise[0].name === "Rest" ? (
+          <Typography className="exercise-description" variant="h3">
+            Rest Day
           </Typography>
-          <Typography className="exercise-description" variant="h6">
-            {exercises.muscleGroup}
-          </Typography>
-          <br />
-          <Typography className="exercise-description" variant="h5">
-            {exercises.duration}
-          </Typography>
-          <Link
-            href={{
-              pathname: "/workoutDetail",
-              query: { workout: JSON.stringify(exercises) },
-            }}
-            passHref
+        ) : (
+          <Grid
+            item
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
           >
-            <Button>Start</Button>
-          </Link>
-        </Grid>
+            <Typography className="exercise-description" variant="h4">
+              Mucsles Group
+            </Typography>
+            <Typography className="exercise-description" variant="h6">
+              Full Body
+            </Typography>
+            <br />
+            <Typography className="exercise-description" variant="h4">
+              Duration
+            </Typography>
+            <Typography className="exercise-description" variant="h5">
+              {formatMinutesStringToHHMM(exercises.duration)}
+            </Typography>
+            <Link
+              href={{
+                pathname: "/workoutDetail",
+                query: { workout: JSON.stringify(exercises) },
+              }}
+              passHref
+            >
+              <Button>Start</Button>
+            </Link>
+          </Grid>
+        )}
       </Grid>
     </Card>
   );

@@ -1,235 +1,195 @@
 "use client";
 
-import React from "react";
-import { Box, Grid, Typography, CssBaseline } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Typography, CssBaseline, Dialog, DialogTitle, DialogContent, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from "@mui/material";
 import MealCard from "../components/MealCard";
-import WorkoutCard from "../components/WorkoutCard";
-import "../../styles/home.css";
+import WorkoutCard from "../components/workoutCard";
+import { Meal, WorkoutDetails } from "../services/interface";
 
-type DayOfWeek = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
-// meal 
+// Function to get the current time zone
 const getCurrentTimeZone = () => {
   const currentHour = new Date().getHours();
   if (currentHour >= 6 && currentHour < 11) {
-    return "Breakfast";
+    return "breakfast";
   } else if (currentHour >= 11 && currentHour < 15) {
-    return "Lunch";
+    return "lunch";
   } else if (currentHour >= 15 && currentHour < 18) {
-    return "Snacks";
+    return "snacks";
   } else {
-    return "Dinner";
+    return "dinner";
   }
 };
-const meals = {
-  Breakfast: ["Oatmeal with Berries and Nuts", "Scrambled Eggs with Avocado"],
-  Lunch: ["Grilled Chicken Salad", "Quinoa and Black Bean Bowl"],
-  Snacks: ["Yogurt with Honey and Nuts", "Apple Slices with Peanut Butter"],
-  Dinner: ["Salmon with Quinoa and Vegetables", "Pasta with Tomato Sauce"],
-};
-// workout
+
+// Function to get the current day
 const getCurrentDay = () => {
-  const days: DayOfWeek[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
   const currentDayIndex = new Date().getDay();
   return days[currentDayIndex];
 };
-const workoutData = {
-  Sunday: {
-    muscleGroup: "Legs",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Squats",
-        description:
-          "Stand with feet shoulder-width apart, lower your body down by bending your knees, then push back up to the starting position.",
-        reps: "10",
-        sets: "3",
-      },
-      {
-        name: "Lunges",
-        description:
-          "Step forward with one leg, lowering your hips until both knees are bent at a 90-degree angle, then push back up to the starting position.",
-        reps: "12",
-        sets: "3",
-      },
-    ],
-  },
-  Monday: {
-    muscleGroup: "Chest",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Push-ups",
-        description:
-          "Get into a plank position with hands shoulder-width apart, lower your body down by bending your arms, then push back up to the starting position.",
-        reps: "15",
-        sets: "3",
-      },
-      {
-        name: "Bench Press",
-        description:
-          "Lie on a bench with a barbell above your chest, lower the bar down to your chest, then push it back up to the starting position.",
-        reps: "10",
-        sets: "3",
-      },
-    ],
-  },
-  Tuesday: {
-    muscleGroup: "Back",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Deadlifts",
-        description:
-          "Stand with feet hip-width apart, bend at the hips and knees to lower the weights, then stand back up.",
-        reps: "8",
-        sets: "3",
-      },
-      {
-        name: "Pull-ups",
-        description:
-          "Hang from a bar with hands shoulder-width apart, pull your body up until your chin is above the bar, then lower back down.",
-        reps: "5",
-        sets: "3",
-      },
-      {
-        name: "Rows",
-        description:
-          "Hold a dumbbell in each hand, hinge at the hips, then pull the weights up to your sides, keeping your elbows close to your body.",
-        reps: "12",
-        sets: "3",
-      },
-      {
-        name: "Reverse Flys",
-        description: "Bend forward at the hips, then raise the weights out to the sides, squeezing your shoulder blades together.",
-        reps: "15",
-        sets: "3",
-      }
-    ],
-  },
-  Wednesday: {
-    muscleGroup: "Shoulders",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Shoulder Press",
-        description:
-          "Stand with feet shoulder-width apart, hold a dumbbell in each hand at shoulder height, then push the weights up overhead.",
-        reps: "12",
-        sets: "3",
-      },
-    ],
-  },
-  Thursday: {
-    muscleGroup: "Arms",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Bicep Curls",
-        description:
-          "Stand with feet shoulder-width apart, holding a dumbbell in each hand with palms facing forward. Curl the weights up to shoulder height, then lower them back to the starting position.",
-        reps: "15",
-        sets: "3",
-      },
-    ],
-  },
-  Friday: {
-    muscleGroup: "Core",
-    duration: "00:30",
-    exercise: [
-      {
-        name: "Plank",
-        description:
-          "Get into a plank position with your forearms on the ground and your body in a straight line. Hold this position for the duration of the set.",
-        reps: "1",
-        sets: "3",
-      },
-    ],
-  },
-  Saturday: {
-    muscleGroup: "Full Body",
-    duration: "00:30 ",
-    exercise: [
-      {
-        name: "Burpees",
-        description:
-          "Start in a standing position, drop into a squat, kick your feet back into a plank, perform a push-up, return to the squat position, and jump up with arms extended overhead.",
-        reps: "10",
-        sets: "3",
-      },
-    ],
-  },
-};
 
 const Home: React.FC = () => {
+  const [meals, setMeals] = useState<{ [key: string]: Meal[] }>({});
+  const [workoutData, setWorkoutData] = useState<WorkoutDetails | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<Meal | null>(null);
+
+  useEffect(() => {
+    const workoutPlan = JSON.parse(localStorage.getItem("workoutPlan") || "{}");
+
+    if (workoutPlan?.weeklyWorkout) {
+      const currentDay = getCurrentDay();
+      const nutritionalInformation = workoutPlan.nutritionalInformation || {};
+      setMeals(nutritionalInformation);
+
+      const exercises = workoutPlan.weeklyWorkout[currentDay] || [];
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const duration: string = user.minutesPerWorkout || "0";
+
+      setWorkoutData({
+        muscleGroup: "Full Body",
+        duration: duration,
+        exercise: exercises,
+      });
+    } else {
+      console.error("workoutPlan or weeklyWorkout is undefined or empty.");
+      setWorkoutData({
+        muscleGroup: "Full Body",
+        duration: "0",
+        exercise: [],
+      });
+    }
+  }, []);
+
   const currentMealType = getCurrentTimeZone();
-  const currentMeals = meals[currentMealType];
-  const currentDay = getCurrentDay();
-  const currentWorkout = workoutData[currentDay];
+  const currentMeals = meals[currentMealType] || [];
+
+  const handleOpenDialog = (meal: Meal) => {
+    setDialogContent(meal);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setDialogContent(null);
+  };
+
+  if (!workoutData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Box
       sx={{
-        height: "100vh",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
+        padding: "2rem",
       }}
     >
       <CssBaseline />
-      <Grid container alignItems="center" justifyContent="center">
-        {/* Meal card */}
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justifyContent="space-between"
-            height="100%"
+      <Grid
+        container
+        alignItems="stretch"
+        justifyContent="center"
+        spacing={4}
+        sx={{ width: "100%", maxWidth: 1200 }}
+      >
+        <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
+          <Typography
+            sx={{
+              color: "#4e2a84",
+              position: "relative",
+            }}
+            variant="h4"
+            align="center"
           >
-            <Grid item>
-              <Typography variant="h2" className="title">
-                Your Next Meal
-              </Typography>
-              <Typography className="subtitle">
-                There are two options to choose from
-              </Typography>
-            </Grid>
-            <Grid item>
-              <MealCard
-                mealType={currentMealType}
-                meals={currentMeals}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        {/* Vertical line */}
-        <Grid item>
-          <hr className="vertical-line" />
-        </Grid>
-        {/* Workout card */}
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justifyContent="space-between"
-            height="100%"
+            Your Next Meal
+          </Typography>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Grid item>
-              <Typography variant="h2" className="title">
-                Your Next Workout
-              </Typography>
-            </Grid>
-            <Grid item>
-              <WorkoutCard day={currentDay} exercises={currentWorkout}/>
-            </Grid>
-          </Grid>
+            <MealCard mealType={currentMealType} meals={currentMeals} onClick={handleOpenDialog} />
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={5} display="flex" flexDirection="column">
+          <Typography
+            sx={{
+              color: "#4e2a84",
+              position: "relative",
+            }}
+            variant="h4"
+            align="center"
+          >
+            Your Next Day
+          </Typography>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <WorkoutCard day={getCurrentDay()} exercises={workoutData} />
+          </Box>
         </Grid>
       </Grid>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{dialogContent?.name}</DialogTitle>
+        <DialogContent>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Ingredient</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Carbs (g)</TableCell>
+                  <TableCell align="right">Fats (g)</TableCell>
+                  <TableCell align="right">Proteins (g)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {dialogContent?.ingredients.map((ingredient, index) => (
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      {ingredient.name}
+                    </TableCell>
+                    <TableCell align="right">{ingredient.amount}</TableCell>
+                    <TableCell align="right">
+                      {ingredient.carbohydrates}
+                    </TableCell>
+                    <TableCell align="right">{ingredient.fats}</TableCell>
+                    <TableCell align="right">{ingredient.proteins}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button
+            variant="contained"
+            sx={{ mt: 2, backgroundColor: "#4e2a84" }}
+            onClick={handleCloseDialog}
+          >
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
-
-
 
 export default Home;

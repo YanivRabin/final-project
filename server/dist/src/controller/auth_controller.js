@@ -21,8 +21,22 @@ const google_auth_library_1 = require("google-auth-library");
 dotenv_1.default.config();
 const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions } = req.body;
-    if (!email || !password || !firstName || !lastName || !gender || !age || !height || !weight || !workoutGoals || !daysPerWeek || !minutesPerWorkout || !workoutLocation || includeWarmup === undefined || includeStreching === undefined || !dietaryRestrictions) {
+    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions, } = req.body;
+    if (!email ||
+        !password ||
+        !firstName ||
+        !lastName ||
+        !gender ||
+        !age ||
+        !height ||
+        !weight ||
+        !workoutGoals ||
+        !daysPerWeek ||
+        !minutesPerWorkout ||
+        !workoutLocation ||
+        includeWarmup === undefined ||
+        includeStreching === undefined ||
+        !dietaryRestrictions) {
         return res.status(400).send("Missing required fields");
     }
     try {
@@ -180,24 +194,20 @@ const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.sendStatus(500);
     }
 });
-const googleAuthCallback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token } = req.body;
+const findOrCreateGoogleUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = req.body.email;
     try {
-        // Verify the token with Google's OAuth2 client
-        const ticket = yield client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        if (!payload) {
-            return res.status(400).send("Invalid Google token");
-        }
-        const { email } = payload;
-        // Find or create the user
-        let user = yield user_model_1.default.findOne({ email });
+        // Check if the user already exists in your database using email
+        let user = yield user_model_1.default.findOne({ email: email });
         if (!user) {
-            user = new user_model_1.default({ email, password: "Google_OAuth_User" }); // password can be a placeholder
-            yield user.save();
+            // If the user doesn't exist, create a new user in the database
+            const randomPassword = Math.random().toString(36).substring(7);
+            const salt = yield bcrypt_1.default.genSalt(10);
+            const encryptedPassword = yield bcrypt_1.default.hash(randomPassword, salt);
+            user = yield user_model_1.default.create({
+                email: email,
+                password: encryptedPassword,
+            });
         }
         // Generate JWT tokens
         const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -268,91 +278,13 @@ const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error("Error finding user by email");
     }
 });
-const getWorkoutForUser = [
-    auth_middleware_1.default,
-    (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            // Assuming the authenticate middleware attaches the decoded user to req.user
-            const user = req.body; // This will have the user's _id and email
-            const email = user.email;
-            // Find the workout plan associated with the user's email
-            const workoutPlan = yield workout_model_1.default.findOne({ email });
-            if (!workoutPlan) {
-                return res.status(404).send("Workout plan not found");
-            }
-            return res.status(200).json(workoutPlan);
-        }
-        catch (err) {
-            console.error("Error fetching workout plan:", err.message);
-            return res.status(500).send("Server error");
-        }
-    })
-];
-const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.user["_id"];
-    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions, } = req.body;
-    try {
-        // Find the user by ID
-        const user = yield user_model_1.default.findById(userId);
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-        // Update the user fields if provided
-        if (email) {
-            const existingUser = yield user_model_1.default.findOne({ email });
-            if (existingUser && existingUser._id.toString() !== userId) {
-                return res.status(409).send("Email already in use");
-            }
-            user.email = email;
-        }
-        if (password) {
-            const salt = yield bcrypt_1.default.genSalt(10);
-            user.password = yield bcrypt_1.default.hash(password, salt);
-        }
-        if (firstName)
-            user.firstName = firstName;
-        if (lastName)
-            user.lastName = lastName;
-        if (gender)
-            user.gender = gender;
-        if (age)
-            user.age = age;
-        if (height)
-            user.height = height;
-        if (weight)
-            user.weight = weight;
-        if (workoutGoals)
-            user.workoutGoals = workoutGoals;
-        if (daysPerWeek)
-            user.daysPerWeek = daysPerWeek;
-        if (minutesPerWorkout)
-            user.minutesPerWorkout = minutesPerWorkout;
-        if (workoutLocation)
-            user.workoutLocation = workoutLocation;
-        if (includeWarmup !== undefined)
-            user.includeWarmup = includeWarmup;
-        if (includeStreching !== undefined)
-            user.includeStreching = includeStreching;
-        if (dietaryRestrictions)
-            user.dietaryRestrictions = dietaryRestrictions;
-        // Save the updated user
-        yield user.save();
-        return res.status(200).send(user);
-    }
-    catch (err) {
-        console.error("Error updating user:", err.message);
-        return res.status(500).send("Server error");
-    }
-});
 module.exports = {
     login,
     register,
     logout,
     refreshToken,
     userInfo,
-    googleAuthCallback,
-    findUserByEmail,
-    getWorkoutForUser,
-    updateUser,
+    findOrCreateGoogleUser,
+    findUserByEmail
 };
 //# sourceMappingURL=auth_controller.js.map

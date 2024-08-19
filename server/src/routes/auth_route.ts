@@ -19,5 +19,7 @@ router.get('/workout', AuthController.getWorkoutForUser);
 
 router.get('/updateUser',authenticate, AuthController.updateUser)
 
+router.get('/googleApiKey', AuthController.googleApiKey);
+
 
 export = router;

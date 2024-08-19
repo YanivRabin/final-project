@@ -20,22 +20,30 @@ import InputLabel from "@mui/material/InputLabel";
 import Slider from "@mui/material/Slider";
 import Input from "@mui/material/Input";
 import Checkbox from "@mui/material/Checkbox";
-import { useSignUpMutation } from "../services/authApi";
 import CustomTextField from "../components/CustomTextField";
 import Image from "next/image";
 import StepLabel from "@mui/material/StepLabel";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useRouter } from "next/navigation";
+import { useSignUpMutation } from "../services/authApi";
+import { useCreateWorkoutPlanMutation } from "../services/feedApi";
 import "../../styles/signUp.css";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function SignUp() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [password2, setPassword2] = React.useState("");
+  const router = useRouter();
+  const [activeStep, setActiveStep] = React.useState(
+    localStorage.getItem("email") ? 1 : 0
+  );
+  const [password2, setPassword2] = React.useState(
+    localStorage.getItem("password") || ""
+  );
   const [formData, setFormData] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
+    firstName: localStorage.getItem("firstName") || "",
+    lastName: localStorage.getItem("lastName") || "",
+    email: localStorage.getItem("email") || "",
+    password: localStorage.getItem("password") || "",
     gender: "",
     age: 25,
     height: 175,
@@ -61,16 +69,30 @@ export default function SignUp() {
       halal: false,
       other: "",
     },
+    tokens: [],
   });
-  const [signUpUser, { isLoading, isError }] = useSignUpMutation();
+  const [signUpUser, { isLoading: signUpLoading, isError }] =
+    useSignUpMutation();
+  const [createWorkoutPlan, { isLoading: workoutLoading, data }] =
+    useCreateWorkoutPlanMutation();
+  const [googleLogin, setGoogleLogin] = React.useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleNext = async () => {
+    if (googleLogin) setGoogleLogin(false);
     if (activeStep === 0 && formData.password !== password2) {
       alert("Passwords do not match");
+      return;
+    }
+    if (activeStep === 0 && formData.password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+    if (activeStep === 0 && formData.email.indexOf("@") === -1) {
+      alert("Invalid email");
       return;
     }
     if (
@@ -97,22 +119,55 @@ export default function SignUp() {
     if (activeStep === steps.length) {
       // submit form
       try {
-        const { res } = await signUpUser(formData).unwrap();
-        localStorage.setItem("user", JSON.stringify(res));
-        window.location.href = "/feed";
+        handleSubmit();
       } catch (error) {
         console.error("Login error:", error);
-        setActiveStep(0);
-        return;
+        if (localStorage.getItem("email")) {
+          setActiveStep(1);
+          return;
+        } else {
+          setActiveStep(0);
+          return;
+        }
       }
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
+  const handleSubmit = async () => {
+    try {
+      const { user, accessToken } = await signUpUser(formData).unwrap();
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", accessToken);
+
+      const workoutPlan = await createWorkoutPlan(user).unwrap();
+      localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
+
+      localStorage.getItem("firstName")
+        ? localStorage.removeItem("firstName")
+        : null;
+      localStorage.getItem("lastName")
+        ? localStorage.removeItem("lastName")
+        : null;
+      localStorage.getItem("email") ? localStorage.removeItem("email") : null;
+      localStorage.getItem("password")
+        ? localStorage.removeItem("password")
+        : null;
+
+      router.push("/home");
+    } catch (error) {
+      console.error("Sign up error:", error);
+      setActiveStep(0);
+    }
+  };
+
   const handleBack = () => {
-    if (activeStep === 0) {
-      window.location.href = "/signIn";
+    if (localStorage.getItem("email") && activeStep === 1) {
+      setGoogleLogin(true);
       return;
+    }
+    if (activeStep === 0) {
+      router.push("/");
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
@@ -756,7 +811,7 @@ export default function SignUp() {
                 />
               </Grid>
               {/* other */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <CustomTextField
                   label="Other"
                   value={formData.dietaryRestrictions.other}
@@ -770,7 +825,7 @@ export default function SignUp() {
                     });
                   }}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         );
@@ -783,9 +838,30 @@ export default function SignUp() {
         );
       case 4:
         return (
-          <Typography sx={{ mt: 2, mb: 1, color: "black" }}>
-            {isLoading ? "Loading..." : isError ? "Error" : ""}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center", // Center vertically
+              alignItems: "center", // Center horizontally
+              height: "100%", // Full viewport height
+              width: "100%", // Full width
+              textAlign: "center", // Center text if necessary
+            }}
+          >
+            {workoutLoading ? (
+              <>
+                <CircularProgress size={50} />
+                <Typography sx={{ mt: 2, color: "black" }}>
+                  Creating workout plan...
+                </Typography>
+              </>
+            ) : isError ? (
+              "Error"
+            ) : (
+              ""
+            )}
+          </Box>
         );
     }
   };
@@ -795,7 +871,6 @@ export default function SignUp() {
       <CssBaseline />
       <Container component="main" maxWidth="xs">
         <Box className="outerBox">
-          <Typography className="title">Sign Up</Typography>
           <Stepper
             className="stepper"
             activeStep={activeStep}
@@ -812,11 +887,37 @@ export default function SignUp() {
               {getStepContent(activeStep)}
             </Box>
             <Box display="flex" flexDirection="row" pt={2}>
-              <Button className="buttonBack" onClick={handleBack}>
+              <Button
+                className="buttonBack"
+                onClick={handleBack}
+                disabled={signUpLoading || workoutLoading || googleLogin}
+                sx={{
+                  marginTop: "3px",
+                  marginBottom: "2px",
+                  backgroundColor: "#d1d1d1",
+                  color: "black",
+                  "&:hover": {
+                    backgroundColor: "#e1e1e1",
+                  },
+                }}
+              >
                 Back
               </Button>
               <Box flex="1 1 auto" />
-              <Button className="buttonNext" onClick={handleNext}>
+              <Button
+                className="buttonNext"
+                onClick={handleNext}
+                disabled={signUpLoading || workoutLoading}
+                sx={{
+                  marginTop: "3px",
+                  marginBottom: "2px",
+                  backgroundColor: "#4e2a84",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#645394",
+                  },
+                }}
+              >
                 {activeStep === steps.length - 1
                   ? "Finish"
                   : activeStep === steps.length

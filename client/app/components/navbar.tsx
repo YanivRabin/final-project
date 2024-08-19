@@ -11,15 +11,15 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
 const settings = ["Profile", "Logout"];
-const combined = [...pages, ...settings];
+
+const pagesAndSettings = [...pages, ...settings];
 
 function ResponsiveAppBar() {
   const pathname = usePathname();
@@ -31,9 +31,17 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
+  const [openLogoutDialog, setOpenLogoutDialog] =
+    React.useState<boolean>(false);
+  const [user, setUser] = React.useState<string | null>(null);
 
   // Check if the current page is the home page or signIn/signUp page
   React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser);
+    }
+
     pathname === "/" ? setIsHomePage(true) : setIsHomePage(false);
     pathname === "/signIn" || pathname === "/signUp"
       ? setIsSignPage(true)
@@ -55,21 +63,38 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleLogout = () => {
+    setOpenLogoutDialog(false);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("workoutPlan");
+      window.location.href = "/";
+    }
+  };
+
+  const handleOpenLogoutDialog = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  const handleCloseLogoutDialog = () => {
+    setOpenLogoutDialog(false);
+  };
+
   return (
     <AppBar position="fixed" sx={{ backgroundColor: "#F2F2F7" }}>
       <CssBaseline />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* logo */}
-          <Link href="/">
+          <Link href="/" passHref>
             <Image
               src={require("../images/navber/logo.png")}
               alt="logo"
               width={100}
               height={20}
+              priority
             />
           </Link>
-          {/* show sign in button on the main page */}
           {isHomePage && (
             <Box
               sx={{
@@ -78,32 +103,47 @@ function ResponsiveAppBar() {
                 justifyContent: "flex-end",
               }}
             >
-              <Link href="/signIn">
-                <Button
-                  sx={{
-                    my: 2,
-                    color: "#4e2a84",
-                    display: "block",
-                    margin: "0 10px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Sign In
-                </Button>
-              </Link>
+              {user ? (
+                <Link href="/home" passHref>
+                  <Button
+                    sx={{
+                      my: 2,
+                      color: "#4e2a84",
+                      display: "block",
+                      margin: "0 10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Home
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/signIn" passHref>
+                  <Button
+                    sx={{
+                      my: 2,
+                      color: "#4e2a84",
+                      display: "block",
+                      margin: "0 10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </Box>
           )}
-          {/* Desktop menu */}
           {!isHomePage && !isSignPage && (
             <Box
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", md: "flex" },
-                justifyContent: "center", // Center align pages
+                justifyContent: "center",
               }}
             >
               {pages.map((page) => (
-                <Link href={`/${page.toLowerCase()}`} key={page}>
+                <Link href={`/${page.toLowerCase()}`} key={page} passHref>
                   <Button
                     sx={{
                       my: 2,
@@ -119,7 +159,6 @@ function ResponsiveAppBar() {
               ))}
             </Box>
           )}
-          {/* Mobile menu */}
           {!isHomePage && !isSignPage && (
             <Box
               sx={{
@@ -157,17 +196,33 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {combined.map((page) => (
-                  <Link key={page} href={`/${page.toLowerCase()}`}>
-                    <MenuItem>
+                {pagesAndSettings.map((page) =>
+                  page === "Logout" ? (
+                    <MenuItem
+                      key={page}
+                      onClick={() => {
+                        handleOpenLogoutDialog();
+                        handleCloseNavMenu();
+                      }}
+                    >
                       <Typography textAlign="center">{page}</Typography>
                     </MenuItem>
-                  </Link>
-                ))}
+                  ) : (
+                    <MenuItem
+                      key={page}
+                      onClick={() => {
+                        handleCloseNavMenu();
+                      }}
+                      component={Link}
+                      href={`/${page.toLowerCase()}`}
+                    >
+                      <Typography textAlign="center">{page}</Typography>
+                    </MenuItem>
+                  )
+                )}
               </Menu>
             </Box>
           )}
-          {/* User menu display only in desktop */}
           {!isHomePage && !isSignPage && (
             <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
               <Tooltip title="Open settings">
@@ -191,17 +246,54 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                {settings.map((setting) =>
+                  setting === "Logout" ? (
+                    <MenuItem
+                      key={setting}
+                      onClick={() => {
+                        handleOpenLogoutDialog();
+                        handleCloseUserMenu();
+                      }}
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ) : (
+                    <Link
+                      href={`/${setting.toLowerCase()}`}
+                      key={setting}
+                      passHref
+                    >
+                      <MenuItem onClick={handleCloseUserMenu}>
+                        <Typography textAlign="center">{setting}</Typography>
+                      </MenuItem>
+                    </Link>
+                  )
+                )}
               </Menu>
             </Box>
           )}
         </Toolbar>
       </Container>
+      <Dialog
+        open={openLogoutDialog}
+        onClose={handleCloseLogoutDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ textAlign: "center" }}>
+          {"Are you sure you want to logout?"}
+        </DialogTitle>
+        <DialogActions sx={{ justifyContent: "space-between" }}>
+          <Button onClick={handleCloseLogoutDialog} sx={{ color: "grey" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleLogout} sx={{ color: "red" }} autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AppBar>
   );
 }
+
 export default ResponsiveAppBar;
