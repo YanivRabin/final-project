@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, CssBaseline, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CSSProperties } from "react";
@@ -93,7 +93,16 @@ const styles: { [key: string]: CSSProperties } = {
 };
 
 export default function Main() {
-  const user = localStorage.getItem("user");
+  const [user, setUser] = useState<string | null>(null);
+
+  useEffect(()=> {
+        // Check if running in the browser
+      if(typeof window !== "undefined"){
+        const storedUser =   localStorage.getItem("user");
+        setUser(storedUser);
+
+      }
+  },[]);
 
   return (
     <Box display="flex" flexDirection="column">
