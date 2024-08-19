@@ -14,13 +14,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
 import {
   CssBaseline,
   Dialog,
   DialogActions,
-  DialogContent,
-  DialogContentText,
   DialogTitle,
 } from "@mui/material";
 
@@ -30,7 +27,6 @@ const settings = ["Profile", "Logout"];
 const pagesAndSettings = [...pages, ...settings];
 
 function ResponsiveAppBar() {
-  // const router = useRouter();
   const pathname = usePathname();
   const [isHomePage, setIsHomePage] = React.useState<boolean>(false);
   const [isSignPage, setIsSignPage] = React.useState<boolean>(false);
@@ -42,10 +38,15 @@ function ResponsiveAppBar() {
   );
   const [openLogoutDialog, setOpenLogoutDialog] =
     React.useState<boolean>(false);
-  const user = localStorage.getItem("user");
+  const [user, setUser] = React.useState<string | null>(null);
 
   // Check if the current page is the home page or signIn/signUp page
   React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser);
+    }
+
     pathname === "/" ? setIsHomePage(true) : setIsHomePage(false);
     pathname === "/signIn" || pathname === "/signUp"
       ? setIsSignPage(true)
@@ -69,13 +70,12 @@ function ResponsiveAppBar() {
 
   const handleLogout = () => {
     setOpenLogoutDialog(false);
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("workoutPlan");
-    // router.push("/");
-
-    // Redirect to the home page
-    window.location.href = "/";
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("user");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("workoutPlan");
+      window.location.href = "/";
+    }
   };
 
   const handleOpenLogoutDialog = () => {
@@ -91,7 +91,6 @@ function ResponsiveAppBar() {
       <CssBaseline />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* logo */}
           <Link href="/" passHref>
             <Image
               src={require("../images/navber/logo.png")}
@@ -101,7 +100,6 @@ function ResponsiveAppBar() {
               priority
             />
           </Link>
-          {/* show sign in button on the main page */}
           {isHomePage && (
             <Box
               sx={{
@@ -141,13 +139,12 @@ function ResponsiveAppBar() {
               )}
             </Box>
           )}
-          {/* Desktop menu */}
           {!isHomePage && !isSignPage && (
             <Box
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", md: "flex" },
-                justifyContent: "center", // Center align pages
+                justifyContent: "center",
               }}
             >
               {pages.map((page) => (
@@ -167,7 +164,6 @@ function ResponsiveAppBar() {
               ))}
             </Box>
           )}
-          {/* Mobile menu */}
           {!isHomePage && !isSignPage && (
             <Box
               sx={{
@@ -224,7 +220,6 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
           )}
-          {/* User menu avatar display only in desktop */}
           {!isHomePage && !isSignPage && (
             <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
               <Tooltip title="Open settings">

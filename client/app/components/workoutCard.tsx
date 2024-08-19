@@ -69,7 +69,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
         </Typography>
       </CardContent>
       <Grid container className="workoutCardFooter">
-        {exercises.exercise[0].name === "Rest" ? (
+      {exercises.exercise && exercises.exercise[0] && exercises.exercise[0].name === "Rest" ? (
           <Typography className="exercise-description" variant="h3">
             Rest Day
           </Typography>

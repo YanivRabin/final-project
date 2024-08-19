@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, Grid, Typography, Box, Button } from "@mui/material";
 import Image from "next/image";
-import { MealCardProps } from "../services/interface";
+import { Meal } from "../services/interface";
 
 // Import all possible images statically
 import breakfastImage from "../images/food/Breakfast.png";
@@ -16,7 +16,13 @@ const mealImages: Record<string, any> = {
   dinner: dinnerImage,
 };
 
-const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
+interface MealCardProps {
+  mealType: string;
+  meals: Meal[];
+  onClick?: (meal: Meal) => void; 
+}
+
+const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
   const backgroundImage = mealImages[mealType.toLowerCase()];
 
   return (
@@ -109,6 +115,7 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals }) => {
                   backgroundColor: "#dddddd",
                 },
               }}
+              onClick={() => onClick?.(meal)} // Trigger the onClick handler if provided
             >
               {meal.name}
             </Button>
