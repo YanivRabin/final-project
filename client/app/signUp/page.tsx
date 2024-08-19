@@ -33,13 +33,17 @@ const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function SignUp() {
   const router = useRouter();
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [password2, setPassword2] = React.useState("");
+  const [activeStep, setActiveStep] = React.useState(
+    localStorage.getItem("email") ? 1 : 0
+  );
+  const [password2, setPassword2] = React.useState(
+    localStorage.getItem("password") || ""
+  );
   const [formData, setFormData] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
+    firstName: localStorage.getItem("firstName") || "",
+    lastName: localStorage.getItem("lastName") || "",
+    email: localStorage.getItem("email") || "",
+    password: localStorage.getItem("password") || "",
     gender: "",
     age: 25,
     height: 175,
@@ -71,12 +75,14 @@ export default function SignUp() {
     useSignUpMutation();
   const [createWorkoutPlan, { isLoading: workoutLoading, data }] =
     useCreateWorkoutPlanMutation();
+  const [googleLogin, setGoogleLogin] = React.useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleNext = async () => {
+    if (googleLogin) setGoogleLogin(false);
     if (activeStep === 0 && formData.password !== password2) {
       alert("Passwords do not match");
       return;
@@ -116,8 +122,13 @@ export default function SignUp() {
         handleSubmit();
       } catch (error) {
         console.error("Login error:", error);
-        setActiveStep(0);
-        return;
+        if (localStorage.getItem("email")) {
+          setActiveStep(1);
+          return;
+        } else {
+          setActiveStep(0);
+          return;
+        }
       }
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -132,6 +143,17 @@ export default function SignUp() {
       const workoutPlan = await createWorkoutPlan(user).unwrap();
       localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
 
+      localStorage.getItem("firstName")
+        ? localStorage.removeItem("firstName")
+        : null;
+      localStorage.getItem("lastName")
+        ? localStorage.removeItem("lastName")
+        : null;
+      localStorage.getItem("email") ? localStorage.removeItem("email") : null;
+      localStorage.getItem("password")
+        ? localStorage.removeItem("password")
+        : null;
+
       router.push("/home");
     } catch (error) {
       console.error("Sign up error:", error);
@@ -140,6 +162,10 @@ export default function SignUp() {
   };
 
   const handleBack = () => {
+    if (localStorage.getItem("email") && activeStep === 1) {
+      setGoogleLogin(true);
+      return;
+    }
     if (activeStep === 0) {
       router.push("/");
     }
@@ -824,7 +850,12 @@ export default function SignUp() {
             }}
           >
             {workoutLoading ? (
-              <CircularProgress size={50} />
+              <>
+                <CircularProgress size={50} />
+                <Typography sx={{ mt: 2, color: "black" }}>
+                  Creating workout plan...
+                </Typography>
+              </>
             ) : isError ? (
               "Error"
             ) : (
@@ -859,7 +890,7 @@ export default function SignUp() {
               <Button
                 className="buttonBack"
                 onClick={handleBack}
-                disabled={signUpLoading || workoutLoading}
+                disabled={signUpLoading || workoutLoading || googleLogin}
                 sx={{
                   marginTop: "3px",
                   marginBottom: "2px",

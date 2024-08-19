@@ -10,9 +10,19 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useLoginMutation, useGetWorkoutForUserQuery, useGoogleSignInMutation } from "@/app/services/authApi";
+import {
+  useLoginMutation,
+  useGetWorkoutForUserQuery,
+  useGoogleSignInMutation,
+  useGetGoogleApiKeyQuery,
+} from "@/app/services/authApi";
 import Link from "next/link";
 import CustomTextField from "../components/CustomTextField";
+import {
+  GoogleOAuthProvider,
+  GoogleLogin,
+  CredentialResponse,
+} from "@react-oauth/google";
 
 const styles = {
   title: {
@@ -81,8 +91,16 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [googleSignIn] = useGoogleSignInMutation();
 
+  const { data: googleApiKey } = useGetGoogleApiKeyQuery(undefined, {
+    skip: true,
+  });
+
   // Query hook for fetching workout data
-  const { data: workoutData, isLoading: isFetchingWorkout, isError: isFetchingWorkoutError } = useGetWorkoutForUserQuery(undefined, { skip: !loginSuccess });
+  const {
+    data: workoutData,
+    isLoading: isFetchingWorkout,
+    isError: isFetchingWorkoutError,
+  } = useGetWorkoutForUserQuery(undefined, { skip: !loginSuccess });
 
   useEffect(() => {
     if (loginSuccess && !isFetchingWorkout && workoutData) {
@@ -96,30 +114,50 @@ export default function SignIn() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { user, accessToken } = await loginUser({ email, password }).unwrap();
+      const { user, accessToken } = await loginUser({
+        email,
+        password,
+      }).unwrap();
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("accessToken", accessToken);
 
       // Trigger workout data fetch by setting loginSuccess to true
       setLoginSuccess(true);
     } catch (error) {
-      setError("Failed to log in. Please check your credentials and try again.");
+      setError(
+        "Failed to log in. Please check your credentials and try again."
+      );
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
     try {
-      const { user, accessToken } = await googleSignIn({}).unwrap();
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", accessToken);
+      const { credential } = credentialResponse;
+      if (credential) {
+        // Handle Google sign-in with credential
+        const { firstName, lastName, email, user, accessToken } =
+          await googleSignIn({ token: credential }).unwrap();
 
-      // Trigger workout data fetch by setting loginSuccess to true
-      setLoginSuccess(true);
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("accessToken", accessToken);
+          setLoginSuccess(true);
+        } else {
+          // go to sign up with payload
+          localStorage.setItem("firstName", firstName);
+          localStorage.setItem("lastName", lastName);
+          localStorage.setItem("email", email);
+          localStorage.setItem("password", "Google_OAuth_User");
+          router.push("/signUp");
+        }
+      }
     } catch (error) {
-      setError("Failed to log in. Please check your credentials and try again.");
+      console.error("Google sign-in failed:", error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Grid container component="main">
@@ -210,9 +248,17 @@ export default function SignIn() {
               <span style={styles.orText}>OR</span>
               <hr style={styles.orLine} />
             </div>
-            <Button sx={styles.googleButton} fullWidth variant="contained" onClick={handleGoogleSignIn}>
-              Sign in with Google
-            </Button>
+            <GoogleOAuthProvider
+              clientId={
+                "321889824130-eidhev8i41sm3k36rm0qcee7cbjc7jmq.apps.googleusercontent.com"
+              }
+            >
+              <GoogleLogin
+                onSuccess={handleGoogleSignIn}
+                onError={() => setError("Google sign-in failed.")}
+              />
+            </GoogleOAuthProvider>
+
             <Typography>
               Don&apos;t have an account?
               <Link href="/signUp" style={styles.signUpLink}>

@@ -39,6 +39,9 @@ export const authApi = createApi({
     getWorkoutForUser: builder.query({
       query: () => "/api/auth/workout",
     }),
+    getGoogleApiKey: builder.query({
+      query: () => "/api/auth/googleApiKey",
+    }),
   }),
 });
 
@@ -47,4 +50,5 @@ export const {
   useSignUpMutation,
   useGoogleSignInMutation,
   useGetWorkoutForUserQuery,
+  useGetGoogleApiKeyQuery,
 } = authApi;

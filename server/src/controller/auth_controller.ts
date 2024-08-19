@@ -243,6 +243,8 @@ const userInfo = async (
 };
 
 const googleAuthCallback = async (req: Request, res: Response) => {
+  console.log("Google auth callback");
+
   const { token } = req.body;
 
   try {
@@ -257,14 +259,23 @@ const googleAuthCallback = async (req: Request, res: Response) => {
       return res.status(400).send("Invalid Google token");
     }
 
-    const { email } = payload;
+    console.log("Google payload:", JSON.stringify(payload, null, 2));
 
     // Find or create the user
+    const email = payload.email;
     let user = await User.findOne({ email });
+
     if (!user) {
-      user = new User({ email, password: "Google_OAuth_User" }); // password can be a placeholder
-      await user.save();
+      console.log("User not found, creating new user");
+      return res.status(200).send({
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        email: payload.email,
+      });
     }
+
+    console.log("User found:", user);
+    
 
     // Generate JWT tokens
     const accessToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -434,6 +445,10 @@ const updateUser = async (
   }
 };
 
+const googleApiKey = async (req: Request, res: Response) => {
+  return res.status(200).send(process.env.GOOGLE_CLIENT_ID);
+};
+
 export = {
   login,
   register,
@@ -444,4 +459,5 @@ export = {
   findUserByEmail,
   getWorkoutForUser,
   updateUser,
+  googleApiKey,
 };
