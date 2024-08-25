@@ -19,6 +19,9 @@ export const createWorkoutPlan = [
             const workoutPlanData = await generateWorkoutPlan(userProfile);
             workoutPlanData.email = email;
 
+            // Delete existing workout plan associated with the email
+            await WorkoutPlan.deleteOne({ email: email });
+
             // Log the generated workout plan data
             console.log("Generated workout plan data:", workoutPlanData);
 
@@ -42,11 +45,20 @@ export const updateWorkoutPlan = [
     async (req: Request, res: Response) => {
         try {
             console.log("Request received at /update-workout");
-            const { WorkoutPlan: existingWorkoutPlan, PartialWorkoutPlan: changes } = req.body;
+            const { email, PartialWorkoutPlan: changes } = req.body;
 
-            // Validate that both parts are provided
-            if (!existingWorkoutPlan || !changes) {
-                return res.status(400).json({ message: "Both WorkoutPlan and PartialWorkoutPlan must be provided." });
+            // Validate that both email and changes are provided
+            if (!email || !changes) {
+                return res.status(400).json({ message: "Email and PartialWorkoutPlan must be provided." });
+            }
+            console.log("email", email);
+            // Fetch the existing workout plan by email
+            const existingWorkoutPlan = await WorkoutPlan.findOne({ email });
+            console.log("Existing workout plan:", existingWorkoutPlan);
+
+            // Validate that the workout plan exists
+            if (!existingWorkoutPlan) {
+                return res.status(404).json({ message: "Workout plan not found." });
             }
 
             // Log the received data for debugging
@@ -56,14 +68,18 @@ export const updateWorkoutPlan = [
             // Call the function to change the workout plan
             const updatedWorkoutPlan = await changeWorkoutPlan(existingWorkoutPlan, changes);
 
+            // Delete existing workout plan associated with the email
+            await WorkoutPlan.deleteOne({ email: email });
+
             // Save the updated workout plan to the database
-            const workoutPlan = await WorkoutPlan.findByIdAndUpdate(existingWorkoutPlan._id, updatedWorkoutPlan, { new: true });
+            const workoutPlan = new WorkoutPlan(updatedWorkoutPlan);
+            await workoutPlan.save();
 
             // Log the updated workout plan
-            console.log("Updated workout plan:", workoutPlan);
+            console.log("Updated workout plan:", updatedWorkoutPlan);
 
             // Return the updated workout plan in the response
-            res.status(200).json(workoutPlan);
+            res.status(200).json(updatedWorkoutPlan);
         } catch (error) {
             console.error("Error updating workout plan:", error);
             res.status(500).json({ message: error.message });
