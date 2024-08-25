@@ -12,5 +12,8 @@ router.post('/google', auth_controller_1.default.googleAuthCallback);
 router.get('/logout', auth_controller_1.default.logout);
 router.get('/refreshToken', auth_controller_1.default.refreshToken);
 router.get('/userInfo', auth_middleware_1.default, auth_controller_1.default.userInfo);
+router.get('/workout', auth_controller_1.default.getWorkoutForUser);
+router.get('/updateUser', auth_middleware_1.default, auth_controller_1.default.updateUser);
+router.get('/googleApiKey', auth_controller_1.default.googleApiKey);
 module.exports = router;
 //# sourceMappingURL=auth_route.js.map

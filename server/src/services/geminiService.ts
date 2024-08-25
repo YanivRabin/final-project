@@ -24,7 +24,7 @@ export const generateWorkoutPlan = async (profile: User) => {
         Weight: ${profile.weight}
         Workout Goal: ${profile.workoutGoals}
         Dietary Restrictions: ${Object.keys(profile.dietaryRestrictions).filter(key => profile.dietaryRestrictions[key]).join(', ')}
-        Training Frequency: ${profile.daysPerWeek}
+        Training Frequency(days per week): ${profile.daysPerWeek}
         Biological Sex: ${profile.gender}
         Workout Location: ${profile.workoutLocation}
         Minutes Per Workout: ${profile.minutesPerWorkout}
@@ -50,6 +50,7 @@ export const generateWorkoutPlan = async (profile: User) => {
            - Exercise 5: 3 sets of 8 reps, description of Exercise 5
 
            Continue this format for each day of the week.
+           the amount of rest days should be 7 minus training frequency.
            If the user needs to rest on certain days based on their training frequency, return:
            {name: "Rest", sets: "", reps: "", description: "" }
 
