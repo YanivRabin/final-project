@@ -119,7 +119,7 @@ const Nutrition: React.FC = () => {
         >
           DAILY MENU
         </Typography>
-        <Typography variant="body1" align="center" sx={{ color: "white" }}>
+        <Typography variant="h5" align="center" sx={{ color: "white" }}>
         Have a Nice Meal
         </Typography>
       </Box>
