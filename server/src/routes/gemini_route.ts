@@ -375,14 +375,14 @@ console.log("Registering routes");
 router.post('/create-workout', createWorkoutPlan);
 // #endregion
 
-// #region UpdateWorkoutPlan POST request 
+// #region UpdateWorkoutPlan POST request
 /**
  * @swagger
  * /api/gemini/update-workout-plan:
  *   post:
  *     summary: Update a workout plan
  *     tags: [Workout API]
- *     description: Update a workout plan for a user based on their previous workout plan.
+ *     description: Update a workout plan for a user based on their previous workout plan. Both email and partial updates are required.
  *     requestBody:
  *       required: true
  *       content:
@@ -390,95 +390,15 @@ router.post('/create-workout', createWorkoutPlan);
  *           schema:
  *             type: object
  *             required:
- *               - WorkoutPlan
+ *               - email
  *               - PartialWorkoutPlan
  *             properties:
- *               WorkoutPlan:
+ *               email:
+ *                 type: string
+ *                 example: "john.doe@example.com"
+  *               PartialWorkoutPlan:
  *                 type: object
  *                 properties:
- *                   dailyMenu:
- *                     type: string
- *                     example: "Sample daily menu"
- *                   weeklyWorkout:
- *                     type: object
- *                     properties:
- *                       monday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       tuesday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       wednesday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       thursday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       friday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       saturday:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             name:
- *                               type: string
- *                               example: "Lunges"
- *                             sets:
- *                               type: string
- *                               example: "3"
- *                             reps:
- *                               type: string
- *                               example: "12"
- *                             description:
- *                               type: string
- *                               example: "Alternating lunges"
- *                         example: [
- *                           {
- *                             "name": "Lunges",
- *                             "sets": "3",
- *                             "reps": "12",
- *                             "description": "Alternating lunges"
- *                           }
- *                         ]
- *                       sunday:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                   specificCalories:
- *                     type: integer
- *                     example: 2500
- *                   nutritionalInformation:
- *                     type: object
- *                     properties:
- *                       breakfast:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       lunch:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       dinner:
- *                         type: array
- *                         items: {}
- *                         example: []
- *                       snacks:
- *                         type: array
- *                         items: {}
- *                         example: []
- *               PartialWorkoutPlan:
- *                 type: object
- *                 properties:
- *                   dailyMenu:
- *                     type: string
- *                     example: "Updated daily menu"
  *                   weeklyWorkout:
  *                     type: object
  *                     properties:
@@ -509,12 +429,77 @@ router.post('/create-workout', createWorkoutPlan);
  *                         ]
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: Successful response with the updated workout plan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 dailyMenu:
+ *                   type: string
+ *                 weeklyWorkout:
+ *                   type: object
+ *                   properties:
+ *                     monday:
+ *                       type: array
+ *                       items: {}
+ *                     tuesday:
+ *                       type: array
+ *                       items: {}
+ *                     wednesday:
+ *                       type: array
+ *                       items: {}
+ *                     thursday:
+ *                       type: array
+ *                       items: {}
+ *                     friday:
+ *                       type: array
+ *                       items: {}
+ *                     saturday:
+ *                       type: array
+ *                       items: {}
+ *                     sunday:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                           sets:
+ *                             type: string
+ *                           reps:
+ *                             type: string
+ *                           description:
+ *                             type: string
+ *                           _id:
+ *                             type: string
+ *                 specificCalories:
+ *                   type: integer
+ *                 nutritionalInformation:
+ *                   type: object
+ *                   properties:
+ *                     breakfast:
+ *                       type: array
+ *                       items: {}
+ *                     lunch:
+ *                       type: array
+ *                       items: {}
+ *                     dinner:
+ *                       type: array
+ *                       items: {}
+ *                     snacks:
+ *                       type: array
+ *                       items: {}
+ *       400:
+ *         description: Bad request, both email and PartialWorkoutPlan must be provided
+ *       404:
+ *         description: Workout plan not found
  *       500:
  *         description: Internal server error
  */
 router.post('/update-workout-plan', updateWorkoutPlan);
 // #endregion
+
 
 // #region TryGemini GET request
 /**

@@ -212,12 +212,14 @@ const googleAuthCallback = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const email = payload.email;
         let user = yield user_model_1.default.findOne({ email });
         if (!user) {
+            console.log("User not found, creating new user");
             return res.status(200).send({
                 firstName: payload.given_name,
                 lastName: payload.family_name,
                 email: payload.email,
             });
         }
+        console.log("User found:", user);
         // Generate JWT tokens
         const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRATION,
