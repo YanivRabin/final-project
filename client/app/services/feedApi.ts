@@ -22,7 +22,14 @@ export const feedApi = createApi({
         body: userProfile,
       }),
     }),
+    updateWorkoutPlan: builder.mutation({
+      query: (workoutPlanUpdate) => ({
+        url: '/api/gemini/update-workout-plan',
+        method: 'POST',
+        body: workoutPlanUpdate,
+      }),
+    }),
   }),
 });
 
-export const { useCreateWorkoutPlanMutation } = feedApi;
+export const { useCreateWorkoutPlanMutation, useUpdateWorkoutPlanMutation } = feedApi;

@@ -1,15 +1,6 @@
-"use client";
-
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
-import InputAdornment from "@mui/material/InputAdornment";
-import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import Visibility from "@mui/icons-material/Visibility";
-import CardContent from "@mui/material/CardContent";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
@@ -22,6 +13,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { DietaryRestrictions } from "../services/interface";
 import CustomInput from "./CustomInput";
 import { textFieldStyle } from "../../styles/textField";
+import { Box, CardContent, MenuItem } from "@mui/material";
 
 const genderOptions = [
   { value: "male", label: "Male" },
@@ -60,7 +52,8 @@ const workoutLocationOptions = [
   { value: "outdoor", label: "Outdoor" },
 ];
 
-interface SettingsCardProps {
+export interface SettingsCardProps {
+  gender?: string; // Make gender optional
   age: number;
   height: number;
   weight: number;
@@ -71,7 +64,9 @@ interface SettingsCardProps {
   includeWarmup: boolean;
   includeStretching: boolean;
   dietary: DietaryRestrictions;
+  onSave: (updatedUser: Partial<SettingsCardProps>) => void;
 }
+
 
 export default function SettingsCard(props: SettingsCardProps) {
   const [value, setValue] = useState("one");
@@ -81,6 +76,7 @@ export default function SettingsCard(props: SettingsCardProps) {
   };
 
   const [user, setUser] = useState({
+    
     age: props.age,
     height: props.height,
     weight: props.weight,
@@ -90,7 +86,6 @@ export default function SettingsCard(props: SettingsCardProps) {
     workoutLocation: props.workoutLocation,
     includeWarmup: props.includeWarmup,
     includeStretching: props.includeStretching,
-    showPassword: false,
     dietary: props.dietary,
   });
 
@@ -115,17 +110,16 @@ export default function SettingsCard(props: SettingsCardProps) {
 
   const changeButton = (event: any) => {
     event.preventDefault();
-    setUser({ ...user, showPassword: false });
     update((prev) => ({
       ...prev,
       disabled: !prev.disabled,
       isEdit: !prev.isEdit,
     }));
-    console.log("user: ", user);
-  };
 
-  const handlePassword = () => {
-    setUser((prev) => ({ ...prev, showPassword: !prev.showPassword }));
+    // Call the onSave function when the user clicks "UPDATE"
+    if (!edit.isEdit) {
+      props.onSave(user);
+    }
   };
 
   const handleDietaryChange = (
@@ -190,7 +184,7 @@ export default function SettingsCard(props: SettingsCardProps) {
                   name="height"
                   value={user.height}
                   onChange={changeField}
-                  title="height"
+                  title="Height"
                   dis={edit.disabled}
                   req={edit.required}
                 />

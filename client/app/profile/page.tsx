@@ -6,13 +6,15 @@ import Grid from "@mui/material/Grid";
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProfileCard from "../components/ProfileCard";
-import SettingsCard from "../components/SettingsCard";
-import { MainUser } from "../services/interface"; // Correct import
+import SettingsCard, { SettingsCardProps } from "../components/SettingsCard";
+import { MainUser } from "../services/interface";
+import { useUpdateWorkoutPlanMutation } from '../services/feedApi';
 
 const theme = createTheme();
 
 const Profile: React.FC = () => {
   const [mainUser, setMainUser] = useState<MainUser | null>(null);
+  const [updateWorkoutPlan, { isLoading, isError, isSuccess }] = useUpdateWorkoutPlanMutation();
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -30,21 +32,33 @@ const Profile: React.FC = () => {
 
   const fullName = `${mainUser.firstName} ${mainUser.lastName}`;
 
-  const handleProfileSave = (updatedGeneral: {
-    gender: string;
-    age: number;
-    height: number;
-    weight: number;
-  }) => {
+  const handleProfileSave = async (updatedUser: Partial<SettingsCardProps>) => {
     setMainUser((prevUser: MainUser | null) => {
       if (prevUser) {
-        return {
+        const newUser = {
           ...prevUser,
-          ...updatedGeneral,
+          ...updatedUser, // Apply the partial update
         };
+        // Save the updated user in local storage
+        localStorage.setItem('user', JSON.stringify(newUser));
+        return newUser;
       }
       return prevUser;
     });
+
+    // Call the updateWorkoutPlan mutation to save the updated workout plan
+    try {
+      await updateWorkoutPlan({
+        email: mainUser?.email,
+        PartialWorkoutPlan: {
+          ...updatedUser, // Pass the partial update
+        },
+      }).unwrap();
+
+      // Optionally, update the UI to reflect success
+    } catch (error) {
+      console.error("Failed to update workout plan:", error);
+    }
   };
 
   return (
@@ -73,8 +87,15 @@ const Profile: React.FC = () => {
             includeWarmup={mainUser.includeWarmup}
             includeStretching={mainUser.includeStretching}
             dietary={mainUser.dietaryRestrictions}
+            onSave={handleProfileSave} 
           />
         </Grid>
+        {/* Show a loading state if the mutation is in progress */}
+        {isLoading && <div>Updating workout plan...</div>}
+        {/* Show an error message if the mutation fails */}
+        {isError && <div>Failed to update workout plan. Please try again.</div>}
+        {/* Show a success message if the mutation is successful */}
+        {isSuccess && <div>Workout plan updated successfully!</div>}
       </Grid>
     </ThemeProvider>
   );
