@@ -21,21 +21,25 @@ import {
   Avatar,
 } from "@mui/material";
 import { Meal } from "../services/interface";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import MealCard from "../components/MealCard";
-import BreakfastIcon from '@mui/icons-material/FreeBreakfast';
-import LunchIcon from '@mui/icons-material/LunchDining';
-import DinnerIcon from '@mui/icons-material/DinnerDining';
-import SnackIcon from '@mui/icons-material/Fastfood';
+import BreakfastIcon from "@mui/icons-material/FreeBreakfast";
+import LunchIcon from "@mui/icons-material/LunchDining";
+import DinnerIcon from "@mui/icons-material/DinnerDining";
+import SnackIcon from "@mui/icons-material/Fastfood";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Nutrition: React.FC = () => {
   const [meals, setMeals] = useState<Record<string, Meal[]>>({});
-  const [calories, setCalories] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [fats, setFats] = useState(0);
-  const [proteins, setProteins] = useState(0);
+  const [totalCalories, setTotalCalories] = useState(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogContent, setDialogContent] = useState<Meal | null>(null);
 
@@ -46,32 +50,8 @@ const Nutrition: React.FC = () => {
       const mealData = workoutPlan.nutritionalInformation;
       setMeals(mealData);
 
-      let totalCalories = 0;
-      let totalCarbs = 0;
-      let totalFats = 0;
-      let totalProteins = 0;
-
-      Object.keys(mealData).forEach((mealType) => {
-        mealData[mealType].forEach((meal: Meal) => {
-          meal.ingredients.forEach((ingredient) => {
-            const carbs = parseFloat(ingredient.carbohydrates) || 0;
-            const fats = parseFloat(ingredient.fats) || 0;
-            const proteins = parseFloat(ingredient.proteins) || 0;
-
-            totalCarbs += carbs;
-            totalFats += fats;
-            totalProteins += proteins;
-
-            // Calculate calories (4 calories per gram of carbs and proteins, 9 calories per gram of fat)
-            totalCalories += (carbs + proteins) * 4 + fats * 9;
-          });
-        });
-      });
-
-      setCalories(Math.round(totalCalories));
-      setCarbs(Math.round(totalCarbs));
-      setFats(Math.round(totalFats));
-      setProteins(Math.round(totalProteins));
+      // Get total calories from specificCalories
+      setTotalCalories(workoutPlan.specificCalories);
     }
   }, []);
 
@@ -85,11 +65,28 @@ const Nutrition: React.FC = () => {
     setDialogContent(null);
   };
 
-  const pieData = [
-    { name: "Carbs", value: carbs * 4 },
-    { name: "Fats", value: fats * 9 },
-    { name: "Proteins", value: proteins * 4 },
-  ];
+  const calculateMealNutrition = (meal: Meal) => {
+    let totalCarbs = 0;
+    let totalFats = 0;
+    let totalProteins = 0;
+
+    meal.ingredients.forEach((ingredient) => {
+      const carbs = parseFloat(ingredient.carbohydrates) || 0;
+      const fats = parseFloat(ingredient.fats) || 0;
+      const proteins = parseFloat(ingredient.proteins) || 0;
+
+      totalCarbs += carbs;
+      totalFats += fats;
+      totalProteins += proteins;
+    });
+
+    return {
+      carbs: Math.round(totalCarbs),
+      fats: Math.round(totalFats),
+      proteins: Math.round(totalProteins),
+      calories: Math.round((totalCarbs + totalProteins) * 4 + totalFats * 9),
+    };
+  };
 
   const mealIcons: Record<string, JSX.Element> = {
     Breakfast: <BreakfastIcon sx={{ fontSize: 40, color: "#ff9800" }} />,
@@ -107,7 +104,7 @@ const Nutrition: React.FC = () => {
           padding: "2rem",
           boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
           marginBottom: "2rem",
-          position: 'relative'
+          position: "relative",
         }}
       >
         <Typography
@@ -123,71 +120,88 @@ const Nutrition: React.FC = () => {
           DAILY MENU
         </Typography>
         <Typography variant="body1" align="center" sx={{ color: "white" }}>
-          For each meal you get two options to choose from
+          have a nice meal{" "}
         </Typography>
       </Box>
 
       <Grid container justifyContent="center" alignItems="center" spacing={4}>
         <Grid item xs={12} md={4}>
           <Typography variant="h5" align="center" sx={{ fontWeight: 600 }}>
-            {calories} Calories
+            {totalCalories} Daily Calories Recommendation
           </Typography>
-          <Box display="flex" justifyContent="center" sx={{ mb: 4 }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  innerRadius={50}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  dataKey="value"
-                  isAnimationActive={true}
-                  animationDuration={800}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                      stroke="#ffffff"
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </Box>
         </Grid>
       </Grid>
 
       <Grid container spacing={4}>
-  {Object.keys(meals).map((mealType) => (
-    <Grid item xs={12} md={3} key={mealType}>
-      <Box
-        sx={{
-          boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-          transition: "transform 0.3s",
-          "&:hover": {
-            transform: "scale(1.05)",
-          },
-          borderRadius: "12px",
-          textAlign: "center",
-          padding: 2, // Add padding or other styles as needed
-        }}
-      >
-        <MealCard
-          mealType={mealType}
-          meals={meals[mealType]}
-          onClick={handleOpenDialog}
-        />
-      </Box>
-    </Grid>
-  ))}
-</Grid>
+        {Object.keys(meals).map((mealType) => (
+          <Grid item xs={12} md={3} key={mealType}>
+            <Box
+              sx={{
+                boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+                transition: "transform 0.3s",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                },
+                borderRadius: "12px",
+                textAlign: "center",
+                padding: 2,
+              }}
+            >
+             
+              <MealCard
+                mealType={mealType}
+                meals={meals[mealType]}
+                onClick={handleOpenDialog}
+              />
+              <Box sx={{ mt: 2 }}>
+                {meals[mealType].map((meal, index) => {
+                  const nutrition = calculateMealNutrition(meal);
 
+                  const pieData = [
+                    { name: "Carbs", value: nutrition.carbs * 4 },
+                    { name: "Fats", value: nutrition.fats * 9 },
+                    { name: "Proteins", value: nutrition.proteins * 4 },
+                  ];
+
+                  return (
+                    <Box key={index} sx={{ mb: 4 }}>
+                      <Typography variant="body1" align="center" sx={{ mb: 1 }}>
+                        Option {index + 1}: {nutrition.calories} Calories
+                      </Typography>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={60}
+                            innerRadius={40}
+                            label={({ name, value }) => `${name}: ${value}`}
+                            dataKey="value"
+                            isAnimationActive={true}
+                            animationDuration={800}
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                                stroke="#ffffff"
+                                strokeWidth={2}
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                          {/* <Legend /> */}
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
 
       <Dialog
         open={openDialog}
@@ -200,7 +214,9 @@ const Nutrition: React.FC = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700 }}>{dialogContent?.name}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 700 }}>
+          {dialogContent?.name}
+        </DialogTitle>
         <DialogContent>
           <TableContainer component={Paper}>
             <Table>
@@ -220,7 +236,9 @@ const Nutrition: React.FC = () => {
                       {ingredient.name}
                     </TableCell>
                     <TableCell align="right">{ingredient.amount}</TableCell>
-                    <TableCell align="right">{ingredient.carbohydrates}</TableCell>
+                    <TableCell align="right">
+                      {ingredient.carbohydrates}
+                    </TableCell>
                     <TableCell align="right">{ingredient.fats}</TableCell>
                     <TableCell align="right">{ingredient.proteins}</TableCell>
                   </TableRow>
