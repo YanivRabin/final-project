@@ -53,38 +53,27 @@ const Profile: React.FC = () => {
         <title>Profile Page</title>
       </Head>
       <CssBaseline />
-      <Grid container direction="column" sx={{ overflowX: "hidden" }}>
-        <Grid
-          container
-          direction={{ xs: "column", md: "row" }}
-          spacing={3}
-          sx={{
-            position: "absolute",
-            top: "20vh",
-            px: { xs: 0, md: 7 },
-          }}
-        >
-          <Grid item md={3}>
-            <ProfileCard
-              name={fullName}
-              email={mainUser.email}
-              onSave={handleProfileSave}
-            />
-          </Grid>
-          <Grid item md={9}>
-            <SettingsCard
-              age={mainUser.age}
-              hieght={mainUser.height}
-              weight={mainUser.weight}
-              workoutGoals={mainUser.workoutGoals}
-              daysPerWeek={mainUser.daysPerWeek}
-              minutesPerWorkout={mainUser.minutesPerWorkout}
-              workoutLocation={mainUser.workoutLocation}
-              includeWarmup={mainUser.includeWarmup}
-              includeStretching={mainUser.includeStretching}
-              dietary={mainUser.dietaryRestrictions}
-            />
-          </Grid>
+      <Grid container direction="column" sx={{ overflowX: "hidden", px: { xs: 0, md: 7 } }}>
+        <Grid item>
+          <ProfileCard
+            name={fullName}
+            email={mainUser.email}
+            onSave={handleProfileSave}
+          />
+        </Grid>
+        <Grid item sx={{ mt: 3 }}>
+          <SettingsCard
+            age={mainUser.age}
+            height={mainUser.height}
+            weight={mainUser.weight}
+            workoutGoals={mainUser.workoutGoals}
+            daysPerWeek={mainUser.daysPerWeek}
+            minutesPerWorkout={mainUser.minutesPerWorkout}
+            workoutLocation={mainUser.workoutLocation}
+            includeWarmup={mainUser.includeWarmup}
+            includeStretching={mainUser.includeStretching}
+            dietary={mainUser.dietaryRestrictions}
+          />
         </Grid>
       </Grid>
     </ThemeProvider>

@@ -62,7 +62,7 @@ const workoutLocationOptions = [
 
 interface SettingsCardProps {
   age: number;
-  hieght: number;
+  height: number;
   weight: number;
   workoutGoals: string;
   daysPerWeek: number;
@@ -82,7 +82,7 @@ export default function SettingsCard(props: SettingsCardProps) {
 
   const [user, setUser] = useState({
     age: props.age,
-    hieght: props.hieght,
+    height: props.height,
     weight: props.weight,
     workoutGoals: props.workoutGoals,
     daysPerWeek: props.daysPerWeek,
@@ -186,11 +186,11 @@ export default function SettingsCard(props: SettingsCardProps) {
               </Grid>
               <Grid item xs={12} md={6}>
                 <CustomInput
-                  id="hieght"
-                  name="hieght"
-                  value={user.hieght}
+                  id="height"
+                  name="height"
+                  value={user.height}
                   onChange={changeField}
-                  title="Hieght"
+                  title="height"
                   dis={edit.disabled}
                   req={edit.required}
                 />
