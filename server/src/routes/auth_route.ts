@@ -272,26 +272,187 @@ router.get('/userInfo', authenticate, AuthController.userInfo);
 router.get('/workout', AuthController.getWorkoutForUser);
 // #endregion
 
-// #region UpdateUser GET request
+// #region UpdateUser PUT request
 /**
  * @swagger
  * /api/auth/updateUser:
- *   get:
+ *   put:
  *     summary: Update user information
  *     tags: [Auth API]
- *     description: Update the information of the currently authenticated user.
- *     security:
- *       - bearerAuth: []
+ *     description: Update the information of the currently authenticated user. The request requires the user to be authenticated, and any of the user fields can be updated.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: []
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               password:
+ *                 type: string
+ *                 example: "newpassword123"
+ *               firstName:
+ *                 type: string
+ *                 example: "John"
+ *               lastName:
+ *                 type: string
+ *                 example: "Doe"
+ *               gender:
+ *                 type: string
+ *                 example: "Male"
+ *               age:
+ *                 type: integer
+ *                 example: 30
+ *               height:
+ *                 type: integer
+ *                 example: 180
+ *               weight:
+ *                 type: integer
+ *                 example: 75
+ *               workoutGoals:
+ *                 type: string
+ *                 example: "Lose weight"
+ *               daysPerWeek:
+ *                 type: integer
+ *                 example: 4
+ *               minutesPerWorkout:
+ *                 type: integer
+ *                 example: 60
+ *               workoutLocation:
+ *                 type: string
+ *                 example: "Gym"
+ *               includeWarmup:
+ *                 type: boolean
+ *                 example: true
+ *               includeStreching:
+ *                 type: boolean
+ *                 example: false
+ *               dietaryRestrictions:
+ *                 type: object
+ *                 properties:
+ *                   vegan:
+ *                     type: boolean
+ *                     example: false
+ *                   vegetarian:
+ *                     type: boolean
+ *                     example: true
+ *                   pescatarian:
+ *                     type: boolean
+ *                     example: false
+ *                   glutenFree:
+ *                     type: boolean
+ *                     example: false
+ *                   dairyFree:
+ *                     type: boolean
+ *                     example: false
+ *                   nutFree:
+ *                     type: boolean
+ *                     example: false
+ *                   soyFree:
+ *                     type: boolean
+ *                     example: false
+ *                   eggFree:
+ *                     type: boolean
+ *                     example: false
+ *                   shellfishFree:
+ *                     type: boolean
+ *                     example: false
+ *                   lactoseFree:
+ *                     type: boolean
+ *                     example: false
+ *                   kosher:
+ *                     type: boolean
+ *                     example: false
+ *                   halal:
+ *                     type: boolean
+ *                     example: false
+ *                   other:
+ *                     type: string
+ *                     example: ""
  *     responses:
  *       200:
- *         description: User information updated successfully
+ *         description: Successful response with the updated user information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 firstName:
+ *                   type: string
+ *                 lastName:
+ *                   type: string
+ *                 gender:
+ *                   type: string
+ *                 age:
+ *                   type: integer
+ *                 height:
+ *                   type: integer
+ *                 weight:
+ *                   type: integer
+ *                 workoutGoals:
+ *                   type: string
+ *                 daysPerWeek:
+ *                   type: integer
+ *                 minutesPerWorkout:
+ *                   type: integer
+ *                 workoutLocation:
+ *                   type: string
+ *                 includeWarmup:
+ *                   type: boolean
+ *                 includeStreching:
+ *                   type: boolean
+ *                 dietaryRestrictions:
+ *                   type: object
+ *                   properties:
+ *                     vegan:
+ *                       type: boolean
+ *                     vegetarian:
+ *                       type: boolean
+ *                     pescatarian:
+ *                       type: boolean
+ *                     glutenFree:
+ *                       type: boolean
+ *                     dairyFree:
+ *                       type: boolean
+ *                     nutFree:
+ *                       type: boolean
+ *                     soyFree:
+ *                       type: boolean
+ *                     eggFree:
+ *                       type: boolean
+ *                     shellfishFree:
+ *                       type: boolean
+ *                     lactoseFree:
+ *                       type: boolean
+ *                     kosher:
+ *                       type: boolean
+ *                     halal:
+ *                       type: boolean
+ *                     other:
+ *                       type: string
+ *       400:
+ *         description: Bad request, validation failed
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized, user not authenticated
+ *       404:
+ *         description: User not found
+ *       409:
+ *         description: Email already in use by another account
  *       500:
  *         description: Internal server error
  */
-router.get('/updateUser', authenticate, AuthController.updateUser);
+router.put('/updateUser', authenticate, AuthController.updateUser);
 // #endregion
+
+
+
 
 // #region GoogleApiKey GET request
 /**
