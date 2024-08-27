@@ -82,7 +82,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
             justifyContent="center"
           >
             <Typography className="exercise-description" variant="h4">
-              Mucsles Group
+              Muscles Group
             </Typography>
             <Typography className="exercise-description" variant="h6">
               Full Body

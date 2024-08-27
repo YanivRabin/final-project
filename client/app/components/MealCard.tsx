@@ -19,7 +19,7 @@ const mealImages: Record<string, any> = {
 interface MealCardProps {
   mealType: string;
   meals: Meal[];
-  onClick?: (meal: Meal) => void; 
+  onClick?: (meal: Meal) => void;
 }
 
 const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
@@ -56,7 +56,7 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          backgroundColor: "rgba(0, 0, 0, 0.4)", // Adjusted opacity for better readability
           zIndex: 2,
           display: "flex",
           justifyContent: "center",
@@ -68,6 +68,8 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
         sx={{
           position: "relative",
           zIndex: 3,
+          textAlign: "center",
+          padding: "16px",
         }}
       >
         <Typography
@@ -76,7 +78,6 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
             color: "#ffffff",
             fontSize: "2rem",
             fontWeight: "bold",
-            margin: "2px",
           }}
         >
           {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
@@ -88,14 +89,12 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
           position: "absolute",
           bottom: 0,
           width: "100%",
-          height: "50%",
-          backgroundColor: "#000000",
+          backgroundColor: "rgba(0, 0, 0, 0.7)", // Keep the background opacity for contrast
+          padding: "8px",
+          zIndex: 3,
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
-          padding: "8px",
-          zIndex: 3,
-          opacity: 0.7,
         }}
       >
         {meals.map((meal, index) => (
@@ -108,14 +107,15 @@ const MealCard: React.FC<MealCardProps> = ({ mealType, meals, onClick }) => {
                 padding: "8px 16px",
                 borderRadius: "10px",
                 cursor: "pointer",
-                fontSize: "20px",
+                fontSize: "20px", 
                 fontWeight: "bold",
-                width: "250px",
+                width: "250px", 
                 "&:hover": {
                   backgroundColor: "#dddddd",
+
                 },
               }}
-              onClick={() => onClick?.(meal)} // Trigger the onClick handler if provided
+              onClick={() => onClick?.(meal)}
             >
               {meal.name}
             </Button>

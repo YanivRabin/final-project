@@ -17,8 +17,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Avatar,
 } from "@mui/material";
 import { Meal } from "../services/interface";
 import {
@@ -27,7 +25,6 @@ import {
   Cell,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import MealCard from "../components/MealCard";
 import BreakfastIcon from "@mui/icons-material/FreeBreakfast";
@@ -39,7 +36,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const Nutrition: React.FC = () => {
   const [meals, setMeals] = useState<Record<string, Meal[]>>({});
-  const [totalCalories, setTotalCalories] = useState(0);
+  const [totalCalories, setTotalCalories] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogContent, setDialogContent] = useState<Meal | null>(null);
 
@@ -120,7 +117,7 @@ const Nutrition: React.FC = () => {
           DAILY MENU
         </Typography>
         <Typography variant="h5" align="center" sx={{ color: "white" }}>
-        Have a Nice Meal
+          Have a Nice Meal
         </Typography>
       </Box>
 
@@ -147,7 +144,6 @@ const Nutrition: React.FC = () => {
                 padding: 2,
               }}
             >
-             
               <MealCard
                 mealType={mealType}
                 meals={meals[mealType]}
@@ -191,7 +187,6 @@ const Nutrition: React.FC = () => {
                             ))}
                           </Pie>
                           <Tooltip />
-                          {/* <Legend /> */}
                         </PieChart>
                       </ResponsiveContainer>
                     </Box>
@@ -206,6 +201,7 @@ const Nutrition: React.FC = () => {
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
+        aria-labelledby="meal-dialog-title"
         PaperProps={{
           sx: {
             padding: "2rem",
@@ -214,12 +210,12 @@ const Nutrition: React.FC = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 700 }}>
+        <DialogTitle id="meal-dialog-title" sx={{ fontWeight: 700 }}>
           {dialogContent?.name}
         </DialogTitle>
         <DialogContent>
           <TableContainer component={Paper}>
-            <Table>
+            <Table aria-label="nutrition details table">
               <TableHead>
                 <TableRow>
                   <TableCell>Ingredient</TableCell>
@@ -236,9 +232,7 @@ const Nutrition: React.FC = () => {
                       {ingredient.name}
                     </TableCell>
                     <TableCell align="right">{ingredient.amount}</TableCell>
-                    <TableCell align="right">
-                      {ingredient.carbohydrates}
-                    </TableCell>
+                    <TableCell align="right">{ingredient.carbohydrates}</TableCell>
                     <TableCell align="right">{ingredient.fats}</TableCell>
                     <TableCell align="right">{ingredient.proteins}</TableCell>
                   </TableRow>
