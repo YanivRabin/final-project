@@ -2,19 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import Grid from "@mui/material/Grid";
-import CssBaseline from "@mui/material/CssBaseline";
+import {
+  Card,
+  Grid,
+  Typography,
+  Avatar,
+  Badge,
+  CssBaseline,
+} from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import ProfileCard from "../components/ProfileCard";
-import SettingsCard, { SettingsCardProps } from "../components/SettingsCard";
+import SettingsCard from "../components/SettingsCard";
 import { MainUser } from "../services/interface";
-import { useUpdateWorkoutPlanMutation } from '../services/feedApi';
 
 const theme = createTheme();
 
 const Profile: React.FC = () => {
   const [mainUser, setMainUser] = useState<MainUser | null>(null);
-  const [updateWorkoutPlan, { isLoading, isError, isSuccess }] = useUpdateWorkoutPlanMutation();
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -32,51 +35,47 @@ const Profile: React.FC = () => {
 
   const fullName = `${mainUser.firstName} ${mainUser.lastName}`;
 
-  const handleProfileSave = async (updatedUser: Partial<SettingsCardProps>) => {
-    setMainUser((prevUser: MainUser | null) => {
-      if (prevUser) {
-        const newUser = {
-          ...prevUser,
-          ...updatedUser, // Apply the partial update
-        };
-        // Save the updated user in local storage
-        localStorage.setItem('user', JSON.stringify(newUser));
-        return newUser;
-      }
-      return prevUser;
-    });
-
-    // Call the updateWorkoutPlan mutation to save the updated workout plan
-    try {
-      await updateWorkoutPlan({
-        email: mainUser?.email,
-        PartialWorkoutPlan: {
-          ...updatedUser, // Pass the partial update
-        },
-      }).unwrap();
-
-      // Optionally, update the UI to reflect success
-    } catch (error) {
-      console.error("Failed to update workout plan:", error);
-    }
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <Head>
         <title>Profile Page</title>
       </Head>
       <CssBaseline />
-      <Grid container direction="column" sx={{ overflowX: "hidden", px: { xs: 0, md: 7 } }}>
+      <Grid
+        container
+        direction="column"
+        sx={{ overflowX: "hidden", px: { xs: 0, md: 7 } }}
+      >
         <Grid item>
-          <ProfileCard
-            name={fullName}
-            email={mainUser.email}
-            onSave={handleProfileSave}
-          />
+          <Card variant="outlined">
+            <Grid
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                >
+                  <Avatar
+                    sx={{ width: 100, height: 100, mb: 1.5 }}
+                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                  />
+                </Badge>
+                <Typography variant="h6">{fullName}</Typography>
+                <Typography color="text.secondary">{mainUser.email}</Typography>
+              </Grid>
+            </Grid>
+          </Card>
         </Grid>
         <Grid item sx={{ mt: 3 }}>
           <SettingsCard
+            firstName={mainUser.firstName}
+            lastName={mainUser.lastName}
+            email={mainUser.email}
+            gender={mainUser.gender}
             age={mainUser.age}
             height={mainUser.height}
             weight={mainUser.weight}
@@ -86,16 +85,9 @@ const Profile: React.FC = () => {
             workoutLocation={mainUser.workoutLocation}
             includeWarmup={mainUser.includeWarmup}
             includeStretching={mainUser.includeStretching}
-            dietary={mainUser.dietaryRestrictions}
-            onSave={handleProfileSave} 
+            dietaryRestrictions={mainUser.dietaryRestrictions}
           />
         </Grid>
-        {/* Show a loading state if the mutation is in progress */}
-        {isLoading && <div>Updating workout plan...</div>}
-        {/* Show an error message if the mutation fails */}
-        {isError && <div>Failed to update workout plan. Please try again.</div>}
-        {/* Show a success message if the mutation is successful */}
-        {isSuccess && <div>Workout plan updated successfully!</div>}
       </Grid>
     </ThemeProvider>
   );

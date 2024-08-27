@@ -10,7 +10,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import { DietaryRestrictions } from "../services/interface";
+import { DietaryRestrictions,User } from "../services/interface";
 import CustomInput from "./CustomInput";
 import { textFieldStyle } from "../../styles/textField";
 import { Box, CardContent, MenuItem } from "@mui/material";
@@ -52,23 +52,8 @@ const workoutLocationOptions = [
   { value: "outdoor", label: "Outdoor" },
 ];
 
-export interface SettingsCardProps {
-  gender?: string; // Make gender optional
-  age: number;
-  height: number;
-  weight: number;
-  workoutGoals: string;
-  daysPerWeek: number;
-  minutesPerWorkout: number;
-  workoutLocation: string;
-  includeWarmup: boolean;
-  includeStretching: boolean;
-  dietary: DietaryRestrictions;
-  onSave: (updatedUser: Partial<SettingsCardProps>) => void;
-}
 
-
-export default function SettingsCard(props: SettingsCardProps) {
+export default function SettingsCard(props: User) {
   const [value, setValue] = useState("one");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -76,7 +61,6 @@ export default function SettingsCard(props: SettingsCardProps) {
   };
 
   const [user, setUser] = useState({
-    
     age: props.age,
     height: props.height,
     weight: props.weight,
@@ -86,7 +70,7 @@ export default function SettingsCard(props: SettingsCardProps) {
     workoutLocation: props.workoutLocation,
     includeWarmup: props.includeWarmup,
     includeStretching: props.includeStretching,
-    dietary: props.dietary,
+    dietaryRestrictions: props.dietaryRestrictions,
   });
 
   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +102,6 @@ export default function SettingsCard(props: SettingsCardProps) {
 
     // Call the onSave function when the user clicks "UPDATE"
     if (!edit.isEdit) {
-      props.onSave(user);
     }
   };
 
@@ -129,7 +112,7 @@ export default function SettingsCard(props: SettingsCardProps) {
     setUser((prevState) => ({
       ...prevState,
       dietary: {
-        ...prevState.dietary,
+        ...prevState.dietaryRestrictions,
         [restriction]: e.target.checked,
       },
     }));
@@ -405,7 +388,7 @@ export default function SettingsCard(props: SettingsCardProps) {
                       control={
                         <Checkbox
                           checked={
-                            !!user.dietary[
+                            !!user.dietaryRestrictions[
                               restriction as keyof DietaryRestrictions
                             ]
                           } // Convert to boolean
@@ -432,7 +415,7 @@ export default function SettingsCard(props: SettingsCardProps) {
                   <CustomInput
                     id="other"
                     name="other"
-                    value={user.dietary.other}
+                    value={user.dietaryRestrictions.other}
                     onChange={changeField}
                     title="Other"
                     dis={edit.disabled}
