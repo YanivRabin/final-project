@@ -35,7 +35,7 @@ console.log("Registering routes");
  *         - minutesPerWorkout
  *         - workoutLocation
  *         - includeWarmup
- *         - includeStreching
+ *         - includeStretching
  *         - dietaryRestrictions
  *       properties:
  *         firstName:
@@ -80,7 +80,7 @@ console.log("Registering routes");
  *         includeWarmup:
  *           type: boolean
  *           example: true
- *         includeStreching:
+ *         includeStretching:
  *           type: boolean
  *           example: true
  *         dietaryRestrictions:
@@ -139,7 +139,7 @@ console.log("Registering routes");
  *         minutesPerWorkout: 60
  *         workoutLocation: "gym"
  *         includeWarmup: true
- *         includeStreching: true
+ *         includeStretching: true
  *         dietaryRestrictions:
  *           vegan: false
  *           vegetarian: false

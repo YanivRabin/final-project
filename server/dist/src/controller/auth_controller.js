@@ -21,7 +21,7 @@ const google_auth_library_1 = require("google-auth-library");
 dotenv_1.default.config();
 const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions, } = req.body;
+    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStretching, dietaryRestrictions, } = req.body;
     if (!email ||
         !password ||
         !firstName ||
@@ -35,7 +35,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         !minutesPerWorkout ||
         !workoutLocation ||
         includeWarmup === undefined ||
-        includeStreching === undefined ||
+        includeStretching === undefined ||
         !dietaryRestrictions) {
         return res.status(400).send("Missing required fields");
     }
@@ -60,7 +60,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             minutesPerWorkout,
             workoutLocation,
             includeWarmup,
-            includeStreching,
+            includeStretching,
             dietaryRestrictions,
         });
         const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -312,7 +312,7 @@ const getWorkoutForUser = [
 ];
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user["_id"];
-    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStreching, dietaryRestrictions, } = req.body;
+    const { email, password, firstName, lastName, gender, age, height, weight, workoutGoals, daysPerWeek, minutesPerWorkout, workoutLocation, includeWarmup, includeStretching, dietaryRestrictions, } = req.body;
     try {
         // Find the user by ID
         const user = yield user_model_1.default.findById(userId);
@@ -353,8 +353,8 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             user.workoutLocation = workoutLocation;
         if (includeWarmup !== undefined)
             user.includeWarmup = includeWarmup;
-        if (includeStreching !== undefined)
-            user.includeStreching = includeStreching;
+        if (includeStretching !== undefined)
+            user.includeStretching = includeStretching;
         if (dietaryRestrictions)
             user.dietaryRestrictions = dietaryRestrictions;
         // Save the updated user

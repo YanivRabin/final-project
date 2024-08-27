@@ -26,7 +26,7 @@ const register = async (req: Request, res: Response) => {
     minutesPerWorkout,
     workoutLocation,
     includeWarmup,
-    includeStreching,
+    includeStretching,
     dietaryRestrictions,
   } = req.body;
   if (
@@ -43,7 +43,7 @@ const register = async (req: Request, res: Response) => {
     !minutesPerWorkout ||
     !workoutLocation ||
     includeWarmup === undefined ||
-    includeStreching === undefined ||
+    includeStretching === undefined ||
     !dietaryRestrictions
   ) {
     return res.status(400).send("Missing required fields");
@@ -70,7 +70,7 @@ const register = async (req: Request, res: Response) => {
       minutesPerWorkout,
       workoutLocation,
       includeWarmup,
-      includeStreching,
+      includeStretching: includeStretching,
       dietaryRestrictions,
     });
 
@@ -397,7 +397,7 @@ const updateUser = async (
     minutesPerWorkout,
     workoutLocation,
     includeWarmup,
-    includeStreching,
+    includeStretching,
     dietaryRestrictions,
   } = req.body;
 
@@ -431,8 +431,8 @@ const updateUser = async (
     if (minutesPerWorkout) user.minutesPerWorkout = minutesPerWorkout;
     if (workoutLocation) user.workoutLocation = workoutLocation;
     if (includeWarmup !== undefined) user.includeWarmup = includeWarmup;
-    if (includeStreching !== undefined)
-      user.includeStreching = includeStreching;
+    if (includeStretching !== undefined)
+      user.includeStretching = includeStretching;
     if (dietaryRestrictions) user.dietaryRestrictions = dietaryRestrictions;
 
     // Save the updated user

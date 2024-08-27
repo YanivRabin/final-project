@@ -33,7 +33,7 @@ describe('Authentication Endpoints', () => {
           minutesPerWorkout: 45,
           workoutLocation: 'gym',
           includeWarmup: true,
-          includeStreching: true,
+          includeStretching: true,
           dietaryRestrictions: {}
         });
 
@@ -70,7 +70,7 @@ describe('Authentication Endpoints', () => {
           minutesPerWorkout: 45,
           workoutLocation: 'gym',
           includeWarmup: true,
-          includeStreching: true,
+          includeStretching: true,
           dietaryRestrictions: {}
         });
 
@@ -91,7 +91,7 @@ describe('Authentication Endpoints', () => {
           minutesPerWorkout: 45,
           workoutLocation: 'gym',
           includeWarmup: true,
-          includeStreching: true,
+          includeStretching: true,
           dietaryRestrictions: {}
         });
 
@@ -119,7 +119,7 @@ describe('Authentication Endpoints', () => {
           minutesPerWorkout: 45,
           workoutLocation: 'gym',
           includeWarmup: true,
-          includeStreching: true,
+          includeStretching: true,
           dietaryRestrictions: {}
         });
 
@@ -154,7 +154,7 @@ describe('Authentication Endpoints', () => {
           minutesPerWorkout: 45,
           workoutLocation: 'gym',
           includeWarmup: true,
-          includeStreching: true,
+          includeStretching: true,
           dietaryRestrictions: {}
         });
 

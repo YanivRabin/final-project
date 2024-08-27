@@ -18,7 +18,7 @@ const userSchema = new mongoose_1.default.Schema({
     minutesPerWorkout: { type: Number, required: true },
     workoutLocation: { type: String, required: true },
     includeWarmup: { type: Boolean, required: true },
-    includeStreching: { type: Boolean, required: true },
+    includeStretching: { type: Boolean, required: true },
     dietaryRestrictions: {
         vegan: { type: Boolean, default: false },
         vegetarian: { type: Boolean, default: false },

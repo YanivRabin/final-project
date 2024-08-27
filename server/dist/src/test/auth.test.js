@@ -42,7 +42,7 @@ describe('Authentication Endpoints', () => {
                 minutesPerWorkout: 45,
                 workoutLocation: 'gym',
                 includeWarmup: true,
-                includeStreching: true,
+                includeStretching: true,
                 dietaryRestrictions: {}
             });
             expect(response.status).toBe(201);
@@ -75,7 +75,7 @@ describe('Authentication Endpoints', () => {
                 minutesPerWorkout: 45,
                 workoutLocation: 'gym',
                 includeWarmup: true,
-                includeStreching: true,
+                includeStretching: true,
                 dietaryRestrictions: {}
             });
             // Attempt to register with the same email
@@ -95,7 +95,7 @@ describe('Authentication Endpoints', () => {
                 minutesPerWorkout: 45,
                 workoutLocation: 'gym',
                 includeWarmup: true,
-                includeStreching: true,
+                includeStretching: true,
                 dietaryRestrictions: {}
             });
             expect(response.status).toBe(406);
@@ -121,7 +121,7 @@ describe('Authentication Endpoints', () => {
                 minutesPerWorkout: 45,
                 workoutLocation: 'gym',
                 includeWarmup: true,
-                includeStreching: true,
+                includeStretching: true,
                 dietaryRestrictions: {}
             });
             // Login with the registered user credentials
@@ -153,7 +153,7 @@ describe('Authentication Endpoints', () => {
                 minutesPerWorkout: 45,
                 workoutLocation: 'gym',
                 includeWarmup: true,
-                includeStreching: true,
+                includeStretching: true,
                 dietaryRestrictions: {}
             });
             // Attempt to login with incorrect password
