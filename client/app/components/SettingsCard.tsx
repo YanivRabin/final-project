@@ -1,25 +1,25 @@
 import React, { useState } from "react";
-import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import Button from "@mui/material/Button";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import { DietaryRestrictions,User } from "../services/interface";
+import {
+  Card,
+  Divider,
+  Grid,
+  FormControl,
+  Button,
+  Tabs,
+  Tab,
+  Select,
+  InputLabel,
+  FormControlLabel,
+  Checkbox,
+  Box,
+  CardContent,
+  MenuItem,
+  SelectChangeEvent,
+} from "@mui/material";
+import { DietaryRestrictions, User } from "../services/interface";
 import CustomInput from "./CustomInput";
 import { textFieldStyle } from "../../styles/textField";
-import { Box, CardContent, MenuItem } from "@mui/material";
-
-const genderOptions = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
-
+import { useUpdateUserMutation } from "../services/feedApi";
 const workoutGoalsOptions = [
   { value: "Stay in Shape", label: "Stay in Shape" },
   { value: "Muscle Gain", label: "Muscle Gain" },
@@ -52,25 +52,16 @@ const workoutLocationOptions = [
   { value: "outdoor", label: "Outdoor" },
 ];
 
-
 export default function SettingsCard(props: User) {
   const [value, setValue] = useState("one");
+  const [updateUser] = useUpdateUserMutation();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const [user, setUser] = useState({
-    age: props.age,
-    height: props.height,
-    weight: props.weight,
-    workoutGoals: props.workoutGoals,
-    daysPerWeek: props.daysPerWeek,
-    minutesPerWorkout: props.minutesPerWorkout,
-    workoutLocation: props.workoutLocation,
-    includeWarmup: props.includeWarmup,
-    includeStretching: props.includeStretching,
-    dietaryRestrictions: props.dietaryRestrictions,
+  const [user, setUser] = useState<User>({
+    ...props,
   });
 
   const changeField = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +83,7 @@ export default function SettingsCard(props: User) {
     isEdit: true,
   });
 
-  const changeButton = (event: any) => {
+  const changeButton = async (event: React.MouseEvent) => {
     event.preventDefault();
     update((prev) => ({
       ...prev,
@@ -100,8 +91,30 @@ export default function SettingsCard(props: User) {
       isEdit: !prev.isEdit,
     }));
 
-    // Call the onSave function when the user clicks "UPDATE"
     if (!edit.isEdit) {
+      try {
+        // Ensure all necessary fields are present in the user object
+        const response = await updateUser(user).unwrap();
+        console.log("User updated successfully!", response);
+        alert("User updated successfully!");
+      } catch (error) {
+        if (error === 404) {
+          console.error("User not found:", error);
+          alert("Failed to update user: User not found.");
+        } else if (error === "PARSING_ERROR") {
+          console.error("Received a non-JSON response:", error);
+          alert("Failed to update user: Server returned an unexpected response.");
+        } else if (error === 409) {
+          console.error("Email already in use:", error);
+          alert("Failed to update user: Email already in use.");
+        } else if (error === 400) {
+          console.error("Validation failed:", error);
+          alert("Failed to update user: Validation failed.");
+        } else {
+          console.error("Failed to update user:", error);
+          alert("Failed to update user");
+        }
+      }
     }
   };
 
@@ -111,7 +124,7 @@ export default function SettingsCard(props: User) {
   ) => {
     setUser((prevState) => ({
       ...prevState,
-      dietary: {
+      dietaryRestrictions: {
         ...prevState.dietaryRestrictions,
         [restriction]: e.target.checked,
       },
