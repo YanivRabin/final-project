@@ -113,6 +113,7 @@ export default function SignIn() {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(""); // Clear previous errors
     try {
       const { user, accessToken } = await loginUser({
         email,
@@ -123,15 +124,17 @@ export default function SignIn() {
 
       // Trigger workout data fetch by setting loginSuccess to true
       setLoginSuccess(true);
-    } catch (error) {
-      setError(
-        "Failed to log in. Please check your credentials and try again."
-      );
+    } catch (err) {
+      const errorMessage = (err as { data?: { message?: string } }).data?.message 
+          || "Failed to log in. Please check your credentials and try again.";
+      setError(errorMessage);
+      setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = async (credentialResponse: CredentialResponse) => {
     setIsLoading(true);
+    setError(""); // Clear previous errors
     try {
       const { credential } = credentialResponse;
       if (credential) {
@@ -152,8 +155,9 @@ export default function SignIn() {
           router.push("/signUp");
         }
       }
-    } catch (error) {
-      console.error("Google sign-in failed:", error);
+    } catch (err) {
+      console.error("Google sign-in failed:", err);
+      setError("Google sign-in failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -234,6 +238,11 @@ export default function SignIn() {
               autoComplete="current-password"
               type="password"
             />
+            {error && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {error}
+              </Typography>
+            )}
             <Button
               sx={styles.signInButton}
               type="submit"
