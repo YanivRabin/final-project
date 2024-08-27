@@ -30,7 +30,7 @@ const generateWorkoutPlan = (profile) => __awaiter(void 0, void 0, void 0, funct
         Workout Location: ${profile.workoutLocation}
         Minutes Per Workout: ${profile.minutesPerWorkout}
         Include Warmup: ${profile.includeWarmup}
-        Include Stretching: ${profile.includeStretching}
+        Include Stretching: ${profile.includeStreching}
 
         Please provide the following details:
         1. A detailed weekly workout schedule including daily workouts:

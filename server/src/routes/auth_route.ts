@@ -38,7 +38,7 @@ const router = express.Router();
  *               - minutesPerWorkout
  *               - workoutLocation
  *               - includeWarmup
- *               - includeStretching
+ *               - includeStreching
  *             properties:
  *               firstName:
  *                 type: string
@@ -80,7 +80,7 @@ const router = express.Router();
  *               includeWarmup:
  *                 type: boolean
  *                 example: true
- *               includeStretching:
+ *               includeStreching:
  *                 type: boolean
  *                 example: true
  *               dietaryRestrictions:
@@ -327,7 +327,7 @@ router.get('/workout', AuthController.getWorkoutForUser);
  *               includeWarmup:
  *                 type: boolean
  *                 example: true
- *               includeStretching:
+ *               includeStreching:
  *                 type: boolean
  *                 example: false
  *               dietaryRestrictions:
@@ -406,7 +406,7 @@ router.get('/workout', AuthController.getWorkoutForUser);
  *                   type: string
  *                 includeWarmup:
  *                   type: boolean
- *                 includeStretching:
+ *                 includeStreching:
  *                   type: boolean
  *                 dietaryRestrictions:
  *                   type: object

@@ -21,7 +21,7 @@ const user = {
     minutesPerWorkout: 60,
     workoutLocation: "home",
     includeWarmup: true,
-    includeStretching: true,
+    includeStreching: true,
     dietaryRestrictions: {
         vegan: false,
         vegetarian: false,

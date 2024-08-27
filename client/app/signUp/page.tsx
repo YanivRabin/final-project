@@ -53,7 +53,7 @@ export default function SignUp() {
     minutesPerWorkout: 0,
     workoutLocation: " ",
     includeWarmup: false,
-    includeStretching: false,
+    includeStreching: false,
     dietaryRestrictions: {
       vegan: false,
       vegetarian: false,
@@ -494,24 +494,24 @@ export default function SignUp() {
                   labelPlacement="end"
                 />
               </Grid>
-              {/* include Stretching */}
+              {/* include streching */}
               <Grid item xs={12}>
                 <FormControlLabel
-                  value="includeStretching"
+                  value="includeStreching"
                   control={
                     <Checkbox
-                      checked={formData.includeStretching}
+                      checked={formData.includeStreching}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          includeStretching: e.target.checked,
+                          includeStreching: e.target.checked,
                         });
                       }}
-                      name="includeStretching"
+                      name="includeStreching"
                       color="primary"
                     />
                   }
-                  label="Include Stretching"
+                  label="Include Streching"
                   labelPlacement="end"
                 />
               </Grid>

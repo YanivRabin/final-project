@@ -29,7 +29,7 @@ export const generateWorkoutPlan = async (profile: User) => {
         Workout Location: ${profile.workoutLocation}
         Minutes Per Workout: ${profile.minutesPerWorkout}
         Include Warmup: ${profile.includeWarmup}
-        Include Stretching: ${profile.includeStretching}
+        Include Stretching: ${profile.includeStreching}
 
         Please provide the following details:
         1. A detailed weekly workout schedule including daily workouts:
