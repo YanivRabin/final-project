@@ -72,7 +72,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({ day, exercises }) => {
     setDuration(userDuration);
   }, []);
 
-  const isRestDay = exercises[0].name === "Rest";
+  const isRestDay = exercises?.[0]?.name === "Rest";
 
   return (
     <Card

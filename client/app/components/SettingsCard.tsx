@@ -19,7 +19,7 @@ import {
 import { DietaryRestrictions, User } from "../services/interface";
 import CustomInput from "./CustomInput";
 import { textFieldStyle } from "../../styles/textField";
-import { useUpdateUserMutation } from "../services/feedApi";
+import { useUpdateUserMutation,useCreateWorkoutPlanMutation  } from "../services/feedApi";
 const workoutGoalsOptions = [
   { value: "Stay in Shape", label: "Stay in Shape" },
   { value: "Muscle Gain", label: "Muscle Gain" },
@@ -55,6 +55,8 @@ const workoutLocationOptions = [
 export default function SettingsCard(props: User) {
   const [value, setValue] = useState("one");
   const [updateUser] = useUpdateUserMutation();
+  const [createWorkoutPlan] = useCreateWorkoutPlanMutation();
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -90,33 +92,40 @@ export default function SettingsCard(props: User) {
       disabled: !prev.disabled,
       isEdit: !prev.isEdit,
     }));
-
+  
     if (!edit.isEdit) {
       try {
-        // Ensure all necessary fields are present in the user object
+        // Update user details
         const response = await updateUser(user).unwrap();
         console.log("User updated successfully!", response);
         alert("User updated successfully!");
+  
+        // Save the updated user data in local storage
+        localStorage.setItem("user", JSON.stringify(response));
+  
+        // Create workout plan with the updated user data
+        const workoutPlan = await createWorkoutPlan(response).unwrap();
+        localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
+  
+        alert("Workout plan created successfully!");
       } catch (error) {
-        if (error === 404) {
-          console.error("User not found:", error);
-          alert("Failed to update user: User not found.");
-        } else if (error === "PARSING_ERROR") {
-          console.error("Received a non-JSON response:", error);
+        console.error("Error updating user or creating workout plan:", error);
+        if (error instanceof SyntaxError) {
           alert("Failed to update user: Server returned an unexpected response.");
+        } else if (error === 404) {
+          alert("Failed to update user: User not found.");
         } else if (error === 409) {
-          console.error("Email already in use:", error);
           alert("Failed to update user: Email already in use.");
         } else if (error === 400) {
-          console.error("Validation failed:", error);
           alert("Failed to update user: Validation failed.");
         } else {
-          console.error("Failed to update user:", error);
-          alert("Failed to update user");
+          alert("Failed to update user or create workout plan.");
         }
       }
     }
   };
+  
+  
 
   const handleDietaryChange = (
     restriction: keyof DietaryRestrictions,
