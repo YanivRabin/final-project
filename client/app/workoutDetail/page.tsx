@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,13 +14,9 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import InfoIcon from "@mui/icons-material/Info";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Exercise } from "../services/interface";
-import mountainClimbersGif from "../images/workout/mountain-climbers.gif";
 
-interface WorkoutExercise {
-  exercise: Exercise[];
-}
 
 const styles = {
   container: {
@@ -86,6 +82,7 @@ const styles = {
 
 const WorkoutDetailPage: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const workout = searchParams.get("workout");
   const parsedWorkout = JSON.parse(workout as string);
   const workoutData = parsedWorkout.exercise
@@ -93,7 +90,6 @@ const WorkoutDetailPage: React.FC = () => {
     : parsedWorkout;
   console.log("workoutData", workoutData);
 
-  // const [workoutData, setWorkoutData] = useState<WorkoutExercise>();
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [dialogContent, setDialogContent] = useState<string>("");
@@ -110,10 +106,10 @@ const WorkoutDetailPage: React.FC = () => {
 
   const handleNextExercise = () => {
     const nextIndex = selectedExerciseIndex + 1;
-    if (nextIndex < workoutData.length + 1) {
+    if (nextIndex < workoutData.length ) {
       setSelectedExerciseIndex(nextIndex);
     } else {
-      window.location.href = "/home";
+      router.push("/home");
     }
   };
 
@@ -183,7 +179,7 @@ const WorkoutDetailPage: React.FC = () => {
         onClick={handleNextExercise}
         disabled={selectedExerciseIndex > workoutData.length}
       >
-        {selectedExerciseIndex < workoutData.length ? "Next" : "Done"}
+        {selectedExerciseIndex < workoutData.length - 1 ? "Next" : "Done"}
       </Button>
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Exercise Description</DialogTitle>
@@ -202,4 +198,10 @@ const WorkoutDetailPage: React.FC = () => {
   );
 };
 
-export default WorkoutDetailPage;
+const SuspendedWorkoutDetailPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <WorkoutDetailPage />
+  </Suspense>
+);
+
+export default SuspendedWorkoutDetailPage;

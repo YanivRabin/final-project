@@ -28,22 +28,20 @@ import { useRouter } from "next/navigation";
 import { useSignUpMutation } from "../services/authApi";
 import { useCreateWorkoutPlanMutation } from "../services/feedApi";
 import "../../styles/signUp.css";
+import { useEffect } from "react";
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
 export default function SignUp() {
   const router = useRouter();
-  const [activeStep, setActiveStep] = React.useState(
-    localStorage.getItem("email") ? 1 : 0
-  );
-  const [password2, setPassword2] = React.useState(
-    localStorage.getItem("password") || ""
-  );
+  const [storedEmail, setStoredEmail] = React.useState("");
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [password2, setPassword2] = React.useState("");
   const [formData, setFormData] = React.useState({
-    firstName: localStorage.getItem("firstName") || "",
-    lastName: localStorage.getItem("lastName") || "",
-    email: localStorage.getItem("email") || "",
-    password: localStorage.getItem("password") || "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
     gender: "",
     age: 25,
     height: 175,
@@ -80,6 +78,28 @@ export default function SignUp() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    // Check if running in the browser
+    if (typeof window !== "undefined") {
+      const storedEmail = localStorage.getItem("email");
+      const storedPassword = localStorage.getItem("password");
+      const storedFirstName = localStorage.getItem("firstName");
+      const storedLastName = localStorage.getItem("lastName");
+      if (storedEmail && storedPassword && storedFirstName && storedLastName) {
+        setStoredEmail(storedEmail);
+        setActiveStep(1);
+        setFormData({
+          ...formData,
+          email: storedEmail,
+          password: storedPassword,
+          firstName: storedFirstName,
+          lastName: storedLastName,
+        });
+        setPassword2(storedPassword);
+      }
+    }
+  }, []);
 
   const handleNext = async () => {
     if (googleLogin) setGoogleLogin(false);
@@ -122,7 +142,7 @@ export default function SignUp() {
         handleSubmit();
       } catch (error) {
         console.error("Login error:", error);
-        if (localStorage.getItem("email")) {
+        if (storedEmail) {
           setActiveStep(1);
           return;
         } else {
@@ -137,17 +157,18 @@ export default function SignUp() {
   const handleSubmit = async () => {
     try {
       const { user, accessToken } = await signUpUser(formData).unwrap();
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", accessToken);
+      if (window !== undefined) {
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("accessToken", accessToken);
+      }
 
       let workoutPlan;
       while (!workoutPlan) {
         workoutPlan = await createWorkoutPlan(user).unwrap();
       }
-      // const workoutPlan = await createWorkoutPlan(user).unwrap();
-      localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
-
-      localStorage.getItem("firstName")
+      if (window !== undefined) {
+        localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
+        localStorage.getItem("firstName")
         ? localStorage.removeItem("firstName")
         : null;
       localStorage.getItem("lastName")
@@ -157,6 +178,7 @@ export default function SignUp() {
       localStorage.getItem("password")
         ? localStorage.removeItem("password")
         : null;
+      }
 
       router.push("/home");
     } catch (error) {
@@ -166,7 +188,7 @@ export default function SignUp() {
   };
 
   const handleBack = () => {
-    if (localStorage.getItem("email") && activeStep === 1) {
+    if (storedEmail && activeStep === 1) {
       setGoogleLogin(true);
       return;
     }
@@ -264,7 +286,7 @@ export default function SignUp() {
               </Grid>
               {/* Age */}
               <Grid item xs={12}>
-                <Box sx={{width: "95%"}}>
+                <Box sx={{ width: "95%" }}>
                   <Typography id="input-slider-age" gutterBottom>
                     Age
                   </Typography>
@@ -302,7 +324,7 @@ export default function SignUp() {
               </Grid>
               {/* Height */}
               <Grid item xs={12}>
-                <Box sx={{width: "95%"}}>
+                <Box sx={{ width: "95%" }}>
                   <Typography id="input-slider-height" gutterBottom>
                     Height in cm
                   </Typography>
@@ -340,7 +362,7 @@ export default function SignUp() {
               </Grid>
               {/* Weight */}
               <Grid item xs={12}>
-                <Box sx={{width: "95%"}}>
+                <Box sx={{ width: "95%" }}>
                   <Typography id="input-slider-weight" gutterBottom>
                     Weight in kg
                   </Typography>
