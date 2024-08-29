@@ -16,11 +16,15 @@ import {
   MenuItem,
   SelectChangeEvent,
   CircularProgress,
+  Typography,
 } from "@mui/material";
 import { DietaryRestrictions, User } from "../services/interface";
 import CustomInput from "./CustomInput";
 import { textFieldStyle } from "../../styles/textField";
-import { useUpdateUserMutation, useCreateWorkoutPlanMutation } from "../services/feedApi";
+import {
+  useUpdateUserMutation,
+  useCreateWorkoutPlanMutation,
+} from "../services/feedApi";
 
 const workoutGoalsOptions = [
   { value: "Stay in Shape", label: "Stay in Shape" },
@@ -97,24 +101,28 @@ export default function SettingsCard(props: User) {
 
     if (!edit.isEdit) {
       setLoading(true); // Start loading
+      localStorage.setItem("loading", JSON.stringify(loading));
       try {
         // Update user details
         const response = await updateUser(user).unwrap();
         console.log("User updated successfully!", response);
-        alert("User updated successfully!");
 
         // Save the updated user data in local storage
         localStorage.setItem("user", JSON.stringify(response));
 
         // Create workout plan with the updated user data
-        const workoutPlan = await createWorkoutPlan(response).unwrap();
+        let workoutPlan;
+        while (!workoutPlan) {
+          workoutPlan = await createWorkoutPlan(response).unwrap();
+        }
+        // const workoutPlan = await createWorkoutPlan(response).unwrap();
         localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
-
-        alert("Workout plan created successfully!");
       } catch (error) {
         console.error("Error updating user or creating workout plan:", error);
         if (error instanceof SyntaxError) {
-          alert("Failed to update user: Server returned an unexpected response.");
+          alert(
+            "Failed to update user: Server returned an unexpected response."
+          );
         } else if (error === 404) {
           alert("Failed to update user: User not found.");
         } else if (error === 409) {
@@ -126,6 +134,8 @@ export default function SettingsCard(props: User) {
         }
       } finally {
         setLoading(false); // Stop loading
+        localStorage.removeItem("loading");
+        window.location.reload(); // Reload the page
       }
     }
   };
@@ -142,6 +152,27 @@ export default function SettingsCard(props: User) {
       },
     }));
   };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center", // Center vertically
+          alignItems: "center", // Center horizontally
+          height: "100%", // Full viewport height
+          width: "100%", // Full width
+          textAlign: "center", // Center text if necessary
+        }}
+      >
+        <CircularProgress size={50} />
+        <Typography sx={{ mt: 2, color: "black" }}>
+          Updating workout plan and Nutrition menu...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Card
@@ -226,7 +257,13 @@ export default function SettingsCard(props: User) {
                 onClick={changeButton}
                 disabled={loading} // Disable button when loading
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : edit.isEdit ? "EDIT" : "UPDATE"}
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : edit.isEdit ? (
+                  "EDIT"
+                ) : (
+                  "UPDATE"
+                )}
               </Button>
             </Box>
           </FormControl>
@@ -387,7 +424,13 @@ export default function SettingsCard(props: User) {
                 onClick={changeButton}
                 disabled={loading} // Disable button when loading
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : edit.isEdit ? "EDIT" : "UPDATE"}
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : edit.isEdit ? (
+                  "EDIT"
+                ) : (
+                  "UPDATE"
+                )}
               </Button>
             </Box>
           </FormControl>
@@ -437,18 +480,6 @@ export default function SettingsCard(props: User) {
                     />
                   </Grid>
                 ))}
-
-                <Grid item>
-                  <CustomInput
-                    id="other"
-                    name="other"
-                    value={user.dietaryRestrictions.other}
-                    onChange={changeField}
-                    title="Other"
-                    dis={edit.disabled}
-                    req={edit.required}
-                  />
-                </Grid>
                 <Grid container justifyContent="flex-end" item xs={12}>
                   <Button
                     sx={{
@@ -466,7 +497,13 @@ export default function SettingsCard(props: User) {
                     onClick={changeButton}
                     disabled={loading} // Disable button when loading
                   >
-                    {loading ? <CircularProgress size={24} color="inherit" /> : edit.isEdit ? "EDIT" : "UPDATE"}
+                    {loading ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : edit.isEdit ? (
+                      "EDIT"
+                    ) : (
+                      "UPDATE"
+                    )}
                   </Button>
                 </Grid>
               </Grid>

@@ -159,7 +159,7 @@ function ResponsiveAppBar() {
               ))}
             </Box>
           )}
-          {!isHomePage && !isSignPage && (
+          {!isHomePage && !isSignPage && !localStorage.getItem("loading") && (
             <Box
               sx={{
                 flexGrow: 1,

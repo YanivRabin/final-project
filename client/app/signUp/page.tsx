@@ -140,7 +140,11 @@ export default function SignUp() {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("accessToken", accessToken);
 
-      const workoutPlan = await createWorkoutPlan(user).unwrap();
+      let workoutPlan;
+      while (!workoutPlan) {
+        workoutPlan = await createWorkoutPlan(user).unwrap();
+      }
+      // const workoutPlan = await createWorkoutPlan(user).unwrap();
       localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
 
       localStorage.getItem("firstName")
@@ -260,7 +264,7 @@ export default function SignUp() {
               </Grid>
               {/* Age */}
               <Grid item xs={12}>
-                <Box>
+                <Box sx={{width: "95%"}}>
                   <Typography id="input-slider-age" gutterBottom>
                     Age
                   </Typography>
@@ -290,6 +294,7 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-age",
                         }}
+                        style={{ width: 30 }}
                       />
                     </Grid>
                   </Grid>
@@ -297,7 +302,7 @@ export default function SignUp() {
               </Grid>
               {/* Height */}
               <Grid item xs={12}>
-                <Box>
+                <Box sx={{width: "95%"}}>
                   <Typography id="input-slider-height" gutterBottom>
                     Height in cm
                   </Typography>
@@ -327,6 +332,7 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-height",
                         }}
+                        style={{ width: 30 }}
                       />
                     </Grid>
                   </Grid>
@@ -334,7 +340,7 @@ export default function SignUp() {
               </Grid>
               {/* Weight */}
               <Grid item xs={12}>
-                <Box>
+                <Box sx={{width: "95%"}}>
                   <Typography id="input-slider-weight" gutterBottom>
                     Weight in kg
                   </Typography>
@@ -364,6 +370,7 @@ export default function SignUp() {
                           type: "number",
                           "aria-labelledby": "input-slider-weight",
                         }}
+                        style={{ width: 30 }}
                       />
                     </Grid>
                   </Grid>

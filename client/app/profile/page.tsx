@@ -13,11 +13,15 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SettingsCard from "../components/SettingsCard";
 import { MainUser } from "../services/interface";
+import Image from "next/image";
+import male from "../images/profile/male.png";
+import female from "../images/profile/female.png";
 
 const theme = createTheme();
 
 const Profile: React.FC = () => {
   const [mainUser, setMainUser] = useState<MainUser | null>(null);
+  const gender = mainUser?.gender === "male" ? male : female;
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -59,9 +63,11 @@ const Profile: React.FC = () => {
                   overlap="circular"
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 >
-                  <Avatar
-                    sx={{ width: 100, height: 100, mb: 1.5 }}
-                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                  <Image 
+                    src={gender}
+                    alt="Profile Picture"
+                    width={100}
+                    height={100}
                   />
                 </Badge>
                 <Typography variant="h6">{fullName}</Typography>
