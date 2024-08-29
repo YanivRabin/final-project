@@ -246,6 +246,8 @@ const googleAuthCallback = async (req: Request, res: Response) => {
   console.log("Google auth callback");
 
   const { token } = req.body;
+  //console.log("Received token:", token);
+
 
   try {
     // Verify the token with Google's OAuth2 client
@@ -253,16 +255,20 @@ const googleAuthCallback = async (req: Request, res: Response) => {
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
+    
     const payload = ticket.getPayload();
 
     if (!payload) {
+      console.error("Invalid Google token: No payload found");
       return res.status(400).send("Invalid Google token");
     }
-
     console.log("Google payload:", JSON.stringify(payload, null, 2));
+    console.log("Audience (aud) claim:", payload.aud);
+    console.log("Expected audience:", process.env.GOOGLE_CLIENT_ID);
 
     // Find or create the user
     const email = payload.email;
+    console.log("Email from Google payload:", email);
     let user = await User.findOne({ email });
 
     if (!user) {
@@ -295,7 +301,7 @@ const googleAuthCallback = async (req: Request, res: Response) => {
       refreshToken,
     });
   } catch (error) {
-    console.error("Error during Google authentication:", error.message);
+    console.error("Error during Google authentication:", error);
     return res.status(500).send("Server error");
   }
 };
