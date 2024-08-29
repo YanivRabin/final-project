@@ -95,14 +95,13 @@ const styles: { [key: string]: CSSProperties } = {
 export default function Main() {
   const [user, setUser] = useState<string | null>(null);
 
-  useEffect(()=> {
-        // Check if running in the browser
-      if(typeof window !== "undefined"){
-        const storedUser =   localStorage.getItem("user");
-        setUser(storedUser);
-
-      }
-  },[]);
+  useEffect(() => {
+    // Check if running in the browser
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser);
+    }
+  }, []);
 
   return (
     <Box display="flex" flexDirection="column">

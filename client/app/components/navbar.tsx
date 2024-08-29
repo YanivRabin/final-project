@@ -34,6 +34,7 @@ function ResponsiveAppBar() {
   const [openLogoutDialog, setOpenLogoutDialog] =
     React.useState<boolean>(false);
   const [user, setUser] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<string | null>(null);
 
   // Check if the current page is the home page or signIn/signUp page
   React.useEffect(() => {
@@ -47,6 +48,14 @@ function ResponsiveAppBar() {
       ? setIsSignPage(true)
       : setIsSignPage(false);
   }, [pathname]);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const loading = localStorage.getItem("loading");
+      setLoading(loading);
+    } 
+  }, []);
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -159,7 +168,7 @@ function ResponsiveAppBar() {
               ))}
             </Box>
           )}
-          {!isHomePage && !isSignPage && !localStorage.getItem("loading") && (
+          {!isHomePage && !isSignPage && !loading && (
             <Box
               sx={{
                 flexGrow: 1,
