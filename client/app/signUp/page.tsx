@@ -76,7 +76,10 @@ export default function SignUp() {
   const [googleLogin, setGoogleLogin] = React.useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   useEffect(() => {
@@ -169,15 +172,15 @@ export default function SignUp() {
       if (window !== undefined) {
         localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
         localStorage.getItem("firstName")
-        ? localStorage.removeItem("firstName")
-        : null;
-      localStorage.getItem("lastName")
-        ? localStorage.removeItem("lastName")
-        : null;
-      localStorage.getItem("email") ? localStorage.removeItem("email") : null;
-      localStorage.getItem("password")
-        ? localStorage.removeItem("password")
-        : null;
+          ? localStorage.removeItem("firstName")
+          : null;
+        localStorage.getItem("lastName")
+          ? localStorage.removeItem("lastName")
+          : null;
+        localStorage.getItem("email") ? localStorage.removeItem("email") : null;
+        localStorage.getItem("password")
+          ? localStorage.removeItem("password")
+          : null;
       }
 
       router.push("/home");
@@ -957,14 +960,14 @@ export default function SignUp() {
           </Box>
         </Box>
         {/* Image component for background */}
-        <Box className="bgImage">
+        {/* <Box className="bgImage">
           <Image
             src={require("../images/signUp/signUpBg.png")}
             alt="Background"
             layout="fill"
             objectFit="cover"
           />
-        </Box>
+        </Box> */}
       </Container>
     </Box>
   );

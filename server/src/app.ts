@@ -16,9 +16,7 @@ import path from "path";
 let server: any;
 
 const dev = process.env.NODE_ENV !== "production";
-console.log(path.resolve(__dirname, "../..", "client"));
-
-const nextDir = path.join(__dirname, "../..", "client"); // Adjust path to your client directory
+const nextDir = path.resolve(__dirname, '../../client'); // The root directory of your project
 const nextApp = next({ dev, dir: nextDir });
 const handle = nextApp.getRequestHandler();
 
@@ -85,14 +83,14 @@ const initApp = (): Promise<http.Server> => {
         const specs = swaggerJsDoc(options);
         app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
-        // Serve Next.js pages
+        // Handle Next.js pages
         app.all("*", (req, res) => handle(req, res));
 
         // Start server
         resolve(server);
       });
     });
-  });
+  })
   return promise;
 };
 

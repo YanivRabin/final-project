@@ -118,7 +118,7 @@ export default function SettingsCard(props: User) {
         // const workoutPlan = await createWorkoutPlan(response).unwrap();
         localStorage.setItem("workoutPlan", JSON.stringify(workoutPlan));
       } catch (error) {
-        console.error("Error updating user or creating workout plan:", error);
+        console.error("Error updating user or creating workout plan, try again.");
         if (error instanceof SyntaxError) {
           alert(
             "Failed to update user: Server returned an unexpected response."

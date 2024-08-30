@@ -13,7 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CssBaseline, Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 const pages = ["Home", "Workout", "Nutrition"];
@@ -23,6 +23,7 @@ const pagesAndSettings = [...pages, ...settings];
 
 function ResponsiveAppBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isHomePage, setIsHomePage] = React.useState<boolean>(false);
   const [isSignPage, setIsSignPage] = React.useState<boolean>(false);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -56,7 +57,6 @@ function ResponsiveAppBar() {
     } 
   }, []);
 
-
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -78,7 +78,8 @@ function ResponsiveAppBar() {
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("workoutPlan");
-      window.location.href = "/";
+      localStorage.removeItem("loading");
+      router.push("/");
     }
   };
 
@@ -143,7 +144,7 @@ function ResponsiveAppBar() {
               )}
             </Box>
           )}
-          {!isHomePage && !isSignPage && (
+          {!isHomePage && !isSignPage && !loading && (
             <Box
               sx={{
                 flexGrow: 1,
@@ -232,7 +233,7 @@ function ResponsiveAppBar() {
               </Menu>
             </Box>
           )}
-          {!isHomePage && !isSignPage && (
+          {!isHomePage && !isSignPage && !loading && (
             <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
