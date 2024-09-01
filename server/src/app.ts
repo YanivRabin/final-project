@@ -16,7 +16,7 @@ import path from "path";
 let server: any;
 
 const dev = process.env.NODE_ENV !== "production";
-const nextDir = path.resolve(__dirname, '../../client'); // The root directory of your project
+const nextDir = path.resolve(__dirname, "../../client");
 const nextApp = next({ dev, dir: nextDir });
 const handle = nextApp.getRequestHandler();
 
@@ -79,7 +79,7 @@ const initApp = (): Promise<http.Server> => {
             ],
           },
           apis: ["./src/routes/*.ts"],
-        };
+        }; 
         const specs = swaggerJsDoc(options);
         app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
@@ -90,7 +90,7 @@ const initApp = (): Promise<http.Server> => {
         resolve(server);
       });
     });
-  })
+  });
   return promise;
 };
 

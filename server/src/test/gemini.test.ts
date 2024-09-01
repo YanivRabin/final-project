@@ -1,10 +1,10 @@
 import request from 'supertest';
 import initApp from '../app';
 import mongoose from 'mongoose';
-import express from "express";
 import jwt from 'jsonwebtoken';
+import http from 'http';
 
-let app: express.Application;
+let app: http.Server;
 let token: string;
 
 const user = {

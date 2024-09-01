@@ -1,9 +1,9 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import { Express } from 'express';
+import http from 'http';
 import initApp from '../app'; 
 
-let app: Express;
+let app: http.Server;
 
 beforeAll(async () => {
   app = await initApp();

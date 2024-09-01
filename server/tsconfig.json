@@ -1,11 +1,16 @@
 {
-    "compilerOptions": {
-        "module": "CommonJS",
-        "esModuleInterop": true,
-        "target": "ES6",
-        "moduleResolution": "Node",
-        "sourceMap": true,
-        "outDir": "dist"
-    },
-    "lib": ["ES2015"]
+  "compilerOptions": {
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "jsx": "react", // This allows you to use JSX syntax
+    "lib": ["ES2015", "DOM"], // Include ES2015 and DOM libraries
+    "types": ["node", "react", "react-dom"], // Ensure these types are available
+  },
+  "include": ["src"], // Specify the root directory for TypeScript to include
+  // Exclude node_modules from the compilation and jest tests
+  "exclude": ["node_modules", "./src/test"]
 }
