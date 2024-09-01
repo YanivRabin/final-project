@@ -39,11 +39,7 @@ const initApp = () => {
         const db = mongoose_1.default.connection;
         db.on("error", (error) => console.error(error));
         db.once("open", () => console.log("connected to mongo"));
-        const databaseUrl = process.env.DATABASE_URL;
-        if (!databaseUrl) {
-            throw new Error("DATABASE_URL environment variable is not defined.");
-        }
-        mongoose_1.default.connect(databaseUrl).then(() => {
+        mongoose_1.default.connect(process.env.DATABASE_URL).then(() => {
             // Initialize Next.js
             nextApp.prepare().then(() => {
                 // Express middleware

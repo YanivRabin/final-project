@@ -1,4 +1,3 @@
-"use strict";
 // import axios from 'axios';
 // import {User} from '../model/user_model';
 // export class AuthModel {

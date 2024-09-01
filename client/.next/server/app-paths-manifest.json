@@ -1,11 +1,9 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/nutrition/page": "app/nutrition/page.js",
-  "/home/page": "app/home/page.js",
   "/page": "app/page.js",
-  "/profile/page": "app/profile/page.js",
   "/signIn/page": "app/signIn/page.js",
-  "/signUp/page": "app/signUp/page.js",
   "/workout/page": "app/workout/page.js",
-  "/workoutDetail/page": "app/workoutDetail/page.js"
+  "/home/page": "app/home/page.js",
+  "/workoutDetail/page": "app/workoutDetail/page.js",
+  "/nutrition/page": "app/nutrition/page.js",
+  "/profile/page": "app/profile/page.js"
 }
