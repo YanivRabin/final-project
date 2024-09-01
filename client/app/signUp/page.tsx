@@ -27,8 +27,26 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/navigation";
 import { useSignUpMutation } from "../services/authApi";
 import { useCreateWorkoutPlanMutation } from "../services/feedApi";
-import "../../styles/signUp.css";
 import { useEffect } from "react";
+
+const styles = {
+  mainContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "auto",
+    position: "relative",
+  },
+  outerBox: {
+    width: "100%",
+    backgroundColor: "white",
+    margin: "50px 0",
+    padding: "20px",
+    position: "relative",
+    border: "3px solid #4e2a84",
+    borderRadius: "10px",
+  },
+};
 
 const steps = ["Sign Up", "Personal Info", "Dietary Restrictions"];
 
@@ -899,10 +917,10 @@ export default function SignUp() {
   };
 
   return (
-    <Box className="mainContainer">
+    <Box sx={styles.mainContainer}>
       <CssBaseline />
       <Container component="main" maxWidth="xs">
-        <Box className="outerBox">
+        <Box sx={styles.outerBox}>
           <Stepper
             className="stepper"
             activeStep={activeStep}
