@@ -1,9 +1,4 @@
 {
-  "/page": "app/page.js",
   "/signIn/page": "app/signIn/page.js",
-  "/workout/page": "app/workout/page.js",
-  "/home/page": "app/home/page.js",
-  "/workoutDetail/page": "app/workoutDetail/page.js",
-  "/nutrition/page": "app/nutrition/page.js",
-  "/profile/page": "app/profile/page.js"
+  "/page": "app/page.js"
 }
